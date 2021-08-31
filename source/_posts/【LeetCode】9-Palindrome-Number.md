@@ -54,4 +54,22 @@ public static boolean isPalindrome(int x) {
 }
 ~~~
 
+Scala版
+
+~~~scala
+object Solution {
+    def isPalindrome(x: Int): Boolean = {
+        if(x < 0)
+          return false
+        var y = x
+        var result = 0
+        while(y != 0){
+          result = result * 10 + y%10
+          y /= 10
+        }
+        result == x
+    }
+}
+~~~
+
 <center><font style="font-weight:bold">（完）</font></center>

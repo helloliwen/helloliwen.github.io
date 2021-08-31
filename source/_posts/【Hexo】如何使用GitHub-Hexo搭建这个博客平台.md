@@ -1331,6 +1331,8 @@ abbrlink:
 
 #### 27.添加评论系统
 
+推荐LeanCloud+Valine
+
 [Hexo博客(14)添加来必力评论系统](<http://masikkk.com/article/hexo-14-livere-comment/>)
 
 #### 28.开启打赏功能

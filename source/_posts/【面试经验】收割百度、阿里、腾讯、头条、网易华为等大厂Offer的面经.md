@@ -1,7 +1,6 @@
 ---
 title: 收割百度、阿里、腾讯、头条、网易华为等大厂Offer的面经
 categories: 面试经验
-top: 99
 keywords: 面试
 abbrlink: e8db5de0
 date: 2019-06-14 16:21:48
