@@ -1,4 +1,1272 @@
-<!DOCTYPE html><html class="theme-next gemini use-motion" lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><meta name="google-site-verification" content="3_IU8QYN7ZX8ohZtDd7g_6zN3154jWW7GDJMLJ8TzSQ"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="google-site-verification" content="3_IU8QYN7ZX8ohZtDd7g_6zN3154jWW7GDJMLJ8TzSQ"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css"><meta name="keywords" content="日拱一卒,不期速成;循序渐进,一击中的"><link rel="shortcut icon" type="image/x-icon" href="/images/favicon32.ico?v=5.1.2"><meta name="description" content="《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记1，包括第一部分——走进Java和第二部分——自动内存管理，从第2章到第5章"><meta property="og:type" content="article"><meta property="og:title" content="【读书笔记】《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记"><meta property="og:url" content="https://helloliwen.github.io/cfa1c762.html"><meta property="og:site_name" content="日拱一卒 不期速成"><meta property="og:description" content="《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记1，包括第一部分——走进Java和第二部分——自动内存管理，从第2章到第5章"><meta property="og:locale" content="zh-Hans"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w0hf9khbj20nt0e6whn.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w0mbgbfij20ps09m754.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w2bggfd1j20em0bh3zo.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5kajstouwj20rl0hvgou.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5ka5bf08bj20hc0b8tdf.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5wy2tjw57j20lv09ytb4.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5wy55qhi8j20mu09t40m.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5wyz8kjjgj20nm0ekgn5.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w3nqkn0jj21400u0dre.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x58r7jzuj20q705qq3n.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5esm88mj20r005it9i.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5swc8l7j20pm05jq3l.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5ureo68j20pr05owfa.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5w1ddxzj20qi05omya.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x610z209j20p905gabf.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x8rlfxpuj20pp0a8jvk.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbuukkpvj20rs044jrf.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbvpi3q8j20rs04w74g.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbw7go2pj20rs0an758.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbyo11ezj20rs03it8q.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbzxhjonj20rs02haa1.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sc0mo263j20ql0fk74w.jpg"><meta property="og:updated_time" content="2019-09-14T09:12:11.308Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="【读书笔记】《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记"><meta name="twitter:description" content="《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记1，包括第一部分——走进Java和第二部分——自动内存管理，从第2章到第5章"><meta name="twitter:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w0hf9khbj20nt0e6whn.jpg"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Gemini",sidebar:{position:"left",display:"post",offset:12,offset_float:12,b2t:!1,scrollpercent:!0,onmobile:!1},fancybox:!0,tabs:!0,motion:!0,duoshuo:{userId:"0",author:"博主"},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><link rel="canonical" href="https://helloliwen.github.io/cfa1c762.html"><title>【读书笔记】《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记 | 日拱一卒 不期速成</title></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">日拱一卒 不期速成</span><span class="logo-line-after"><i></i></span></a></div><h1 class="site-subtitle" itemprop="description">循序渐进 一击中的</h1></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br> 首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br> 分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br> 标签</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br> 搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="https://helloliwen.github.io/cfa1c762.html"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="Li Wen"><meta itemprop="description" content=""><meta itemprop="image" content="/images/avatar.jpg"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="日拱一卒 不期速成"></span><header class="post-header"><h2 class="post-title" itemprop="name headline">【读书笔记】《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记</h2><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-11T20:02:32+08:00">2019-08-11</time> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">更新于</span> <time title="更新于" itemprop="dateModified" datetime="2019-09-14T17:12:11+08:00">2019-09-14</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span> > <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a></span></span> <span class="post-meta-divider">|</span><span class="page-pv"><i class="fa fa-file-o"></i><span class="busuanzi-value" id="busuanzi_value_page_pv"></span> 次阅读</span><div class="post-description"> 《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记1，包括第一部分——走进Java和第二部分——自动内存管理，从第2章到第5章</div></div></header><div class="post-body" itemprop="articleBody"><h1 id="第一部分-走近Java"><a href="#第一部分-走近Java" class="headerlink" title="第一部分 走近Java"></a>第一部分 走近Java</h1><p>　　世界上并没有完美的程序，但我们并不因此而沮丧，因为写程序本来就是一个不断追求完美的过程。</p><h2 id="第1章-走进Java"><a href="#第1章-走进Java" class="headerlink" title="第1章 走进Java"></a>第1章 走进Java</h2><h3 id="1-Java优点"><a href="#1-Java优点" class="headerlink" title="1.Java优点"></a>1.Java优点</h3><ol><li>结构严谨、面向对象。</li><li>摆脱了硬件平台的束缚，实现“一次编写，到处运行”的理想</li><li>提供了相对安全的内存管理和访问机制</li><li>实现了热点代码监测和运行时编译及优化</li><li>有一套完善的应用程序接口以及无数来自商业机构和开源社区的第三方类库来帮助它实现各种各样的功能</li></ol><p>认识这些技术运作的本质，是自己思考“程序这样写好不好”的基础和前提。</p><h3 id="2-Java技术体系"><a href="#2-Java技术体系" class="headerlink" title="2.Java技术体系"></a>2.Java技术体系</h3><p>Sun官方所定义的Java技术体系包括：</p><ol><li><p>Java程序设计语言</p></li><li><p>各种硬件平台上的Java虚拟机</p></li><li><p>Class文件格式</p></li><li><p>Java API类库</p></li><li><p>来自商业机构和开源社区的第三方Java类库</p></li></ol><p>　　其中，其中第1、2、4点统称为JDK（Java Development Kit），JDK是用于支持Java开发的最小环境，JRE是支持Java程序运行的标准环境，整个Java体系如下所示：</p><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w0hf9khbj20nt0e6whn.jpg" alt=""></p><h3 id="3-Java发展史"><a href="#3-Java发展史" class="headerlink" title="3.Java发展史"></a>3.Java发展史</h3><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w0mbgbfij20ps09m754.jpg" alt=""></p><ul><li>JDK 1.0：Java虚拟机、Applet、AWT等</li><li>JDK 1.1：JAR文件格式、JDBC、JavaBeans、RMI、内部类、反射</li><li>JDK 1.2：拆分为J2SE/J2EE/J2ME、内置JIT编译器、一系列Collections集合类</li><li>JDK 1.3：JNDI服务、使用CORBA IIOP实现RMI通信协议、Java 2D改进</li><li>JDK 1.4：正则表达式、异常链、NIO、日志类、XML解析器和XSLT转换器</li><li>JDK 1.5：自动装箱、泛型、动态注解、枚举、可变参数、遍历循环（foreach循环）、改进了Java内存模型、提供了java.util.concurrent并发包</li><li>JDK 1.6：提供动态语言支持、提供编译API和微型HTTP服务器API、虚拟机优化（锁与同步、垃圾收集、类加载等）</li><li>JDK 1.7：G1收集器、加强对Java语言的调用支持、升级类加载架构</li><li>JDK 1.8：Lambda表达式等</li></ul><h3 id="4-Java虚拟机发展史"><a href="#4-Java虚拟机发展史" class="headerlink" title="4.Java虚拟机发展史"></a>4.Java虚拟机发展史</h3><ol><li><p><strong>Sun Classic/Exact VM</strong>：Classic VM是第一款商用虚拟机，纯解析器方式来执行Java代码，如果要使用JIT编译器就必须进行外挂，解析器和编译器不能配合工作，编译器执行效率非常差；Exact VM是Sun虚拟机团队曾在Solaris平台发布的虚拟机，支持两级即时编译器、编译器和解释器混合工作、使用准确内存管理（虚拟机可以知道内存中某个位置的数据具体是什么类型），但很快就被HotSpot VM所取代</p></li><li><p><strong>Sun HotSpot VM</strong>：Sun JDK和OpenJDK所带的虚拟机，目前使用范围最广；继承了前两款虚拟机的优点，还支持热点代码探测技术（通过计数器找出最具编译价值的代码）；2006年Sun公司宣布JDK包括HotSpot VM开源，在此基础上建立OpenJDK</p></li><li><p><strong>Sun Mobile-Embedded VM/Meta-Circular VM</strong>：还有一些Sun开发的面对移动和嵌入式发布的和实验性质的虚拟机</p></li><li><p><strong>BEA JRockit/IBM J9 VM</strong>：JRockit VM号称是世界上最快的Java虚拟机，专注于服务器端应用，不包含解析器实现，全部靠即时编译器编译执行；J9 VM定位于HotSpot比较接近，主要目的是作为IBM公司各种Java产品的执行平台</p></li><li><p><strong>Azul VM/BEA Liquid VM</strong>：特定硬件平台专有的高性能虚拟机</p></li><li><p><strong>Apache Harmony/Google Android Dalvik VM</strong>：Apache Harmony包含自己的虚拟机和Java库，但没有通过TCK认证；Dalvik VM是Android平台的核心组成部分，其并没有遵循Java虚拟机规范，不能直接执行Class文件，使用的是寄存器架构而不是JVM常见的栈架构</p></li><li><p><strong>Microsoft JVM及其他</strong>：微软曾经是Java技术的铁杆支持者，开发过Windows下性能最好的Java虚拟机，但后来被Sun起诉终止其发展</p></li></ol><h3 id="5-展望Java技术的未来"><a href="#5-展望Java技术的未来" class="headerlink" title="5.展望Java技术的未来"></a>5.展望Java技术的未来</h3><p>　　模块化、混合语言、多核并行、进一步丰富语法、64位虚拟机</p><h1 id="第二部分-自动内存管理机制"><a href="#第二部分-自动内存管理机制" class="headerlink" title="第二部分 自动内存管理机制"></a>第二部分 自动内存管理机制</h1><p>　　Java与C++之间有一堵由<font style="color:red">内存动态分配</font>和<font style="color:red">垃圾收集技术</font>所围成的“高墙”，墙外面的人想进去，墙里面的人却想出来。</p><h2 id="第2章-Java内存区域与内存溢出异常"><a href="#第2章-Java内存区域与内存溢出异常" class="headerlink" title="第2章 Java内存区域与内存溢出异常"></a>第2章 Java内存区域与内存溢出异常</h2><h3 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h3><p>　　对于Java程序员来说，在虚拟机自动内存管理机制下，不需要为new操作去写配对的delete/free代码，不容易出现内存泄漏和内存溢出问题。由虚拟机管理内存这一切看起来都很美好，但是一旦出现内存泄漏问题，如果不了解虚拟机的是怎样使用内存的，便难以定位，排查错误将会成为一项异常艰难的工作。</p><h3 id="2-运行时数据区域"><a href="#2-运行时数据区域" class="headerlink" title="2.运行时数据区域"></a>2.运行时数据区域</h3><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w2bggfd1j20em0bh3zo.jpg" alt=""></p><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5kajstouwj20rl0hvgou.jpg" alt=""></p><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5ka5bf08bj20hc0b8tdf.jpg" alt=""></p><h4 id="2-1-程序计数器（Program-Counter-Register）"><a href="#2-1-程序计数器（Program-Counter-Register）" class="headerlink" title="2.1 程序计数器（Program Counter Register）"></a>2.1 程序计数器（Program Counter Register）</h4><ul><li><p>一块较小的内存，可以看作是当前线程所执行的字节码的行号指示器。</p></li><li><p>在虚拟机概念模型里（各种虚拟机实现可能不一样），字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。</p></li><li><p>程序计数器是属于“线程私有”的内存：Java虚拟机的多线程是通过<font style="color:red">线程轮流切换</font>并<font style="color:red">分配处理器执行时间</font>的方式来实现的，因此为了线程切换后能恢复到正确的执行位置，每条线程都需要有一个独立的程序计数器，各条线程之间计数器互不影响，独立存储。</p></li><li><p>如果执行的是Java方法，该计数器记录的是正在执行的虚拟机字节码指令的地址；如果是Native方法则为空（Undefined）。</p></li></ul><p>　　此内存区域是唯一一个在Java虚拟机规范中没有规定任何OutOfMemoryError情况的区域。</p><h4 id="2-2-Java虚拟机栈（Java-Virtual-Machine-Stacks）"><a href="#2-2-Java虚拟机栈（Java-Virtual-Machine-Stacks）" class="headerlink" title="2.2 Java虚拟机栈（Java Virtual Machine Stacks）"></a>2.2 Java虚拟机栈（Java Virtual Machine Stacks）</h4><ul><li><p>Java虚拟机栈也是线程私有的；</p></li><li><p>描述的是Java方法执行的内存模型：每个方法在执行的同时都会创建一个栈帧（Stack Frame）用于存储<font style="color:red">局部变量表</font>、<font style="color:red">操作数栈</font>、<font style="color:red">动态链接</font>、<font style="color:red">方法出口</font>等信息。每一个方法从调用直至执行完成的过程，就对应着一个栈帧在虚拟机中入栈到出栈的过程；</p></li><li><p>局部变量表存放了编译器可知的各种基本数据类型、对象引用和returnAddress类型；其所需的内存空间在编辑期完成分配，不会再运行期改变；</p></li><li><p>可能存在两种异常：StackOverflowError和OutOfMemoryError；</p></li></ul><h4 id="2-3-本地方法栈（Native-Method-Stack）"><a href="#2-3-本地方法栈（Native-Method-Stack）" class="headerlink" title="2.3 本地方法栈（Native Method Stack）"></a>2.3 本地方法栈（Native Method Stack）</h4><ul><li>与虚拟机栈非常相似，只不过是为虚拟机使用到的Native方法服务；</li><li>可能存在两种异常：StackOverflowError和OutOfMemoryError；</li></ul><h4 id="2-4-Java堆（Java-Heap）"><a href="#2-4-Java堆（Java-Heap）" class="headerlink" title="2.4 Java堆（Java Heap）"></a>2.4 Java堆（Java Heap）</h4><ul><li>Java堆是被所有线程共享的，在虚拟机启动时创建；</li><li>此内存区域的唯一目的就是存放<font style="color:red">对象实例</font>，几乎所有的对象实例都在这分配；</li><li>是垃圾收集器管理的主要区域，可以分为<font style="color:red">新生代</font>和<font style="color:red">老年代</font>：<font style="color:red">一个Eden空间、两个Survivor空间</font>——From Survivor空间、To Survivor空间；</li><li>可以物理不连续，只要逻辑上是连续的即可；</li><li>如果堆中没有内存完成实例分配也无法再扩展时，会抛出OutOfMemoryError异常；</li></ul><h4 id="2-5-方法区（Method-Area）"><a href="#2-5-方法区（Method-Area）" class="headerlink" title="2.5 方法区（Method Area）"></a>2.5 方法区（Method Area）</h4><ul><li>是线程共享的区域；</li><li>用于存储已被虚拟机加载的<font style="color:red">类信息</font>、<font style="color:red">常量</font>、<font style="color:red">静态变量</font>、<font style="color:red">即时编译器编译后的代码</font>等数据；</li><li>该区域对于垃圾收集来说条件比较苛刻，但是还是非常有必要要进行回收处理。相对而言，垃圾收集行为在这个区域是比较少出现的，这区域的内存回收目标主要是针对<font style="color:red">常量池的回收</font>和对<font style="color:red">类型的卸载</font>；</li><li>当无法满足内存分配需求时，将抛出OutOfMemoryError异常；</li></ul><p>　　对于HotSpot虚拟机来说，很多人把方法区称为“永久代”（Permanent Generation），本质上两者并不等价，仅仅是因为HotSpot的设计团队选择把GC分代收集扩展至方法区，或者说使用永久代来实现方法区而已。JDK1.7中的HotSpot中，已经移除永久代。</p><h4 id="2-6-运行时常量池（Runtime-Constant-Pool）"><a href="#2-6-运行时常量池（Runtime-Constant-Pool）" class="headerlink" title="2.6 运行时常量池（Runtime Constant Pool）"></a>2.6 运行时常量池（Runtime Constant Pool）</h4><ul><li>是方法区的一部分；</li><li>Class文件中除了有类的<font style="color:red">版本</font>、<font style="color:red">字段</font>、<font style="color:red">方法</font>、<font style="color:red">接口</font>等描述信息外，还有一项信息是<font style="color:red">常量池</font>，用于存放编译器生成的<u>各种字面量</u>和<u>符号引用</u>，这部分内容将在类加载后进入方法区的运行时常量池中存放；</li><li>Java虚拟机规范要求较少，通常还会把翻译出来的直接引用也存储在此；</li><li>另外一个重要特征是具备动态性，可以在运行期间将新的常量放入池中，如String类的intern()方法；</li><li>可能存在的异常：OutOfMemoryError；</li></ul><h4 id="2-7-直接内存（Direct-Memory）"><a href="#2-7-直接内存（Direct-Memory）" class="headerlink" title="2.7 直接内存（Direct Memory）"></a>2.7 直接内存（Direct Memory）</h4><ul><li>并不是虚拟机运行时数据区的一部分，也不是Java虚拟机规范中定义的内存区域；</li><li>JDK 1.4的NIO（New Input/Output）类引入了基于通道（Channel）和缓冲区（Buffer）的IO方法，可以使用Native函数库直接分配对外内存，然后通过一个存储在Java堆中的DirectByteBuffer对象作为这块内存的引用进行操作以提升性能；</li></ul><h3 id="3-HotSpot虚拟机对象探秘"><a href="#3-HotSpot虚拟机对象探秘" class="headerlink" title="3.HotSpot虚拟机对象探秘"></a>3.HotSpot虚拟机对象探秘</h3><p>　　进一步了解虚拟机内存中数据的其他细节，比如它们是如何创建、如何布局以及如何访问的。下面以虚拟机HotSpot和常用的内存区域Java堆为例，深入探讨HotSpot虚拟机在Java堆中对象分配、布局和访问的全过程。</p><h4 id="3-1-对象的创建"><a href="#3-1-对象的创建" class="headerlink" title="3.1 对象的创建"></a>3.1 对象的创建</h4><ol><li><p><strong>类加载检查</strong>：虚拟机遇到一条new指令时，先检查指令的参数是否能在常量池中定位到一个类的符号引用，并且检查这个符号引用代表的类是否已被加载、解析和初始化过。如果没有，那必须先执行相应的类加载过程。</p></li><li><p><strong>为新生对象分配内存</strong>：接下来虚拟机将为新生对象分配内存。对象所需的内存大小在类加载完成后便完全确定，为对象分配空间等同于把一块确定大小的内存从Java堆中划分出来。在使用Serial、ParNew等带Compact过程的收集器时，系统采用的分配算法是指针碰撞（内存绝对规整，只要通过指针作为分界点标识）；而使用CMS这种基于Mark-Sweep算法收集器时，通常使用空闲列表（内存不规整，通过维护一个列表记录那块内存是可用的）。</p></li><li><p><strong>并发情况下处理对象创建的线程安全问题</strong>：另外一个需要考虑的并发下的线程安全问题，有两种方案：一是分配内存空间的动作进行同步处理（实际上虚拟机采用CAS配上失败重试的方式保证更新操作的原子性）；二是为每个线程分配一小块内存（称为本地线程分配缓冲，TLAB），各个线程独立分配，只有TLAB用完需要分配新的才需要同步锁定，虚拟机通过-XX:+/-UseTLAB参数来设定。</p></li><li><p><strong>为分配到的内存空间初始化为零值</strong>：内存分配完后，虚拟机将分配到的内存空间都初始化为零值（不包括对象头），这保证了对象的实例字段在Java代码中可以不赋值就直接使用，程序能访问到这些字段数据类型对应的零值（P220）。</p></li><li><p><strong>虚拟机设置对象的对象头（Object Header）信息</strong>：包括对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、对象GC分代年龄等。</p></li><li><p><strong>执行<init>方法</init></strong>：把对象按照程序员的意愿进行初始化，这样一个真正可用的对象才算完全产生出来。</p></li></ol><ul><li>HotSpot解释器的代码片段：略</li></ul><h4 id="3-2-对象的内存布局"><a href="#3-2-对象的内存布局" class="headerlink" title="3.2 对象的内存布局"></a>3.2 对象的内存布局</h4><ol><li><p>对象在内存中存储的布局可以分为3块区域：<font style="color:red">对象头（Header）</font>、<font style="color:red">实例数据（Instance Data）</font>和<font style="color:red">对齐填充（Padding）</font>。</p></li><li><p>对象头包括两部分信息：第一部分用于存储对象自身的运行时数据，如哈希码、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等；官方称它为“Mark Word”。Mark Word被设计成一个非固定的数据结构以便在极小的空间内存储尽量多的信息，它会根据对象的状态复用自己的存储空间。另一部分是类型指针，即对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例（并不是所有虚拟机都必须在对象数据上保留类型指针）。另外如果对象是一个Java数组，对象头中还必须有一块用于记录数组长度的数据。</p></li><li><p>实例数据部分是真正存储的有效信息，也是在代码中所定义的各种类型的字段内容。无论是父类继承的还是子类中定义的都需要记录下来。这部分存储的顺序会受到虚拟机分配策略参数和字段在Java源码中定义顺序的影响。</p></li><li><p>对齐填充不是必然存在的，主要是由于HotSpot VM的自动内存管理系统要求对象起始地址必须是8字节的整数倍。</p></li></ol><h4 id="3-3-对象的访问定位"><a href="#3-3-对象的访问定位" class="headerlink" title="3.3 对象的访问定位"></a>3.3 对象的访问定位</h4><ol><li><p>Java程序需要通过栈上的reference数据来操作堆上的具体对象。而栈上的reference类型在虚拟机规范中只规定了一个指向对象的引用，并没有定义这个引用应该通过何种方式去定位、访问堆栈对象的具体位置，目前主流的访问方式有<font style="color:red">句柄</font>和<font style="color:red">直接指针</font>两种。</p></li><li><p>通过句柄：Java堆中划出一块内存作为句柄池，reference中存储的就是对象的句柄地址，而句柄中包含了对象实例数据与类型数据各自的具体地址信息。其最大好处就是reference存储的是稳定的句柄地址，在对象被移到（垃圾收集时移到）只改变实例数据指针，而reference不需要修改；</p></li></ol><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5wy2tjw57j20lv09ytb4.jpg" alt="通过句柄访问对象"></p><ol start="3"><li>通过直接指针：Java堆对象的布局中必须考虑如果放置访问类型数据的相关信息，而reference中存在的直接就是对象地址。其最大好处在于速度更快，节省了一次指针定位的时机开销。HotSpot采用该方式进行对象访问，但其他语言和框架采用句柄的也非常常见。</li></ol><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5wy55qhi8j20mu09t40m.jpg" alt=""></p><h3 id="4-本章小结"><a href="#4-本章小结" class="headerlink" title="4.本章小结"></a>4.本章小结</h3><p>　　学习了虚拟机的内存是如何划分的，对象是如何创建、布局和访问的，哪部分区域、什么样的代码和操作可能导致内存的溢出异常。</p><h2 id="第3章-垃圾收集器与内存分配策略"><a href="#第3章-垃圾收集器与内存分配策略" class="headerlink" title="第3章 垃圾收集器与内存分配策略"></a>第3章 垃圾收集器与内存分配策略</h2><h3 id="1-概述-1"><a href="#1-概述-1" class="headerlink" title="1.概述"></a>1.概述</h3><p>思考GC需要完成的3件事情：</p><ul><li>哪些内存需要回收？</li><li>什么时候回收？</li><li>如何回收？</li></ul><p>再回头看看第二章介绍的Java内存运行时区域的各个部分：</p><ul><li>程序计时器、虚拟机栈、本地方法栈：随线程而生，随线程而灭。栈帧随方法而进行出栈和入栈，每一个栈帧分配的内存在类结构确定就已知，因此这几个区域不需要考虑回收</li><li>对于Java堆和方法区，只有程序运行期间才知道会创建哪些对象，内存的分配和回收都是动态的，垃圾收集器所关注的是这部分内存</li></ul><h3 id="2-对象已死吗"><a href="#2-对象已死吗" class="headerlink" title="2.对象已死吗"></a>2.对象已死吗</h3><p>　　在垃圾收集器进行回收前，第一件事就是确定这些对象哪些还存活，哪些已经死去。</p><h4 id="2-1-引用计数法"><a href="#2-1-引用计数法" class="headerlink" title="2.1 引用计数法"></a>2.1 引用计数法</h4><p>　　给对象添加引用计数器，当有地方引用它时就加1，引用失效就减1，为0时就认为对象不再被使用可回收。该算法实现简单，判断高效，但并不被主流虚拟机采用，主要原因是它<strong>很难解决对象之间相互循环引用的问题</strong>。</p><h4 id="2-2-可达性分析算法"><a href="#2-2-可达性分析算法" class="headerlink" title="2.2 可达性分析算法"></a>2.2 可达性分析算法</h4><p>　　通过一系列的称为“GC Roots”的对象作为起点，从这些节点开始向下搜索，搜索所走过的路径称为引用链（Reference Chain），如果一个对象到GC Roots没有引用链相连，则该对象是不可用的。</p><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5wyz8kjjgj20nm0ekgn5.jpg" alt=""></p><p>在Java语言中，可作为GC Roots的对象包括：</p><ul><li>虚拟机栈（栈帧中的本地变量表）中引用的对象； 执行上下文</li><li>方法区中类静态属性引用的对象； 全局性引用</li><li>方法区中常量引用的对象； 全局性引用</li><li>本地方法栈中JNI（即一般说的Native方法）引用的对象；</li></ul><h4 id="2-3-再谈引用"><a href="#2-3-再谈引用" class="headerlink" title="2.3 再谈引用"></a>2.3 再谈引用</h4><p>　　在JDK 1.2之后，Java对引用的概念进行了扩充，将引用分为<strong>强引用</strong>、<strong>软引用</strong>、<strong>弱引用</strong>和<strong>虚引用</strong>，这4种引用强度依次减弱。</p><h4 id="2-4-生存还是死亡"><a href="#2-4-生存还是死亡" class="headerlink" title="2.4 生存还是死亡"></a>2.4 生存还是死亡</h4><p>　　要真正宣告一个对象死亡，至少要经历两次标记过程：如果对象在进行可达性分析后发现没有与GC Roots相连接的引用链，那它将会被第一次标记并且进行一次筛选，筛选的条件是此对象是否有必要执行finalize方法（如没有重写finalize方法或者已经被调用过则认为没有必要执行）。如果有必要执行则将该对象放置在F-Queue队列中，并在稍后由一个由虚拟机自己建立的、低优先级的Finalizer线程去执行它；稍后GC将对F-Queue中的对象进行第二次标记，如果对象还是没有被引用，则会被回收。</p><p>　　但是作者不建议通过finalize方法“拯救”对象，因为它运行代价高、不确定性大、无法保证各个对象的调用顺序。</p><h4 id="2-5-回收方法区"><a href="#2-5-回收方法区" class="headerlink" title="2.5 回收方法区"></a>2.5 回收方法区</h4><p>　　永久代的垃圾收集主要回收两部分内容：<strong>废弃常量</strong>和<strong>无用的类</strong>。</p><p>　　一个无用的类需要满足以下三个条件：</p><ul><li>该类的所有实例都已经被回收；</li><li>加载该类的ClassLoader已经被回收；</li><li>该类对象的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法；</li></ul><p>　　在大量使用反射、动态代理、CGLib等ByteCode框架、动态生成JSP以及OSGI这类频繁自定义ClassLoader的场景都需要虚拟机具备类卸载的功能（HotSpot提供-Xnoclassgc参数控制），以保证永久代不会溢出。</p><h3 id="3-垃圾收集算法"><a href="#3-垃圾收集算法" class="headerlink" title="3.垃圾收集算法"></a>3.垃圾收集算法</h3><ul><li><font style="color:red">标记-清除（Mark-Sweep）算法</font>：首先标记出所有需要回收的对象，然后统一回收所有被标记的对象；缺点是效率不高且容易产生大量不连续的内存碎片；</li><li><font style="color:red">复制（Copying）算法</font>：将可用内存分为大小相等的两块，每次只使用其中一块；当这一块用完了，就将还活着的对象复制到另一块上，然后把已使用过的内存清理掉。在HotSpot里，考虑到大部分对象存活时间很短将内存分为Eden和两块Survivor，默认比例为8:1:1。代价是存在部分内存空间浪费，适合在<strong>新生代</strong>使用；</li><li><font style="color:red">标记-整理（Mark-Compact）算法</font>：首先标记出所有需要回收的对象，然后让所有存活的对象都向一端移动，然后直接清理掉端边界以外的内存。适用于<strong>老年代</strong>。</li><li><font style="color:red">分代收集算法</font>：一般把Java堆分新生代和老年代，在新生代用复制算法，在老年代用标记-清理或标记-整理算法，是现代虚拟机通常采用的算法。</li></ul><h3 id="4-HotSpot的算法实现"><a href="#4-HotSpot的算法实现" class="headerlink" title="4.HotSpot的算法实现"></a>4.HotSpot的算法实现</h3><h4 id="4-1-枚举根节点"><a href="#4-1-枚举根节点" class="headerlink" title="4.1 枚举根节点"></a>4.1 枚举根节点</h4><ul><li>由于要确保在一致性的快照中进行可达性分析，从而导致GC进行时必须要停顿所有Java执行线程（“Stop The World”）</li><li>在HotSpot里通过一组OopMap数据结构来知道哪些地方存放着对象引用</li></ul><h4 id="4-2-安全点（Safepoint）"><a href="#4-2-安全点（Safepoint）" class="headerlink" title="4.2 安全点（Safepoint）"></a>4.2 安全点（Safepoint）</h4><ul><li>HotSpot只在特定的位置记录了OopMap，这些位置称为安全点（SafePoint）；</li><li>即程序执行时并非在所有地方都能停顿下来开始GC，只有到达安全点时才能暂停；</li><li>对于安全点基本上是以程序“是否具有让程序长时间执行的特征”（比如方法调用、循环跳转、异常跳转等）为标准进行选定的；</li><li>另外还需要考虑如果在GC时让所有线程都跑到最近的安全点上，有两种方案：抢先式中断和主动式中断（主流选择）。</li></ul><h4 id="4-3-安全区域"><a href="#4-3-安全区域" class="headerlink" title="4.3 安全区域"></a>4.3 安全区域</h4><ul><li>如果程序没有分配CPU时间（如线程处于Sleep或Blocked），此时就需要安全区域（Safe Region），其是指在一段代码片段之中，引用关系不会发生变化。在这个区域中的任意地方开始GC都是安全的。</li><li>线程执行到安全区域时，首先标识自己已经进入了安全区域，这样JVM在GC时就不管这些线程了；</li></ul><h3 id="5-垃圾收集器"><a href="#5-垃圾收集器" class="headerlink" title="5.垃圾收集器"></a>5.垃圾收集器</h3><ul><li>垃圾收集算法是内存回收的方法论，垃圾收集器就是内存回收的具体实现。</li><li>这里讨论JDK 1.7 Update 14之后的HotSpot虚拟机（此时G1仍处于实验状态），包含的虚拟机如下图所示（存在连线的表示可以搭配使用）：</li></ul><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w3nqkn0jj21400u0dre.jpg" alt=""></p><h4 id="5-1-Serial收集器"><a href="#5-1-Serial收集器" class="headerlink" title="5.1 Serial收集器"></a>5.1 Serial收集器</h4><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x58r7jzuj20q705qq3n.jpg" alt=""></p><ul><li>最基本、发展历史最悠久，在JDK 1.3之前是新生代收集的唯一选择；</li><li>是一个单线程的收集器（单线程并非指只会使用一个CPU或者一条收集线程，更重要的是在它进行垃圾收集时必须其他所有的工作线程，直到它收集结束）；</li><li>现在依然是虚拟机运行在Client模式下的默认新生代收集器，主要就是因为它简单而高效（没有线程交互的开销）；</li></ul><h4 id="5-2-ParNew收集器"><a href="#5-2-ParNew收集器" class="headerlink" title="5.2 ParNew收集器"></a>5.2 ParNew收集器</h4><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5esm88mj20r005it9i.jpg" alt=""></p><ul><li>其实就是Serial收集器的多线程版本；</li><li>ParNew收集器在单CPU环境中绝对不会有比Serial收集器更好的效果；</li><li>是许多运行在Server模式下虚拟机首选的新生代收集器，重要原因就是除了Serial收集器外，只有它能与CMS收集器配合工作；</li></ul><blockquote><p>并行（Parallel）：指多条垃圾收集线程并行工作，但此时用户线程仍处于等待状态；</p><p>并发（Concurrent）：指用户线程与垃圾收集线程同时执行，用户线程在继续执行而垃圾收集程序运行在另外一个CPU上；</p></blockquote><h4 id="5-3-Parallel-Scavenge收集器"><a href="#5-3-Parallel-Scavenge收集器" class="headerlink" title="5.3 Parallel Scavenge收集器"></a>5.3 Parallel Scavenge收集器</h4><ul><li>新生代收集器，使用<strong>复制算法</strong>，并行的多线程收集器；</li><li>与其他收集器关注于尽可能缩短垃圾收集时用户线程停顿时间不同，它的目标是达到一个<strong>可控制的吞吐量</strong>；</li><li><p>高吞吐量可以高效率利用CPU时间，适合在后台运算而不需要太多交互的任务，Parallel Scavenge收集器也经常称为“吞吐量优先”收集器；</p></li><li><p>-XX:MaxGCPauseMillis参数可以设置最大停顿时间，而停顿时间缩短是以牺牲吞吐量和新生代空间来换取的；</p></li><li><p>另外它还支持GC自适应的调节策略，这是与ParNew收集器的一个重要区别。</p></li></ul><h4 id="5-4-Serial-Old收集器"><a href="#5-4-Serial-Old收集器" class="headerlink" title="5.4 Serial Old收集器"></a>5.4 Serial Old收集器</h4><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5swc8l7j20pm05jq3l.jpg" alt=""></p><ul><li>是Serial收集器的老年代版本，同样是单线程，使用<strong>标记-整理算法</strong>；</li><li>主要是给Client模式下的虚拟机使用的；</li><li>在Server模式下主要是给JDK 1.5及之前配合Parallel Scavenge使用或作为CMS收集器的后备预案；</li></ul><h4 id="5-5-Parallel-Old收集器"><a href="#5-5-Parallel-Old收集器" class="headerlink" title="5.5 Parallel Old收集器"></a>5.5 Parallel Old收集器</h4><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5ureo68j20pr05owfa.jpg" alt=""></p><ul><li>是Parallel Scavenge的老年代版本，使用多线程和标记-整理算法；</li><li>是JDK 1.6中才开始提供的；</li></ul><h4 id="5-6-CMS收集器"><a href="#5-6-CMS收集器" class="headerlink" title="5.6 CMS收集器"></a>5.6 CMS收集器</h4><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5w1ddxzj20qi05omya.jpg" alt=""></p><ul><li>是一种以获取最短回收停顿时间为目标的收集器，特别适合互联网站或者B/S的服务端；</li><li>主要包括4个步骤：初始标记、并发标记、重新标记和并发清除；</li><li>优点：并发收集、低停顿。并发低停顿收集器</li><li>还有3个明显的缺点：CMS收集器对CPU非常敏感、无法处理浮动垃圾、大量内存碎片产生；</li></ul><h4 id="5-7-G1收集器"><a href="#5-7-G1收集器" class="headerlink" title="5.7 G1收集器"></a>5.7 G1收集器</h4><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x610z209j20p905gabf.jpg" alt=""></p><ul><li><p>一款面向服务端应用的垃圾收集器，后续会替换掉CMS垃圾收集器；</p></li><li><p>特点：并行与并发（充分利用多核多CPU缩短Stop-The-World时间）、分代收集（独立管理整个Java堆，但针对不同年龄的对象采取不同的策略）、空间整合（基于标记-整理）、可预测的停顿（将堆分为大小相等的独立区域，避免全区域的垃圾收集）；</p></li><li><p>关于Region：新生代和老年代不再物理隔离，只是部分Region的集合；G1跟踪各个Region垃圾堆积的价值大小，在后台维护一个优先列表，根据允许的收集时间优先回收价值最大的Region；Region之间的对象引用以及其他收集器中的新生代与老年代之间的对象引用，采用Remembered Set来避免全堆扫描；</p></li><li><p>G1收集器运作大致分为几个步骤：初始标记（标记一下GC Roots能直接关联的对象并修改TAMS值，需要STW但耗时很短）、并发标记（从GC Root从堆中对象进行可达性分析找存活的对象，耗时较长但可以与用户线程并发执行）、最终标记（为了修正并发标记期间产生变动的那一部分标记记录，这一期间的变化记录在Remembered Set Log里，然后合并到Remembered Set里，该阶段需要STW但是可并行执行）、筛选回收（对各个Region回收价值排序，根据用户期望的GC停顿时间制定回收计划来回收）；</p></li></ul><h3 id="6-内存分配与回收策略"><a href="#6-内存分配与回收策略" class="headerlink" title="6.内存分配与回收策略"></a>6.内存分配与回收策略</h3><ul><li>对象优先在新生代分配</li><li>大对象直接进入老年代</li><li>长期存活的对象将进入老年代</li><li>动态对象年龄判断：如果在Survivor空间中相同年龄所有对象大小总和大于Survivor空间的一半，大于或等于该年龄的对象直接进入老年代</li><li>空间分配担保：发生Minor GC前，虚拟机会先检查老年代最大可用连续空间是否大于新生代所有对象总空间；如果不成立，虚拟机会查看HandlePromotionFailure设置值是否允许担保失败；如果允许继续检查老年代最大可用的连续空间是否大于历次晋升到老年代的平均大小，如果大于会尝试进行一次Minor GC；如果小于或者不允许冒险，会进行一次Full GC；</li></ul><h3 id="7-本章小结"><a href="#7-本章小结" class="headerlink" title="7.本章小结"></a>7.本章小结</h3><p>　　本章介绍了垃圾回收算法、几款JDK 1.7中提供的垃圾收集器特点以及运作原理。内存回收与垃圾收集器在很多时候都是影响系统性能、并发能力的主要因素之一。然而没有固定收集器和参数组合，也没有最优的调优方法，需要根据实践了解各自的行为、优势和劣势。</p><h2 id="第4章-虚拟机性能监控与故障处理工具"><a href="#第4章-虚拟机性能监控与故障处理工具" class="headerlink" title="第4章 虚拟机性能监控与故障处理工具"></a>第4章 虚拟机性能监控与故障处理工具</h2><h3 id="1-概述-2"><a href="#1-概述-2" class="headerlink" title="1.概述"></a>1.概述</h3><p>　　定位问题时，知识和经验是关键基础、数据（运行日志、异常堆栈、GC日志、线程快照、堆转储快照heapdump）是依据、工具是运用知识处理数据的手段。</p><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x8rlfxpuj20pp0a8jvk.jpg" alt=""></p><h3 id="2-jps-虚拟机进程状况工具"><a href="#2-jps-虚拟机进程状况工具" class="headerlink" title="2.jps: 虚拟机进程状况工具"></a>2.jps: 虚拟机进程状况工具</h3><ul><li><p>功能：可以列出正在运行的虚拟机进程，并线上虚拟机执行的主类名称及其本地虚拟机唯一ID（LVMID）；</p></li><li><p>对于本地虚拟机来说，LVMID和操作系统的进程ID是一致的；</p></li><li><p>其他的工具通常都需要依赖jps获取LVMID；</p></li><li><p>主要选项：-q（只输出LVMID）、-m（输出传给main函数的参数）、-l（输出主类的全名）、-v（输出虚拟机启动JVM参数）；</p></li></ul><h3 id="3-jstat：虚拟机统计信息监视工具"><a href="#3-jstat：虚拟机统计信息监视工具" class="headerlink" title="3.jstat：虚拟机统计信息监视工具"></a>3.jstat：虚拟机统计信息监视工具</h3><ul><li>功能：监视虚拟机各种运行状态信息，包括类装载、内存、垃圾收集、JIT等；</li><li>纯文本监控首选；</li></ul><h3 id="4-jinfo：Java配置信息工具"><a href="#4-jinfo：Java配置信息工具" class="headerlink" title="4.jinfo：Java配置信息工具"></a>4.jinfo：Java配置信息工具</h3><ul><li>功能：实时地查看虚拟机各项参数。虽然jps -v可以查看虚拟机启动参数，但是无法查看一些系统默认的参数。</li><li>支持运行期修改参数的能力，格式为“jinfo -flag name=value pid”；</li></ul><h3 id="5-jmap：Java内存映像工具"><a href="#5-jmap：Java内存映像工具" class="headerlink" title="5.jmap：Java内存映像工具"></a>5.jmap：Java内存映像工具</h3><ul><li><p>功能：用于生成堆转储快照（一般称为heapdump或dump文件）；</p></li><li><p>其他可生成heapdump的方式：使用参数-XX:+HeapDumpOnOutOfMemoryError；使用参数-XX:+HeapDumpOnCtrlBreak然后使用Ctrl+Break生成；Linux系统使用kill -3生成；</p></li><li>另外它还可以查询finalize执行队列、Java堆和永久代的详细信息；</li></ul><h3 id="6-jhat：虚拟机堆转储快照分析工具"><a href="#6-jhat：虚拟机堆转储快照分析工具" class="headerlink" title="6.jhat：虚拟机堆转储快照分析工具"></a>6.jhat：虚拟机堆转储快照分析工具</h3><ul><li>功能：用于分析jmap生成的heapdump。其内置了一个微型的HTTP服务器，可以在浏览器查看分析结果；</li><li>实际很少用jhat，主要有两个原因：一是分析工程会耗用服务器资源；二是功能相对BisualVM、IBM HeapAnalyzer较为简陋；</li></ul><h3 id="7-jstack：Java堆栈跟踪工具"><a href="#7-jstack：Java堆栈跟踪工具" class="headerlink" title="7.jstack：Java堆栈跟踪工具"></a>7.jstack：Java堆栈跟踪工具</h3><ul><li><p>功能：用于生成虚拟机当前时刻的线程快照（一般称为threaddump或javacore文件）。javacore主要目的是定位线程出现长时间停顿的原因，比如死锁、死循环、请求外部资源响应长时间等待等；</p></li><li><p>另外JDK 1.5后Thread类新增了getAllStackTraces()方法，可以基于此自己增加管理页面来分析；</p></li></ul><h3 id="8-HSDIS：JIT生成代码反编译"><a href="#8-HSDIS：JIT生成代码反编译" class="headerlink" title="8.HSDIS：JIT生成代码反编译"></a>8.HSDIS：JIT生成代码反编译</h3><ul><li><p>现代虚拟机的实现慢慢地和虚拟机规范产生差距，如果要分析程序如何执行，最常见的就是通过软件调试工具（GDB、Windbg等）断点调试。但是对于Java来说，很多执行代码是通过JIT动态生成到CodeBuffer中的；</p></li><li><p>功能：HSDIS是官方推荐的HotSpot虚拟机JIT编译代码的反汇编工具，它包含在HotSpot虚拟机的源码中但没有提供编译后的程序，可以自己下载放到JDK的相关目录里。</p></li></ul><h3 id="9-JDK的可视化工具"><a href="#9-JDK的可视化工具" class="headerlink" title="9.JDK的可视化工具"></a>9.JDK的可视化工具</h3><h4 id="9-1-JConsole：Java监视与管理控制台"><a href="#9-1-JConsole：Java监视与管理控制台" class="headerlink" title="9.1 JConsole：Java监视与管理控制台"></a>9.1 JConsole：Java监视与管理控制台</h4><ul><li><p>是一种基于JMX的可视化监控和管理工具，它管理部分的功能是针对MBean进行管理，由于MBean可以使用代码、中间件服务器或者所有符合JMX规范的软件进行访问，因此这里着重介绍JConsole的监控功能；</p></li><li><p>通过jconsole命令启动JConsole后，会自动搜索本机所有虚拟机进程。另外还支持远程进程的监控；</p></li><li><p>进入主界面，支持查看以下标签页：概述、内存、线程、类、VM摘要和MBean。</p></li></ul><h4 id="9-2-VisualVM：多合一故障处理工具"><a href="#9-2-VisualVM：多合一故障处理工具" class="headerlink" title="9.2 VisualVM：多合一故障处理工具"></a>9.2 VisualVM：多合一故障处理工具</h4><ul><li>目前为止JDK发布的功能最强调的运行监控和故障处理程序，另外还支持性能分析；</li><li>VisualVM还有一个很大的优点：不需要被监视的程序基于特殊Agent运行，对应用程序的实际性能影响很小，可直接应用在生成环境中；</li><li>VisualVM基于NetBeans平台开发，具备插件扩展功能的特性，基于插件可以做到：显示虚拟机进程以及进程配置、环境信息（jps、jinfo）、监视应用程序的CPU、GC、堆、方法区以及线程的信息（jstat、jstack）、dump以及分析堆转储快照（jmap、jhat）、方法级的程序运行性能分析，找出被调用最多运行时间最长的方法、离线程序快照（收集运行时配置、线程dump、内存dump等信息建立快照）、其他plugins的无限可能。</li><li>使用jvisualvm首次启动时需要在线自动安装插件（也可手工安装）；</li><li>特色功能：生成浏览堆转储快照（摘要、类、实例标签页、OQL控制台）、分析程序性能（Profiler页签可以录制一段时间程序每个方法执行次数和耗时）、BTrace动态日志跟踪（不停止目标程序运行的前提下通过HotSwap技术动态加入调试代码）。</li></ul><h3 id="10-本章小结"><a href="#10-本章小结" class="headerlink" title="10.本章小结"></a>10.本章小结</h3><p>　　本章介绍了随JDK发布的6个命令行工具以及两个可视化的故障处理工具，灵活运行这些工具可以给问题处理带来很多便利。我的总体感觉是可视化工具虽然强大，但是加载速度相比命令行工具慢很多，这个时候专注于某个功能的命令行工具是更优的选择。</p><h2 id="第5章-调优案例分析与实践"><a href="#第5章-调优案例分析与实践" class="headerlink" title="第5章 调优案例分析与实践"></a>第5章 调优案例分析与实践</h2><h3 id="1-概述-3"><a href="#1-概述-3" class="headerlink" title="1.概述"></a>1.概述</h3><p>除了第四章介绍的知识和工具外，在处理实际问题时，经验同样很重要。</p><h3 id="2-案例分析"><a href="#2-案例分析" class="headerlink" title="2.案例分析"></a>2.案例分析</h3><p>以下的案例大部分来源作者处理过的一些问题，还有小部分是网络上笔记有代表的案例总结。</p><h4 id="2-1-高性能硬件上的程序部署策略"><a href="#2-1-高性能硬件上的程序部署策略" class="headerlink" title="2.1 高性能硬件上的程序部署策略"></a>2.1 高性能硬件上的程序部署策略</h4><p> 问题描述</p><ul><li>一个每天15万PV左右的在线文档网站升级了硬件，4个CPU，16GB物理内存，操作系统为64位CentOS 5.4，使用Resin作为Web服务器，没有部署其他的应用。</li><li>管理员选用了64位的JDK 1.5，并通过-Xmx和-Xms参数将Java堆固定在12GB。</li><li><p>使用一段时间不定期出现长时间失去响应的情况；</p><p>问题分析</p></li><li><p>升级前使用32位系统，Java堆设置为1.5GB，只是感觉运行缓慢没有明显的卡顿；</p></li><li>通过监控发现是由于GC停顿导致的，虚拟机运行在Server模式，默认使用吞吐量优先收集器，回收12GB的堆，一次Full GC的停顿时间高达14秒；</li><li>并且由于程序设计的原因，很多文档从磁盘加载到内存中，导致内存中出现很多由文档序列化生成的大对象，这些大对象进入了老年代，没有在Minor GC中清理掉；</li></ul><p>解决办法</p><ul><li>在虚拟机上建立5个32位的JDK逻辑集群，每个进程按2GB内存计算（其中堆固定为1.5GB），另外建议一个Apache服务作为前端均衡代理访问门户；</li><li>另外考虑服务压力主要在磁盘和内存访问，CPU资源敏感度较低，因此改为CMS收集器；</li><li>最终服务没有再出现长时间停顿，速度比硬件升级前有较大提升；</li></ul><h4 id="2-2-集群间同步导致的内存溢出"><a href="#2-2-集群间同步导致的内存溢出" class="headerlink" title="2.2 集群间同步导致的内存溢出"></a>2.2 集群间同步导致的内存溢出</h4><p>问题描述</p><ul><li>一个基于B/S的MIS系统，硬件为两台2个CPU、8GB内存的HP小型机，服务器为WebLogic 9.2，每台机器启动了3个WebLogic实例，构建一个6台节点的亲和式集群（一个固定的用户请求永远分配到固定的节点处理）。</li><li>由于有部分数据需要共享，原先采用数据库，后因为读写性能问题使用了JBossCache构建了一个全局缓存；</li><li>正常使用一段较长的时间，最近不定期出现了多次的内存溢出问题；</li></ul><p>问题分析</p><ul><li>监控发现，服务内存回收状况一直正常，每次内存回收后都能恢复到一个稳定的可用空间</li><li>此次未升级业务代码，排除新修改代码引入的内存泄漏问题；</li><li>服务增加-XX:+HeapDumpOnOutOfMemoryError参数，在最近一次内存溢出时，分析heapdump文件发现存在大量的org.jgroups.protocols.pbcast,NAKACK对象；</li><li>最终分析发现是由于JBossCache的NAKACK栈在页面产生大量请求时，有个负责安全校验的全局Filter导致集群各个节点之间网络交互非常频繁，当网络情况不能满足传输要求时，大量的需要失败重发的数据在内存中不断堆积导致内存溢出。</li></ul><p>解决办法</p><ul><li>JBossCache版本改进；</li><li>程序设计优化，JBossCahce集群缓存同步，不大适合有频繁写操作的情况；</li></ul><h4 id="2-3-堆外内存导致的溢出错误"><a href="#2-3-堆外内存导致的溢出错误" class="headerlink" title="2.3 堆外内存导致的溢出错误"></a>2.3 堆外内存导致的溢出错误</h4><p>问题描述</p><ul><li>一个学校的小型项目，基于B/S的电子考试系统，服务器是Jetty 7.1.4，硬件是一台普通PC机，Core i5 CPU，4GB内存，运行32位Windows操作系统；</li><li>为了实现客户端能实时地从服务器端接收考试数据，使用了逆向AJAX技术（也称为Comet或Server Side Push），选用CometD 1.1.1作为服务端推送框架；</li><li>测试期间发现服务端不定期抛出内存溢出；加入-XX:+HeapDumpOnOutOfMemoryError后抛出内存溢出时什么问题都没有，采用jstat观察GC并不频繁且GC回收正常；最后在内存溢出后从系统日志发现如下异常堆栈：</li></ul><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbuukkpvj20rs044jrf.jpg" alt="1.png"></p><p>堆外内存溢出日志</p><p>问题分析</p><ul><li>在第二章里曾经说过直接内存溢出的场景，垃圾收集时，虚拟机虽然会对直接内存进行回收，但它只能等老年代满了触发Full GC时顺便清理，否则只能等内存溢出时catch住然后调用System.gc()，如果虚拟机还是不听（比如打开了-XX:+DisableExplictGC）则只能看着堆中还有许多空闲内存而溢出；</li><li>本案例中的CometD框架正好有大量的NIO操作需要使用直接内存；</li></ul><h4 id="2-4-外部命令导致系统缓慢"><a href="#2-4-外部命令导致系统缓慢" class="headerlink" title="2.4 外部命令导致系统缓慢"></a>2.4 外部命令导致系统缓慢</h4><p>问题描述</p><ul><li>一个数字校园应用系统，运行在一个4个CPU的Solaris 10操作系统上，中间件为GlassFish服务器；</li><li>系统在做大并发压力测试时，发现请求响应时间比较慢，通过监控工具发现CPU使用率很高，并且系统占用绝大多数的CPU资源的程序并不是应用系统本身；</li><li>通过Dtrace脚本发现最消耗CPU的竟然是fork系统调用（Linux用来产生新进程的）；</li></ul><p>问题分析</p><ul><li>最终发现是每个用户请求需要执行一个外部的shell脚本来获取一些系统信息，是通过Runtime.getRuntime().exec()方法调用的；</li><li>Java虚拟机在执行这个命令时先克隆一个和当前虚拟机拥有一样环境变量的进程，再用这个新进程去执行外部命令，如果频繁地执行这个操作，系统消耗会很大；</li><li>最终修改时改用Java的API去获取这些信息，系统恢复了正常；</li></ul><h4 id="2-5-服务器JVM进程奔溃"><a href="#2-5-服务器JVM进程奔溃" class="headerlink" title="2.5 服务器JVM进程奔溃"></a>2.5 服务器JVM进程奔溃</h4><p>问题描述</p><ul><li>一个基于B/S的MIS系统，硬件为两台2个CPU、8GB内存的HP系统，服务器是WebLogic 9.2（和案例”集群间同步导致的内存溢出”相同的系统）；</li><li>正常运行一段时间后发现运行期间频繁出现集群节点的虚拟机进程自动关闭的现象，留下一个hs_err_pid###.log，奔溃前不久都发生大量相同的异常，日志如下所示：</li></ul><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbvpi3q8j20rs04w74g.jpg" alt="2.png"></p><p>JVM进程奔溃日志</p><p>问题分析</p><ul><li>这是一个远端断开连接的异常，得知在MIS系统工作流的待办事项变化时需要通过Web服务通知OA门户系统；</li><li>通过SoapUI测试发现调用后竟然需要长达3分钟才能返回，并且返回结果都是连接中断；</li><li>由于MIS使用异步方式调用，两边处理速度不对等，导致在等待的线程和Socket连接越来越多，最终在超过虚拟机承受能力后进场奔溃；</li><li>解决方法：将异步调用修改为生产者/消费者模型的消息队列处理，系统恢复正常；</li></ul><h4 id="2-6-不恰当数据结构导致内存占用过大"><a href="#2-6-不恰当数据结构导致内存占用过大" class="headerlink" title="2.6 不恰当数据结构导致内存占用过大"></a>2.6 不恰当数据结构导致内存占用过大</h4><p>问题描述</p><ul><li>有一个后台RPC服务器，使用64位虚拟机，内存配置为-Xms4g -Xmx8g -Xmn1g，使用ParNew + CMS的收集器组合；</li><li>平时Minor GC时间约在20毫秒内，但业务需要每10分钟加载一个约80MB的数据文件到内存进行数据分析，这些数据会在内存中形成超过100万个HashMap&lt;Long, Long&gt; Entry，在这段时间里Minor GC会超过500毫秒，这个时间过长，GC日志如下：</li></ul><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbw7go2pj20rs0an758.jpg" alt="3.png"></p><p>不恰当数据结构GC日志1</p><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbyo11ezj20rs03it8q.jpg" alt="img"></p><p>不恰当数据结构GC日志2</p><p>问题分析</p><ul><li>在分析数据文件期间，800M的Eden空间在Minor GC后对象还是存活的，而ParNew垃圾收集器使用的是复制算法，把这些对象复制到Survivor并维持这些对象引用成为沉重的负担，导致GC时间变长；</li><li>从GC可以将Survivor空间去掉（加入参数-XX:SurvivorRatio=65536、-XX:MaxTenuringThreshold=0或者-XX:AlwaysTenure），让新生代存活的对象第一次Minor GC后立即进入老年代，等到Major GC再清理。这种方式可以治标，但也有很大的副作用。</li><li>另外一种是从程序设计的角度看，HashMap&lt;Long, Long&gt;结构中，只有key和value所存放的两个长整形数据是有效数据，共16B（2 * 8B），而实际耗费的内存位88B（长整形包装为Long对象需要多8B的MarkWord、8B的Klass指针，Map.Entry多了16B的对象头、8B的next字段和4B的int型hash字段、为对齐添加的4B空白填充，另外还有8B的Entry引用），内存空间效率（18%）太低。</li></ul><h4 id="2-7-由Windows虚拟内存导致的长时间停顿"><a href="#2-7-由Windows虚拟内存导致的长时间停顿" class="headerlink" title="2.7 由Windows虚拟内存导致的长时间停顿"></a>2.7 由Windows虚拟内存导致的长时间停顿</h4><p>问题描述</p><ul><li>有一个带心跳检测功能的GUI桌面程序，每15秒发送一次心跳检查信号，如果对方30秒内都没有信信号返回，则认为和对方已断开连接；</li><li>程序上线后发现有误报，查询日志发现误报是因为程序会偶尔出现间隔约1分钟左右的时间完全无日志输出，处于停顿状态；</li><li>另外观察到GUI程序最小化时，资源管理中显示的占用内存大幅减小，但虚拟内存没变化；</li><li>因为是桌面程序，所需内存不大（-Xmx256m），加入参数-XX:+PrintGCApplicationStoppedTime -XX：PrintGCDateStamps -Xloggc:gclog.log后，从日志文件确认是GC导致的，大部分的GC时间在100ms以内，但偶尔会出现一次接近1min的GC；</li><li>加入参数-XX：PrintReferenceGC参数查看GC的具体日志信息，发现执行GC动作的时间并不长，但从准备开始GC到真正GC直接却消耗了大部分时间，如下所示：</li></ul><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbzxhjonj20rs02haa1.jpg" alt="5.png"></p><p>虚拟内存案例日志</p><p>问题分析</p><ul><li>初步怀疑是最小化时工作内存被自动交换到磁盘的页面文件中，这样发生GC时就有可能因为恢复页面文件的操作而导致不正常的GC停顿；</li><li>在MSDN查证确认了这种猜想，加入参数-Dsun.awt.keepWorkingSetOnMinimize=true来解决；这个参数在很多AWT程序如VisualVM都有应用。</li></ul><h3 id="3-实战：Eclipse运行速度调优"><a href="#3-实战：Eclipse运行速度调优" class="headerlink" title="3.实战：Eclipse运行速度调优"></a>3.实战：Eclipse运行速度调优</h3><ul><li>升级JDK；</li><li>设置-XX:MaxPermSize=256M解决Eclipse判断虚拟机版本的bug；</li><li>加入参数-Xverfify:none禁止字节码验证；</li><li>虚拟机运行在client模式，采用C1轻量级编译器；</li><li>把-Xms和-XX：PermSize参数设置为-Xmx和-XX:MaxPermSize一样，这样强制虚拟机启动时把老年代和永久代的容量固定下来，避免运行时自动扩展；</li><li>增加参数-XX：DisableExplicitGC屏蔽掉显式GC触发；</li><li>采用ParNew+CMS的垃圾收集器组合；</li><li>最终从Eclipse启动耗时15秒到7秒左右， eclipse.ini配置如下：</li></ul><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sc0mo263j20ql0fk74w.jpg" alt="6.png"></p><p>Eclipse调优</p><h3 id="4-本章小结-1"><a href="#4-本章小结-1" class="headerlink" title="4.本章小结"></a>4.本章小结</h3><p>　　Java虚拟机的内存管理和垃圾收集是虚拟机结构体系最重要的组成部分，对程序的性能和稳定性有非常大的影响。通过案例和实战部分，加深了对前面理论知识和工具的理解。</p></div><div><div style="padding:10px 0;margin:20px auto;width:90%;text-align:center"><div>谢谢你请我吃糖果！</div> <button id="rewardButton" disable="enable" onclick='var qr=document.getElementById("QR");"none"===qr.style.display?qr.style.display="block":qr.style.display="none"'> <span>打赏</span></button><div id="QR" style="display:none"><div id="wechat" style="display:inline-block"> <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Li Wen WeChat Pay"><p>WeChat Pay</p></div><div id="alipay" style="display:inline-block"> <img id="alipay_qr" src="/images/alipay.jpg" alt="Li Wen Alipay"><p>Alipay</p></div></div></div></div><footer class="post-footer"><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/dd2ca416.html" rel="next" title="【LeetCode】10. Regular Expression Matching"><i class="fa fa-chevron-left"></i> 【LeetCode】10. Regular Expression Matching</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/b9a61fbe.html" rel="prev" title="《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记2">《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记2<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div><div class="comments" id="comments"></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview"> 站点概览</li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Li Wen"><p class="site-author-name" itemprop="name">Li Wen</p><p class="site-description motion-element" itemprop="description"></p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/"><span class="site-state-item-count">160</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">19</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">1</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第一部分-走近Java"><span class="nav-text">第一部分 走近Java</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第1章-走进Java"><span class="nav-text">第1章 走进Java</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Java优点"><span class="nav-text">1.Java优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Java技术体系"><span class="nav-text">2.Java技术体系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Java发展史"><span class="nav-text">3.Java发展史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Java虚拟机发展史"><span class="nav-text">4.Java虚拟机发展史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-展望Java技术的未来"><span class="nav-text">5.展望Java技术的未来</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第二部分-自动内存管理机制"><span class="nav-text">第二部分 自动内存管理机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第2章-Java内存区域与内存溢出异常"><span class="nav-text">第2章 Java内存区域与内存溢出异常</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-概述"><span class="nav-text">1.概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-运行时数据区域"><span class="nav-text">2.运行时数据区域</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-程序计数器（Program-Counter-Register）"><span class="nav-text">2.1 程序计数器（Program Counter Register）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-Java虚拟机栈（Java-Virtual-Machine-Stacks）"><span class="nav-text">2.2 Java虚拟机栈（Java Virtual Machine Stacks）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-本地方法栈（Native-Method-Stack）"><span class="nav-text">2.3 本地方法栈（Native Method Stack）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-Java堆（Java-Heap）"><span class="nav-text">2.4 Java堆（Java Heap）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-方法区（Method-Area）"><span class="nav-text">2.5 方法区（Method Area）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-运行时常量池（Runtime-Constant-Pool）"><span class="nav-text">2.6 运行时常量池（Runtime Constant Pool）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-7-直接内存（Direct-Memory）"><span class="nav-text">2.7 直接内存（Direct Memory）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-HotSpot虚拟机对象探秘"><span class="nav-text">3.HotSpot虚拟机对象探秘</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-对象的创建"><span class="nav-text">3.1 对象的创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-对象的内存布局"><span class="nav-text">3.2 对象的内存布局</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-对象的访问定位"><span class="nav-text">3.3 对象的访问定位</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-本章小结"><span class="nav-text">4.本章小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第3章-垃圾收集器与内存分配策略"><span class="nav-text">第3章 垃圾收集器与内存分配策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-概述-1"><span class="nav-text">1.概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-对象已死吗"><span class="nav-text">2.对象已死吗</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-引用计数法"><span class="nav-text">2.1 引用计数法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-可达性分析算法"><span class="nav-text">2.2 可达性分析算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-再谈引用"><span class="nav-text">2.3 再谈引用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-生存还是死亡"><span class="nav-text">2.4 生存还是死亡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-回收方法区"><span class="nav-text">2.5 回收方法区</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-垃圾收集算法"><span class="nav-text">3.垃圾收集算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-HotSpot的算法实现"><span class="nav-text">4.HotSpot的算法实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-枚举根节点"><span class="nav-text">4.1 枚举根节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-安全点（Safepoint）"><span class="nav-text">4.2 安全点（Safepoint）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-安全区域"><span class="nav-text">4.3 安全区域</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-垃圾收集器"><span class="nav-text">5.垃圾收集器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-Serial收集器"><span class="nav-text">5.1 Serial收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-ParNew收集器"><span class="nav-text">5.2 ParNew收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-Parallel-Scavenge收集器"><span class="nav-text">5.3 Parallel Scavenge收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4-Serial-Old收集器"><span class="nav-text">5.4 Serial Old收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-5-Parallel-Old收集器"><span class="nav-text">5.5 Parallel Old收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-6-CMS收集器"><span class="nav-text">5.6 CMS收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-7-G1收集器"><span class="nav-text">5.7 G1收集器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-内存分配与回收策略"><span class="nav-text">6.内存分配与回收策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-本章小结"><span class="nav-text">7.本章小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第4章-虚拟机性能监控与故障处理工具"><span class="nav-text">第4章 虚拟机性能监控与故障处理工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-概述-2"><span class="nav-text">1.概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-jps-虚拟机进程状况工具"><span class="nav-text">2.jps: 虚拟机进程状况工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-jstat：虚拟机统计信息监视工具"><span class="nav-text">3.jstat：虚拟机统计信息监视工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-jinfo：Java配置信息工具"><span class="nav-text">4.jinfo：Java配置信息工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-jmap：Java内存映像工具"><span class="nav-text">5.jmap：Java内存映像工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-jhat：虚拟机堆转储快照分析工具"><span class="nav-text">6.jhat：虚拟机堆转储快照分析工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-jstack：Java堆栈跟踪工具"><span class="nav-text">7.jstack：Java堆栈跟踪工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-HSDIS：JIT生成代码反编译"><span class="nav-text">8.HSDIS：JIT生成代码反编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-JDK的可视化工具"><span class="nav-text">9.JDK的可视化工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#9-1-JConsole：Java监视与管理控制台"><span class="nav-text">9.1 JConsole：Java监视与管理控制台</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-2-VisualVM：多合一故障处理工具"><span class="nav-text">9.2 VisualVM：多合一故障处理工具</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-本章小结"><span class="nav-text">10.本章小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第5章-调优案例分析与实践"><span class="nav-text">第5章 调优案例分析与实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-概述-3"><span class="nav-text">1.概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-案例分析"><span class="nav-text">2.案例分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-高性能硬件上的程序部署策略"><span class="nav-text">2.1 高性能硬件上的程序部署策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-集群间同步导致的内存溢出"><span class="nav-text">2.2 集群间同步导致的内存溢出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-堆外内存导致的溢出错误"><span class="nav-text">2.3 堆外内存导致的溢出错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-外部命令导致系统缓慢"><span class="nav-text">2.4 外部命令导致系统缓慢</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-服务器JVM进程奔溃"><span class="nav-text">2.5 服务器JVM进程奔溃</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-不恰当数据结构导致内存占用过大"><span class="nav-text">2.6 不恰当数据结构导致内存占用过大</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-7-由Windows虚拟内存导致的长时间停顿"><span class="nav-text">2.7 由Windows虚拟内存导致的长时间停顿</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-实战：Eclipse运行速度调优"><span class="nav-text">3.实战：Eclipse运行速度调优</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-本章小结-1"><span class="nav-text">4.本章小结</span></a></li></ol></li></ol></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright"> &copy; 2018 - <span itemprop="copyrightYear">2021</span><span class="with-love"><i class="fa fa-heart"></i></span> <span class="author" itemprop="copyrightHolder">Li Wen</span></div><div class="busuanzi-count"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span class="site-uv"><i class="fa fa-user"></i> 访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span> 人</span><span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span> 次</span></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i> <span id="scrollpercent"><span>0</span>%</span></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script><script type="text/javascript">
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="3_IU8QYN7ZX8ohZtDd7g_6zN3154jWW7GDJMLJ8TzSQ">
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+  <meta name="google-site-verification" content="3_IU8QYN7ZX8ohZtDd7g_6zN3154jWW7GDJMLJ8TzSQ">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="日拱一卒,不期速成;循序渐进,一击中的">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon32.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记1，包括第一部分——走进Java和第二部分——自动内存管理，从第2章到第5章">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【读书笔记】《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记">
+<meta property="og:url" content="https://helloliwen.github.io/cfa1c762.html">
+<meta property="og:site_name" content="日拱一卒 不期速成">
+<meta property="og:description" content="《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记1，包括第一部分——走进Java和第二部分——自动内存管理，从第2章到第5章">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w0hf9khbj20nt0e6whn.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w0mbgbfij20ps09m754.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w2bggfd1j20em0bh3zo.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5kajstouwj20rl0hvgou.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5ka5bf08bj20hc0b8tdf.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5wy2tjw57j20lv09ytb4.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5wy55qhi8j20mu09t40m.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5wyz8kjjgj20nm0ekgn5.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w3nqkn0jj21400u0dre.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x58r7jzuj20q705qq3n.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5esm88mj20r005it9i.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5swc8l7j20pm05jq3l.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5ureo68j20pr05owfa.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5w1ddxzj20qi05omya.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x610z209j20p905gabf.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x8rlfxpuj20pp0a8jvk.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbuukkpvj20rs044jrf.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbvpi3q8j20rs04w74g.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbw7go2pj20rs0an758.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbyo11ezj20rs03it8q.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbzxhjonj20rs02haa1.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sc0mo263j20ql0fk74w.jpg">
+<meta property="og:updated_time" content="2019-09-14T09:12:11.308Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【读书笔记】《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记">
+<meta name="twitter:description" content="《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记1，包括第一部分——走进Java和第二部分——自动内存管理，从第2章到第5章">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w0hf9khbj20nt0e6whn.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://helloliwen.github.io/cfa1c762.html">
+
+
+
+
+
+  <title>【读书笔记】《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记 | 日拱一卒 不期速成</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- 页面点击小红心 
+  <script type="text/javascript" src="/js/src/love.js"></script> -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">日拱一卒 不期速成</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">循序渐进 一击中的</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://helloliwen.github.io/cfa1c762.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Li Wen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="日拱一卒 不期速成">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">【读书笔记】《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记</h2>
+        
+
+        <div class="post-meta">
+		  
+		
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-11T20:02:32+08:00">
+                2019-08-11
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2019-09-14T17:12:11+08:00">
+                2019-09-14
+              </time>
+            
+          </span>
+		  
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  > 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次阅读
+            </span>
+          
+			
+		  		  
+          
+
+          
+              <div class="post-description">
+                  《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记1，包括第一部分——走进Java和第二部分——自动内存管理，从第2章到第5章
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="第一部分-走近Java"><a href="#第一部分-走近Java" class="headerlink" title="第一部分 走近Java"></a>第一部分 走近Java</h1><p>　　世界上并没有完美的程序，但我们并不因此而沮丧，因为写程序本来就是一个不断追求完美的过程。</p>
+<h2 id="第1章-走进Java"><a href="#第1章-走进Java" class="headerlink" title="第1章 走进Java"></a>第1章 走进Java</h2><h3 id="1-Java优点"><a href="#1-Java优点" class="headerlink" title="1.Java优点"></a>1.Java优点</h3><ol>
+<li>结构严谨、面向对象。</li>
+<li>摆脱了硬件平台的束缚，实现“一次编写，到处运行”的理想</li>
+<li>提供了相对安全的内存管理和访问机制</li>
+<li>实现了热点代码监测和运行时编译及优化</li>
+<li>有一套完善的应用程序接口以及无数来自商业机构和开源社区的第三方类库来帮助它实现各种各样的功能</li>
+</ol>
+<p>认识这些技术运作的本质，是自己思考“程序这样写好不好”的基础和前提。</p>
+<h3 id="2-Java技术体系"><a href="#2-Java技术体系" class="headerlink" title="2.Java技术体系"></a>2.Java技术体系</h3><p>Sun官方所定义的Java技术体系包括：</p>
+<ol>
+<li><p>Java程序设计语言</p>
+</li>
+<li><p>各种硬件平台上的Java虚拟机</p>
+</li>
+<li><p>Class文件格式</p>
+</li>
+<li><p>Java API类库</p>
+</li>
+<li><p>来自商业机构和开源社区的第三方Java类库</p>
+</li>
+</ol>
+<p>　　其中，其中第1、2、4点统称为JDK（Java Development Kit），JDK是用于支持Java开发的最小环境，JRE是支持Java程序运行的标准环境，整个Java体系如下所示：</p>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w0hf9khbj20nt0e6whn.jpg" alt=""></p>
+<h3 id="3-Java发展史"><a href="#3-Java发展史" class="headerlink" title="3.Java发展史"></a>3.Java发展史</h3><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w0mbgbfij20ps09m754.jpg" alt=""></p>
+<ul>
+<li>JDK 1.0：Java虚拟机、Applet、AWT等</li>
+<li>JDK 1.1：JAR文件格式、JDBC、JavaBeans、RMI、内部类、反射</li>
+<li>JDK 1.2：拆分为J2SE/J2EE/J2ME、内置JIT编译器、一系列Collections集合类</li>
+<li>JDK 1.3：JNDI服务、使用CORBA IIOP实现RMI通信协议、Java 2D改进</li>
+<li>JDK 1.4：正则表达式、异常链、NIO、日志类、XML解析器和XSLT转换器</li>
+<li>JDK 1.5：自动装箱、泛型、动态注解、枚举、可变参数、遍历循环（foreach循环）、改进了Java内存模型、提供了java.util.concurrent并发包</li>
+<li>JDK 1.6：提供动态语言支持、提供编译API和微型HTTP服务器API、虚拟机优化（锁与同步、垃圾收集、类加载等）</li>
+<li>JDK 1.7：G1收集器、加强对Java语言的调用支持、升级类加载架构</li>
+<li>JDK 1.8：Lambda表达式等</li>
+</ul>
+<h3 id="4-Java虚拟机发展史"><a href="#4-Java虚拟机发展史" class="headerlink" title="4.Java虚拟机发展史"></a>4.Java虚拟机发展史</h3><ol>
+<li><p><strong>Sun Classic/Exact VM</strong>：Classic VM是第一款商用虚拟机，纯解析器方式来执行Java代码，如果要使用JIT编译器就必须进行外挂，解析器和编译器不能配合工作，编译器执行效率非常差；Exact VM是Sun虚拟机团队曾在Solaris平台发布的虚拟机，支持两级即时编译器、编译器和解释器混合工作、使用准确内存管理（虚拟机可以知道内存中某个位置的数据具体是什么类型），但很快就被HotSpot VM所取代</p>
+</li>
+<li><p><strong>Sun HotSpot VM</strong>：Sun JDK和OpenJDK所带的虚拟机，目前使用范围最广；继承了前两款虚拟机的优点，还支持热点代码探测技术（通过计数器找出最具编译价值的代码）；2006年Sun公司宣布JDK包括HotSpot VM开源，在此基础上建立OpenJDK</p>
+</li>
+<li><p><strong>Sun Mobile-Embedded VM/Meta-Circular VM</strong>：还有一些Sun开发的面对移动和嵌入式发布的和实验性质的虚拟机</p>
+</li>
+<li><p><strong>BEA JRockit/IBM J9 VM</strong>：JRockit VM号称是世界上最快的Java虚拟机，专注于服务器端应用，不包含解析器实现，全部靠即时编译器编译执行；J9 VM定位于HotSpot比较接近，主要目的是作为IBM公司各种Java产品的执行平台</p>
+</li>
+<li><p><strong>Azul VM/BEA Liquid VM</strong>：特定硬件平台专有的高性能虚拟机</p>
+</li>
+<li><p><strong>Apache Harmony/Google Android Dalvik VM</strong>：Apache Harmony包含自己的虚拟机和Java库，但没有通过TCK认证；Dalvik VM是Android平台的核心组成部分，其并没有遵循Java虚拟机规范，不能直接执行Class文件，使用的是寄存器架构而不是JVM常见的栈架构</p>
+</li>
+<li><p><strong>Microsoft JVM及其他</strong>：微软曾经是Java技术的铁杆支持者，开发过Windows下性能最好的Java虚拟机，但后来被Sun起诉终止其发展</p>
+</li>
+</ol>
+<h3 id="5-展望Java技术的未来"><a href="#5-展望Java技术的未来" class="headerlink" title="5.展望Java技术的未来"></a>5.展望Java技术的未来</h3><p>　　模块化、混合语言、多核并行、进一步丰富语法、64位虚拟机</p>
+<h1 id="第二部分-自动内存管理机制"><a href="#第二部分-自动内存管理机制" class="headerlink" title="第二部分 自动内存管理机制"></a>第二部分 自动内存管理机制</h1><p>　　Java与C++之间有一堵由<font style="color:red">内存动态分配</font>和<font style="color:red">垃圾收集技术</font>所围成的“高墙”，墙外面的人想进去，墙里面的人却想出来。</p>
+<h2 id="第2章-Java内存区域与内存溢出异常"><a href="#第2章-Java内存区域与内存溢出异常" class="headerlink" title="第2章 Java内存区域与内存溢出异常"></a>第2章 Java内存区域与内存溢出异常</h2><h3 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h3><p>　　对于Java程序员来说，在虚拟机自动内存管理机制下，不需要为new操作去写配对的delete/free代码，不容易出现内存泄漏和内存溢出问题。由虚拟机管理内存这一切看起来都很美好，但是一旦出现内存泄漏问题，如果不了解虚拟机的是怎样使用内存的，便难以定位，排查错误将会成为一项异常艰难的工作。</p>
+<h3 id="2-运行时数据区域"><a href="#2-运行时数据区域" class="headerlink" title="2.运行时数据区域"></a>2.运行时数据区域</h3><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w2bggfd1j20em0bh3zo.jpg" alt=""></p>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5kajstouwj20rl0hvgou.jpg" alt=""></p>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5ka5bf08bj20hc0b8tdf.jpg" alt=""></p>
+<h4 id="2-1-程序计数器（Program-Counter-Register）"><a href="#2-1-程序计数器（Program-Counter-Register）" class="headerlink" title="2.1 程序计数器（Program Counter Register）"></a>2.1 程序计数器（Program Counter Register）</h4><ul>
+<li><p>一块较小的内存，可以看作是当前线程所执行的字节码的行号指示器。</p>
+</li>
+<li><p>在虚拟机概念模型里（各种虚拟机实现可能不一样），字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。</p>
+</li>
+<li><p>程序计数器是属于“线程私有”的内存：Java虚拟机的多线程是通过<font style="color:red">线程轮流切换</font>并<font style="color:red">分配处理器执行时间</font>的方式来实现的，因此为了线程切换后能恢复到正确的执行位置，每条线程都需要有一个独立的程序计数器，各条线程之间计数器互不影响，独立存储。</p>
+</li>
+<li><p>如果执行的是Java方法，该计数器记录的是正在执行的虚拟机字节码指令的地址；如果是Native方法则为空（Undefined）。</p>
+</li>
+</ul>
+<p>　　此内存区域是唯一一个在Java虚拟机规范中没有规定任何OutOfMemoryError情况的区域。</p>
+<h4 id="2-2-Java虚拟机栈（Java-Virtual-Machine-Stacks）"><a href="#2-2-Java虚拟机栈（Java-Virtual-Machine-Stacks）" class="headerlink" title="2.2 Java虚拟机栈（Java Virtual Machine Stacks）"></a>2.2 Java虚拟机栈（Java Virtual Machine Stacks）</h4><ul>
+<li><p>Java虚拟机栈也是线程私有的；</p>
+</li>
+<li><p>描述的是Java方法执行的内存模型：每个方法在执行的同时都会创建一个栈帧（Stack Frame）用于存储<font style="color:red">局部变量表</font>、<font style="color:red">操作数栈</font>、<font style="color:red">动态链接</font>、<font style="color:red">方法出口</font>等信息。每一个方法从调用直至执行完成的过程，就对应着一个栈帧在虚拟机中入栈到出栈的过程；</p>
+</li>
+<li><p>局部变量表存放了编译器可知的各种基本数据类型、对象引用和returnAddress类型；其所需的内存空间在编辑期完成分配，不会再运行期改变；</p>
+</li>
+<li><p>可能存在两种异常：StackOverflowError和OutOfMemoryError；</p>
+</li>
+</ul>
+<h4 id="2-3-本地方法栈（Native-Method-Stack）"><a href="#2-3-本地方法栈（Native-Method-Stack）" class="headerlink" title="2.3 本地方法栈（Native Method Stack）"></a>2.3 本地方法栈（Native Method Stack）</h4><ul>
+<li>与虚拟机栈非常相似，只不过是为虚拟机使用到的Native方法服务；</li>
+<li>可能存在两种异常：StackOverflowError和OutOfMemoryError；</li>
+</ul>
+<h4 id="2-4-Java堆（Java-Heap）"><a href="#2-4-Java堆（Java-Heap）" class="headerlink" title="2.4 Java堆（Java Heap）"></a>2.4 Java堆（Java Heap）</h4><ul>
+<li>Java堆是被所有线程共享的，在虚拟机启动时创建；</li>
+<li>此内存区域的唯一目的就是存放<font style="color:red">对象实例</font>，几乎所有的对象实例都在这分配；</li>
+<li>是垃圾收集器管理的主要区域，可以分为<font style="color:red">新生代</font>和<font style="color:red">老年代</font>：<font style="color:red">一个Eden空间、两个Survivor空间</font>——From Survivor空间、To Survivor空间；</li>
+<li>可以物理不连续，只要逻辑上是连续的即可；</li>
+<li>如果堆中没有内存完成实例分配也无法再扩展时，会抛出OutOfMemoryError异常；</li>
+</ul>
+<h4 id="2-5-方法区（Method-Area）"><a href="#2-5-方法区（Method-Area）" class="headerlink" title="2.5 方法区（Method Area）"></a>2.5 方法区（Method Area）</h4><ul>
+<li>是线程共享的区域；</li>
+<li>用于存储已被虚拟机加载的<font style="color:red">类信息</font>、<font style="color:red">常量</font>、<font style="color:red">静态变量</font>、<font style="color:red">即时编译器编译后的代码</font>等数据；</li>
+<li>该区域对于垃圾收集来说条件比较苛刻，但是还是非常有必要要进行回收处理。相对而言，垃圾收集行为在这个区域是比较少出现的，这区域的内存回收目标主要是针对<font style="color:red">常量池的回收</font>和对<font style="color:red">类型的卸载</font>；</li>
+<li>当无法满足内存分配需求时，将抛出OutOfMemoryError异常；</li>
+</ul>
+<p>　　对于HotSpot虚拟机来说，很多人把方法区称为“永久代”（Permanent Generation），本质上两者并不等价，仅仅是因为HotSpot的设计团队选择把GC分代收集扩展至方法区，或者说使用永久代来实现方法区而已。JDK1.7中的HotSpot中，已经移除永久代。</p>
+<h4 id="2-6-运行时常量池（Runtime-Constant-Pool）"><a href="#2-6-运行时常量池（Runtime-Constant-Pool）" class="headerlink" title="2.6 运行时常量池（Runtime Constant Pool）"></a>2.6 运行时常量池（Runtime Constant Pool）</h4><ul>
+<li>是方法区的一部分；</li>
+<li>Class文件中除了有类的<font style="color:red">版本</font>、<font style="color:red">字段</font>、<font style="color:red">方法</font>、<font style="color:red">接口</font>等描述信息外，还有一项信息是<font style="color:red">常量池</font>，用于存放编译器生成的<u>各种字面量</u>和<u>符号引用</u>，这部分内容将在类加载后进入方法区的运行时常量池中存放；</li>
+<li>Java虚拟机规范要求较少，通常还会把翻译出来的直接引用也存储在此；</li>
+<li>另外一个重要特征是具备动态性，可以在运行期间将新的常量放入池中，如String类的intern()方法；</li>
+<li>可能存在的异常：OutOfMemoryError；</li>
+</ul>
+<h4 id="2-7-直接内存（Direct-Memory）"><a href="#2-7-直接内存（Direct-Memory）" class="headerlink" title="2.7 直接内存（Direct Memory）"></a>2.7 直接内存（Direct Memory）</h4><ul>
+<li>并不是虚拟机运行时数据区的一部分，也不是Java虚拟机规范中定义的内存区域；</li>
+<li>JDK 1.4的NIO（New Input/Output）类引入了基于通道（Channel）和缓冲区（Buffer）的IO方法，可以使用Native函数库直接分配对外内存，然后通过一个存储在Java堆中的DirectByteBuffer对象作为这块内存的引用进行操作以提升性能；</li>
+</ul>
+<h3 id="3-HotSpot虚拟机对象探秘"><a href="#3-HotSpot虚拟机对象探秘" class="headerlink" title="3.HotSpot虚拟机对象探秘"></a>3.HotSpot虚拟机对象探秘</h3><p>　　进一步了解虚拟机内存中数据的其他细节，比如它们是如何创建、如何布局以及如何访问的。下面以虚拟机HotSpot和常用的内存区域Java堆为例，深入探讨HotSpot虚拟机在Java堆中对象分配、布局和访问的全过程。</p>
+<h4 id="3-1-对象的创建"><a href="#3-1-对象的创建" class="headerlink" title="3.1 对象的创建"></a>3.1 对象的创建</h4><ol>
+<li><p><strong>类加载检查</strong>：虚拟机遇到一条new指令时，先检查指令的参数是否能在常量池中定位到一个类的符号引用，并且检查这个符号引用代表的类是否已被加载、解析和初始化过。如果没有，那必须先执行相应的类加载过程。</p>
+</li>
+<li><p><strong>为新生对象分配内存</strong>：接下来虚拟机将为新生对象分配内存。对象所需的内存大小在类加载完成后便完全确定，为对象分配空间等同于把一块确定大小的内存从Java堆中划分出来。在使用Serial、ParNew等带Compact过程的收集器时，系统采用的分配算法是指针碰撞（内存绝对规整，只要通过指针作为分界点标识）；而使用CMS这种基于Mark-Sweep算法收集器时，通常使用空闲列表（内存不规整，通过维护一个列表记录那块内存是可用的）。</p>
+</li>
+<li><p><strong>并发情况下处理对象创建的线程安全问题</strong>：另外一个需要考虑的并发下的线程安全问题，有两种方案：一是分配内存空间的动作进行同步处理（实际上虚拟机采用CAS配上失败重试的方式保证更新操作的原子性）；二是为每个线程分配一小块内存（称为本地线程分配缓冲，TLAB），各个线程独立分配，只有TLAB用完需要分配新的才需要同步锁定，虚拟机通过-XX:+/-UseTLAB参数来设定。</p>
+</li>
+<li><p><strong>为分配到的内存空间初始化为零值</strong>：内存分配完后，虚拟机将分配到的内存空间都初始化为零值（不包括对象头），这保证了对象的实例字段在Java代码中可以不赋值就直接使用，程序能访问到这些字段数据类型对应的零值（P220）。</p>
+</li>
+<li><p><strong>虚拟机设置对象的对象头（Object Header）信息</strong>：包括对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、对象GC分代年龄等。</p>
+</li>
+<li><p><strong>执行<init>方法</init></strong>：把对象按照程序员的意愿进行初始化，这样一个真正可用的对象才算完全产生出来。</p>
+</li>
+</ol>
+<ul>
+<li>HotSpot解释器的代码片段：略</li>
+</ul>
+<h4 id="3-2-对象的内存布局"><a href="#3-2-对象的内存布局" class="headerlink" title="3.2 对象的内存布局"></a>3.2 对象的内存布局</h4><ol>
+<li><p>对象在内存中存储的布局可以分为3块区域：<font style="color:red">对象头（Header）</font>、<font style="color:red">实例数据（Instance Data）</font>和<font style="color:red">对齐填充（Padding）</font>。</p>
+</li>
+<li><p>对象头包括两部分信息：第一部分用于存储对象自身的运行时数据，如哈希码、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等；官方称它为“Mark Word”。Mark Word被设计成一个非固定的数据结构以便在极小的空间内存储尽量多的信息，它会根据对象的状态复用自己的存储空间。另一部分是类型指针，即对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例（并不是所有虚拟机都必须在对象数据上保留类型指针）。另外如果对象是一个Java数组，对象头中还必须有一块用于记录数组长度的数据。</p>
+</li>
+<li><p>实例数据部分是真正存储的有效信息，也是在代码中所定义的各种类型的字段内容。无论是父类继承的还是子类中定义的都需要记录下来。这部分存储的顺序会受到虚拟机分配策略参数和字段在Java源码中定义顺序的影响。</p>
+</li>
+<li><p>对齐填充不是必然存在的，主要是由于HotSpot VM的自动内存管理系统要求对象起始地址必须是8字节的整数倍。</p>
+</li>
+</ol>
+<h4 id="3-3-对象的访问定位"><a href="#3-3-对象的访问定位" class="headerlink" title="3.3 对象的访问定位"></a>3.3 对象的访问定位</h4><ol>
+<li><p>Java程序需要通过栈上的reference数据来操作堆上的具体对象。而栈上的reference类型在虚拟机规范中只规定了一个指向对象的引用，并没有定义这个引用应该通过何种方式去定位、访问堆栈对象的具体位置，目前主流的访问方式有<font style="color:red">句柄</font>和<font style="color:red">直接指针</font>两种。</p>
+</li>
+<li><p>通过句柄：Java堆中划出一块内存作为句柄池，reference中存储的就是对象的句柄地址，而句柄中包含了对象实例数据与类型数据各自的具体地址信息。其最大好处就是reference存储的是稳定的句柄地址，在对象被移到（垃圾收集时移到）只改变实例数据指针，而reference不需要修改；</p>
+</li>
+</ol>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5wy2tjw57j20lv09ytb4.jpg" alt="通过句柄访问对象"></p>
+<ol start="3">
+<li>通过直接指针：Java堆对象的布局中必须考虑如果放置访问类型数据的相关信息，而reference中存在的直接就是对象地址。其最大好处在于速度更快，节省了一次指针定位的时机开销。HotSpot采用该方式进行对象访问，但其他语言和框架采用句柄的也非常常见。</li>
+</ol>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5wy55qhi8j20mu09t40m.jpg" alt=""></p>
+<h3 id="4-本章小结"><a href="#4-本章小结" class="headerlink" title="4.本章小结"></a>4.本章小结</h3><p>　　学习了虚拟机的内存是如何划分的，对象是如何创建、布局和访问的，哪部分区域、什么样的代码和操作可能导致内存的溢出异常。</p>
+<h2 id="第3章-垃圾收集器与内存分配策略"><a href="#第3章-垃圾收集器与内存分配策略" class="headerlink" title="第3章 垃圾收集器与内存分配策略"></a>第3章 垃圾收集器与内存分配策略</h2><h3 id="1-概述-1"><a href="#1-概述-1" class="headerlink" title="1.概述"></a>1.概述</h3><p>思考GC需要完成的3件事情：</p>
+<ul>
+<li>哪些内存需要回收？</li>
+<li>什么时候回收？</li>
+<li>如何回收？</li>
+</ul>
+<p>再回头看看第二章介绍的Java内存运行时区域的各个部分：</p>
+<ul>
+<li>程序计时器、虚拟机栈、本地方法栈：随线程而生，随线程而灭。栈帧随方法而进行出栈和入栈，每一个栈帧分配的内存在类结构确定就已知，因此这几个区域不需要考虑回收</li>
+<li>对于Java堆和方法区，只有程序运行期间才知道会创建哪些对象，内存的分配和回收都是动态的，垃圾收集器所关注的是这部分内存</li>
+</ul>
+<h3 id="2-对象已死吗"><a href="#2-对象已死吗" class="headerlink" title="2.对象已死吗"></a>2.对象已死吗</h3><p>　　在垃圾收集器进行回收前，第一件事就是确定这些对象哪些还存活，哪些已经死去。</p>
+<h4 id="2-1-引用计数法"><a href="#2-1-引用计数法" class="headerlink" title="2.1 引用计数法"></a>2.1 引用计数法</h4><p>　　给对象添加引用计数器，当有地方引用它时就加1，引用失效就减1，为0时就认为对象不再被使用可回收。该算法实现简单，判断高效，但并不被主流虚拟机采用，主要原因是它<strong>很难解决对象之间相互循环引用的问题</strong>。</p>
+<h4 id="2-2-可达性分析算法"><a href="#2-2-可达性分析算法" class="headerlink" title="2.2 可达性分析算法"></a>2.2 可达性分析算法</h4><p>　　通过一系列的称为“GC Roots”的对象作为起点，从这些节点开始向下搜索，搜索所走过的路径称为引用链（Reference Chain），如果一个对象到GC Roots没有引用链相连，则该对象是不可用的。</p>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5wyz8kjjgj20nm0ekgn5.jpg" alt=""></p>
+<p>在Java语言中，可作为GC Roots的对象包括：</p>
+<ul>
+<li>虚拟机栈（栈帧中的本地变量表）中引用的对象；  执行上下文</li>
+<li>方法区中类静态属性引用的对象；  全局性引用</li>
+<li>方法区中常量引用的对象；  全局性引用</li>
+<li>本地方法栈中JNI（即一般说的Native方法）引用的对象；</li>
+</ul>
+<h4 id="2-3-再谈引用"><a href="#2-3-再谈引用" class="headerlink" title="2.3 再谈引用"></a>2.3 再谈引用</h4><p>　　在JDK 1.2之后，Java对引用的概念进行了扩充，将引用分为<strong>强引用</strong>、<strong>软引用</strong>、<strong>弱引用</strong>和<strong>虚引用</strong>，这4种引用强度依次减弱。</p>
+<h4 id="2-4-生存还是死亡"><a href="#2-4-生存还是死亡" class="headerlink" title="2.4 生存还是死亡"></a>2.4 生存还是死亡</h4><p>　　要真正宣告一个对象死亡，至少要经历两次标记过程：如果对象在进行可达性分析后发现没有与GC Roots相连接的引用链，那它将会被第一次标记并且进行一次筛选，筛选的条件是此对象是否有必要执行finalize方法（如没有重写finalize方法或者已经被调用过则认为没有必要执行）。如果有必要执行则将该对象放置在F-Queue队列中，并在稍后由一个由虚拟机自己建立的、低优先级的Finalizer线程去执行它；稍后GC将对F-Queue中的对象进行第二次标记，如果对象还是没有被引用，则会被回收。</p>
+<p>　　但是作者不建议通过finalize方法“拯救”对象，因为它运行代价高、不确定性大、无法保证各个对象的调用顺序。</p>
+<h4 id="2-5-回收方法区"><a href="#2-5-回收方法区" class="headerlink" title="2.5 回收方法区"></a>2.5 回收方法区</h4><p>　　永久代的垃圾收集主要回收两部分内容：<strong>废弃常量</strong>和<strong>无用的类</strong>。</p>
+<p>　　一个无用的类需要满足以下三个条件：</p>
+<ul>
+<li>该类的所有实例都已经被回收；</li>
+<li>加载该类的ClassLoader已经被回收；</li>
+<li>该类对象的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法；</li>
+</ul>
+<p>　　在大量使用反射、动态代理、CGLib等ByteCode框架、动态生成JSP以及OSGI这类频繁自定义ClassLoader的场景都需要虚拟机具备类卸载的功能（HotSpot提供-Xnoclassgc参数控制），以保证永久代不会溢出。</p>
+<h3 id="3-垃圾收集算法"><a href="#3-垃圾收集算法" class="headerlink" title="3.垃圾收集算法"></a>3.垃圾收集算法</h3><ul>
+<li><font style="color:red">标记-清除（Mark-Sweep）算法</font>：首先标记出所有需要回收的对象，然后统一回收所有被标记的对象；缺点是效率不高且容易产生大量不连续的内存碎片；</li>
+<li><font style="color:red">复制（Copying）算法</font>：将可用内存分为大小相等的两块，每次只使用其中一块；当这一块用完了，就将还活着的对象复制到另一块上，然后把已使用过的内存清理掉。在HotSpot里，考虑到大部分对象存活时间很短将内存分为Eden和两块Survivor，默认比例为8:1:1。代价是存在部分内存空间浪费，适合在<strong>新生代</strong>使用；</li>
+<li><font style="color:red">标记-整理（Mark-Compact）算法</font>：首先标记出所有需要回收的对象，然后让所有存活的对象都向一端移动，然后直接清理掉端边界以外的内存。适用于<strong>老年代</strong>。</li>
+<li><font style="color:red">分代收集算法</font>：一般把Java堆分新生代和老年代，在新生代用复制算法，在老年代用标记-清理或标记-整理算法，是现代虚拟机通常采用的算法。</li>
+</ul>
+<h3 id="4-HotSpot的算法实现"><a href="#4-HotSpot的算法实现" class="headerlink" title="4.HotSpot的算法实现"></a>4.HotSpot的算法实现</h3><h4 id="4-1-枚举根节点"><a href="#4-1-枚举根节点" class="headerlink" title="4.1 枚举根节点"></a>4.1 枚举根节点</h4><ul>
+<li>由于要确保在一致性的快照中进行可达性分析，从而导致GC进行时必须要停顿所有Java执行线程（“Stop The World”）</li>
+<li>在HotSpot里通过一组OopMap数据结构来知道哪些地方存放着对象引用</li>
+</ul>
+<h4 id="4-2-安全点（Safepoint）"><a href="#4-2-安全点（Safepoint）" class="headerlink" title="4.2 安全点（Safepoint）"></a>4.2 安全点（Safepoint）</h4><ul>
+<li>HotSpot只在特定的位置记录了OopMap，这些位置称为安全点（SafePoint）；</li>
+<li>即程序执行时并非在所有地方都能停顿下来开始GC，只有到达安全点时才能暂停；</li>
+<li>对于安全点基本上是以程序“是否具有让程序长时间执行的特征”（比如方法调用、循环跳转、异常跳转等）为标准进行选定的；</li>
+<li>另外还需要考虑如果在GC时让所有线程都跑到最近的安全点上，有两种方案：抢先式中断和主动式中断（主流选择）。</li>
+</ul>
+<h4 id="4-3-安全区域"><a href="#4-3-安全区域" class="headerlink" title="4.3 安全区域"></a>4.3 安全区域</h4><ul>
+<li>如果程序没有分配CPU时间（如线程处于Sleep或Blocked），此时就需要安全区域（Safe Region），其是指在一段代码片段之中，引用关系不会发生变化。在这个区域中的任意地方开始GC都是安全的。</li>
+<li>线程执行到安全区域时，首先标识自己已经进入了安全区域，这样JVM在GC时就不管这些线程了；</li>
+</ul>
+<h3 id="5-垃圾收集器"><a href="#5-垃圾收集器" class="headerlink" title="5.垃圾收集器"></a>5.垃圾收集器</h3><ul>
+<li>垃圾收集算法是内存回收的方法论，垃圾收集器就是内存回收的具体实现。</li>
+<li>这里讨论JDK 1.7 Update 14之后的HotSpot虚拟机（此时G1仍处于实验状态），包含的虚拟机如下图所示（存在连线的表示可以搭配使用）：</li>
+</ul>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5w3nqkn0jj21400u0dre.jpg" alt=""></p>
+<h4 id="5-1-Serial收集器"><a href="#5-1-Serial收集器" class="headerlink" title="5.1 Serial收集器"></a>5.1 Serial收集器</h4><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x58r7jzuj20q705qq3n.jpg" alt=""></p>
+<ul>
+<li>最基本、发展历史最悠久，在JDK 1.3之前是新生代收集的唯一选择；</li>
+<li>是一个单线程的收集器（单线程并非指只会使用一个CPU或者一条收集线程，更重要的是在它进行垃圾收集时必须其他所有的工作线程，直到它收集结束）；</li>
+<li>现在依然是虚拟机运行在Client模式下的默认新生代收集器，主要就是因为它简单而高效（没有线程交互的开销）；</li>
+</ul>
+<h4 id="5-2-ParNew收集器"><a href="#5-2-ParNew收集器" class="headerlink" title="5.2 ParNew收集器"></a>5.2 ParNew收集器</h4><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5esm88mj20r005it9i.jpg" alt=""></p>
+<ul>
+<li>其实就是Serial收集器的多线程版本；</li>
+<li>ParNew收集器在单CPU环境中绝对不会有比Serial收集器更好的效果；</li>
+<li>是许多运行在Server模式下虚拟机首选的新生代收集器，重要原因就是除了Serial收集器外，只有它能与CMS收集器配合工作；</li>
+</ul>
+<blockquote>
+<p>并行（Parallel）：指多条垃圾收集线程并行工作，但此时用户线程仍处于等待状态；</p>
+<p>并发（Concurrent）：指用户线程与垃圾收集线程同时执行，用户线程在继续执行而垃圾收集程序运行在另外一个CPU上；</p>
+</blockquote>
+<h4 id="5-3-Parallel-Scavenge收集器"><a href="#5-3-Parallel-Scavenge收集器" class="headerlink" title="5.3 Parallel Scavenge收集器"></a>5.3 Parallel Scavenge收集器</h4><ul>
+<li>新生代收集器，使用<strong>复制算法</strong>，并行的多线程收集器；</li>
+<li>与其他收集器关注于尽可能缩短垃圾收集时用户线程停顿时间不同，它的目标是达到一个<strong>可控制的吞吐量</strong>；</li>
+<li><p>高吞吐量可以高效率利用CPU时间，适合在后台运算而不需要太多交互的任务，Parallel Scavenge收集器也经常称为“吞吐量优先”收集器；</p>
+</li>
+<li><p>-XX:MaxGCPauseMillis参数可以设置最大停顿时间，而停顿时间缩短是以牺牲吞吐量和新生代空间来换取的；</p>
+</li>
+<li><p>另外它还支持GC自适应的调节策略，这是与ParNew收集器的一个重要区别。</p>
+</li>
+</ul>
+<h4 id="5-4-Serial-Old收集器"><a href="#5-4-Serial-Old收集器" class="headerlink" title="5.4 Serial Old收集器"></a>5.4 Serial Old收集器</h4><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5swc8l7j20pm05jq3l.jpg" alt=""></p>
+<ul>
+<li>是Serial收集器的老年代版本，同样是单线程，使用<strong>标记-整理算法</strong>；</li>
+<li>主要是给Client模式下的虚拟机使用的；</li>
+<li>在Server模式下主要是给JDK 1.5及之前配合Parallel Scavenge使用或作为CMS收集器的后备预案；</li>
+</ul>
+<h4 id="5-5-Parallel-Old收集器"><a href="#5-5-Parallel-Old收集器" class="headerlink" title="5.5 Parallel Old收集器"></a>5.5 Parallel Old收集器</h4><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5ureo68j20pr05owfa.jpg" alt=""></p>
+<ul>
+<li>是Parallel Scavenge的老年代版本，使用多线程和标记-整理算法；</li>
+<li>是JDK 1.6中才开始提供的；</li>
+</ul>
+<h4 id="5-6-CMS收集器"><a href="#5-6-CMS收集器" class="headerlink" title="5.6 CMS收集器"></a>5.6 CMS收集器</h4><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x5w1ddxzj20qi05omya.jpg" alt=""></p>
+<ul>
+<li>是一种以获取最短回收停顿时间为目标的收集器，特别适合互联网站或者B/S的服务端；</li>
+<li>主要包括4个步骤：初始标记、并发标记、重新标记和并发清除；</li>
+<li>优点：并发收集、低停顿。并发低停顿收集器</li>
+<li>还有3个明显的缺点：CMS收集器对CPU非常敏感、无法处理浮动垃圾、大量内存碎片产生；</li>
+</ul>
+<h4 id="5-7-G1收集器"><a href="#5-7-G1收集器" class="headerlink" title="5.7 G1收集器"></a>5.7 G1收集器</h4><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x610z209j20p905gabf.jpg" alt=""></p>
+<ul>
+<li><p>一款面向服务端应用的垃圾收集器，后续会替换掉CMS垃圾收集器；</p>
+</li>
+<li><p>特点：并行与并发（充分利用多核多CPU缩短Stop-The-World时间）、分代收集（独立管理整个Java堆，但针对不同年龄的对象采取不同的策略）、空间整合（基于标记-整理）、可预测的停顿（将堆分为大小相等的独立区域，避免全区域的垃圾收集）；</p>
+</li>
+<li><p>关于Region：新生代和老年代不再物理隔离，只是部分Region的集合；G1跟踪各个Region垃圾堆积的价值大小，在后台维护一个优先列表，根据允许的收集时间优先回收价值最大的Region；Region之间的对象引用以及其他收集器中的新生代与老年代之间的对象引用，采用Remembered Set来避免全堆扫描；</p>
+</li>
+<li><p>G1收集器运作大致分为几个步骤：初始标记（标记一下GC Roots能直接关联的对象并修改TAMS值，需要STW但耗时很短）、并发标记（从GC Root从堆中对象进行可达性分析找存活的对象，耗时较长但可以与用户线程并发执行）、最终标记（为了修正并发标记期间产生变动的那一部分标记记录，这一期间的变化记录在Remembered Set Log里，然后合并到Remembered Set里，该阶段需要STW但是可并行执行）、筛选回收（对各个Region回收价值排序，根据用户期望的GC停顿时间制定回收计划来回收）；</p>
+</li>
+</ul>
+<h3 id="6-内存分配与回收策略"><a href="#6-内存分配与回收策略" class="headerlink" title="6.内存分配与回收策略"></a>6.内存分配与回收策略</h3><ul>
+<li>对象优先在新生代分配</li>
+<li>大对象直接进入老年代</li>
+<li>长期存活的对象将进入老年代</li>
+<li>动态对象年龄判断：如果在Survivor空间中相同年龄所有对象大小总和大于Survivor空间的一半，大于或等于该年龄的对象直接进入老年代</li>
+<li>空间分配担保：发生Minor GC前，虚拟机会先检查老年代最大可用连续空间是否大于新生代所有对象总空间；如果不成立，虚拟机会查看HandlePromotionFailure设置值是否允许担保失败；如果允许继续检查老年代最大可用的连续空间是否大于历次晋升到老年代的平均大小，如果大于会尝试进行一次Minor GC；如果小于或者不允许冒险，会进行一次Full GC；</li>
+</ul>
+<h3 id="7-本章小结"><a href="#7-本章小结" class="headerlink" title="7.本章小结"></a>7.本章小结</h3><p>　　本章介绍了垃圾回收算法、几款JDK 1.7中提供的垃圾收集器特点以及运作原理。内存回收与垃圾收集器在很多时候都是影响系统性能、并发能力的主要因素之一。然而没有固定收集器和参数组合，也没有最优的调优方法，需要根据实践了解各自的行为、优势和劣势。</p>
+<h2 id="第4章-虚拟机性能监控与故障处理工具"><a href="#第4章-虚拟机性能监控与故障处理工具" class="headerlink" title="第4章 虚拟机性能监控与故障处理工具"></a>第4章 虚拟机性能监控与故障处理工具</h2><h3 id="1-概述-2"><a href="#1-概述-2" class="headerlink" title="1.概述"></a>1.概述</h3><p>　　定位问题时，知识和经验是关键基础、数据（运行日志、异常堆栈、GC日志、线程快照、堆转储快照heapdump）是依据、工具是运用知识处理数据的手段。</p>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g5x8rlfxpuj20pp0a8jvk.jpg" alt=""></p>
+<h3 id="2-jps-虚拟机进程状况工具"><a href="#2-jps-虚拟机进程状况工具" class="headerlink" title="2.jps: 虚拟机进程状况工具"></a>2.jps: 虚拟机进程状况工具</h3><ul>
+<li><p>功能：可以列出正在运行的虚拟机进程，并线上虚拟机执行的主类名称及其本地虚拟机唯一ID（LVMID）；</p>
+</li>
+<li><p>对于本地虚拟机来说，LVMID和操作系统的进程ID是一致的；</p>
+</li>
+<li><p>其他的工具通常都需要依赖jps获取LVMID；</p>
+</li>
+<li><p>主要选项：-q（只输出LVMID）、-m（输出传给main函数的参数）、-l（输出主类的全名）、-v（输出虚拟机启动JVM参数）；</p>
+</li>
+</ul>
+<h3 id="3-jstat：虚拟机统计信息监视工具"><a href="#3-jstat：虚拟机统计信息监视工具" class="headerlink" title="3.jstat：虚拟机统计信息监视工具"></a>3.jstat：虚拟机统计信息监视工具</h3><ul>
+<li>功能：监视虚拟机各种运行状态信息，包括类装载、内存、垃圾收集、JIT等；</li>
+<li>纯文本监控首选；</li>
+</ul>
+<h3 id="4-jinfo：Java配置信息工具"><a href="#4-jinfo：Java配置信息工具" class="headerlink" title="4.jinfo：Java配置信息工具"></a>4.jinfo：Java配置信息工具</h3><ul>
+<li>功能：实时地查看虚拟机各项参数。虽然jps -v可以查看虚拟机启动参数，但是无法查看一些系统默认的参数。</li>
+<li>支持运行期修改参数的能力，格式为“jinfo -flag name=value pid”；</li>
+</ul>
+<h3 id="5-jmap：Java内存映像工具"><a href="#5-jmap：Java内存映像工具" class="headerlink" title="5.jmap：Java内存映像工具"></a>5.jmap：Java内存映像工具</h3><ul>
+<li><p>功能：用于生成堆转储快照（一般称为heapdump或dump文件）；</p>
+</li>
+<li><p>其他可生成heapdump的方式：使用参数-XX:+HeapDumpOnOutOfMemoryError；使用参数-XX:+HeapDumpOnCtrlBreak然后使用Ctrl+Break生成；Linux系统使用kill -3生成；</p>
+</li>
+<li>另外它还可以查询finalize执行队列、Java堆和永久代的详细信息；</li>
+</ul>
+<h3 id="6-jhat：虚拟机堆转储快照分析工具"><a href="#6-jhat：虚拟机堆转储快照分析工具" class="headerlink" title="6.jhat：虚拟机堆转储快照分析工具"></a>6.jhat：虚拟机堆转储快照分析工具</h3><ul>
+<li>功能：用于分析jmap生成的heapdump。其内置了一个微型的HTTP服务器，可以在浏览器查看分析结果；</li>
+<li>实际很少用jhat，主要有两个原因：一是分析工程会耗用服务器资源；二是功能相对BisualVM、IBM HeapAnalyzer较为简陋；</li>
+</ul>
+<h3 id="7-jstack：Java堆栈跟踪工具"><a href="#7-jstack：Java堆栈跟踪工具" class="headerlink" title="7.jstack：Java堆栈跟踪工具"></a>7.jstack：Java堆栈跟踪工具</h3><ul>
+<li><p>功能：用于生成虚拟机当前时刻的线程快照（一般称为threaddump或javacore文件）。javacore主要目的是定位线程出现长时间停顿的原因，比如死锁、死循环、请求外部资源响应长时间等待等；</p>
+</li>
+<li><p>另外JDK 1.5后Thread类新增了getAllStackTraces()方法，可以基于此自己增加管理页面来分析；</p>
+</li>
+</ul>
+<h3 id="8-HSDIS：JIT生成代码反编译"><a href="#8-HSDIS：JIT生成代码反编译" class="headerlink" title="8.HSDIS：JIT生成代码反编译"></a>8.HSDIS：JIT生成代码反编译</h3><ul>
+<li><p>现代虚拟机的实现慢慢地和虚拟机规范产生差距，如果要分析程序如何执行，最常见的就是通过软件调试工具（GDB、Windbg等）断点调试。但是对于Java来说，很多执行代码是通过JIT动态生成到CodeBuffer中的；</p>
+</li>
+<li><p>功能：HSDIS是官方推荐的HotSpot虚拟机JIT编译代码的反汇编工具，它包含在HotSpot虚拟机的源码中但没有提供编译后的程序，可以自己下载放到JDK的相关目录里。</p>
+</li>
+</ul>
+<h3 id="9-JDK的可视化工具"><a href="#9-JDK的可视化工具" class="headerlink" title="9.JDK的可视化工具"></a>9.JDK的可视化工具</h3><h4 id="9-1-JConsole：Java监视与管理控制台"><a href="#9-1-JConsole：Java监视与管理控制台" class="headerlink" title="9.1 JConsole：Java监视与管理控制台"></a>9.1 JConsole：Java监视与管理控制台</h4><ul>
+<li><p>是一种基于JMX的可视化监控和管理工具，它管理部分的功能是针对MBean进行管理，由于MBean可以使用代码、中间件服务器或者所有符合JMX规范的软件进行访问，因此这里着重介绍JConsole的监控功能；</p>
+</li>
+<li><p>通过jconsole命令启动JConsole后，会自动搜索本机所有虚拟机进程。另外还支持远程进程的监控；</p>
+</li>
+<li><p>进入主界面，支持查看以下标签页：概述、内存、线程、类、VM摘要和MBean。</p>
+</li>
+</ul>
+<h4 id="9-2-VisualVM：多合一故障处理工具"><a href="#9-2-VisualVM：多合一故障处理工具" class="headerlink" title="9.2 VisualVM：多合一故障处理工具"></a>9.2 VisualVM：多合一故障处理工具</h4><ul>
+<li>目前为止JDK发布的功能最强调的运行监控和故障处理程序，另外还支持性能分析；</li>
+<li>VisualVM还有一个很大的优点：不需要被监视的程序基于特殊Agent运行，对应用程序的实际性能影响很小，可直接应用在生成环境中；</li>
+<li>VisualVM基于NetBeans平台开发，具备插件扩展功能的特性，基于插件可以做到：显示虚拟机进程以及进程配置、环境信息（jps、jinfo）、监视应用程序的CPU、GC、堆、方法区以及线程的信息（jstat、jstack）、dump以及分析堆转储快照（jmap、jhat）、方法级的程序运行性能分析，找出被调用最多运行时间最长的方法、离线程序快照（收集运行时配置、线程dump、内存dump等信息建立快照）、其他plugins的无限可能。</li>
+<li>使用jvisualvm首次启动时需要在线自动安装插件（也可手工安装）；</li>
+<li>特色功能：生成浏览堆转储快照（摘要、类、实例标签页、OQL控制台）、分析程序性能（Profiler页签可以录制一段时间程序每个方法执行次数和耗时）、BTrace动态日志跟踪（不停止目标程序运行的前提下通过HotSwap技术动态加入调试代码）。</li>
+</ul>
+<h3 id="10-本章小结"><a href="#10-本章小结" class="headerlink" title="10.本章小结"></a>10.本章小结</h3><p>　　本章介绍了随JDK发布的6个命令行工具以及两个可视化的故障处理工具，灵活运行这些工具可以给问题处理带来很多便利。我的总体感觉是可视化工具虽然强大，但是加载速度相比命令行工具慢很多，这个时候专注于某个功能的命令行工具是更优的选择。</p>
+<h2 id="第5章-调优案例分析与实践"><a href="#第5章-调优案例分析与实践" class="headerlink" title="第5章 调优案例分析与实践"></a>第5章 调优案例分析与实践</h2><h3 id="1-概述-3"><a href="#1-概述-3" class="headerlink" title="1.概述"></a>1.概述</h3><p>除了第四章介绍的知识和工具外，在处理实际问题时，经验同样很重要。</p>
+<h3 id="2-案例分析"><a href="#2-案例分析" class="headerlink" title="2.案例分析"></a>2.案例分析</h3><p>以下的案例大部分来源作者处理过的一些问题，还有小部分是网络上笔记有代表的案例总结。</p>
+<h4 id="2-1-高性能硬件上的程序部署策略"><a href="#2-1-高性能硬件上的程序部署策略" class="headerlink" title="2.1 高性能硬件上的程序部署策略"></a>2.1 高性能硬件上的程序部署策略</h4><p> 问题描述</p>
+<ul>
+<li>一个每天15万PV左右的在线文档网站升级了硬件，4个CPU，16GB物理内存，操作系统为64位CentOS 5.4，使用Resin作为Web服务器，没有部署其他的应用。</li>
+<li>管理员选用了64位的JDK 1.5，并通过-Xmx和-Xms参数将Java堆固定在12GB。</li>
+<li><p>使用一段时间不定期出现长时间失去响应的情况；</p>
+<p>问题分析</p>
+</li>
+<li><p>升级前使用32位系统，Java堆设置为1.5GB，只是感觉运行缓慢没有明显的卡顿；</p>
+</li>
+<li>通过监控发现是由于GC停顿导致的，虚拟机运行在Server模式，默认使用吞吐量优先收集器，回收12GB的堆，一次Full GC的停顿时间高达14秒；</li>
+<li>并且由于程序设计的原因，很多文档从磁盘加载到内存中，导致内存中出现很多由文档序列化生成的大对象，这些大对象进入了老年代，没有在Minor GC中清理掉；</li>
+</ul>
+<p>解决办法</p>
+<ul>
+<li>在虚拟机上建立5个32位的JDK逻辑集群，每个进程按2GB内存计算（其中堆固定为1.5GB），另外建议一个Apache服务作为前端均衡代理访问门户；</li>
+<li>另外考虑服务压力主要在磁盘和内存访问，CPU资源敏感度较低，因此改为CMS收集器；</li>
+<li>最终服务没有再出现长时间停顿，速度比硬件升级前有较大提升；</li>
+</ul>
+<h4 id="2-2-集群间同步导致的内存溢出"><a href="#2-2-集群间同步导致的内存溢出" class="headerlink" title="2.2 集群间同步导致的内存溢出"></a>2.2 集群间同步导致的内存溢出</h4><p>问题描述</p>
+<ul>
+<li>一个基于B/S的MIS系统，硬件为两台2个CPU、8GB内存的HP小型机，服务器为WebLogic 9.2，每台机器启动了3个WebLogic实例，构建一个6台节点的亲和式集群（一个固定的用户请求永远分配到固定的节点处理）。</li>
+<li>由于有部分数据需要共享，原先采用数据库，后因为读写性能问题使用了JBossCache构建了一个全局缓存；</li>
+<li>正常使用一段较长的时间，最近不定期出现了多次的内存溢出问题；</li>
+</ul>
+<p>问题分析</p>
+<ul>
+<li>监控发现，服务内存回收状况一直正常，每次内存回收后都能恢复到一个稳定的可用空间</li>
+<li>此次未升级业务代码，排除新修改代码引入的内存泄漏问题；</li>
+<li>服务增加-XX:+HeapDumpOnOutOfMemoryError参数，在最近一次内存溢出时，分析heapdump文件发现存在大量的org.jgroups.protocols.pbcast,NAKACK对象；</li>
+<li>最终分析发现是由于JBossCache的NAKACK栈在页面产生大量请求时，有个负责安全校验的全局Filter导致集群各个节点之间网络交互非常频繁，当网络情况不能满足传输要求时，大量的需要失败重发的数据在内存中不断堆积导致内存溢出。</li>
+</ul>
+<p>解决办法</p>
+<ul>
+<li>JBossCache版本改进；</li>
+<li>程序设计优化，JBossCahce集群缓存同步，不大适合有频繁写操作的情况；</li>
+</ul>
+<h4 id="2-3-堆外内存导致的溢出错误"><a href="#2-3-堆外内存导致的溢出错误" class="headerlink" title="2.3 堆外内存导致的溢出错误"></a>2.3 堆外内存导致的溢出错误</h4><p>问题描述</p>
+<ul>
+<li>一个学校的小型项目，基于B/S的电子考试系统，服务器是Jetty 7.1.4，硬件是一台普通PC机，Core i5 CPU，4GB内存，运行32位Windows操作系统；</li>
+<li>为了实现客户端能实时地从服务器端接收考试数据，使用了逆向AJAX技术（也称为Comet或Server Side Push），选用CometD 1.1.1作为服务端推送框架；</li>
+<li>测试期间发现服务端不定期抛出内存溢出；加入-XX:+HeapDumpOnOutOfMemoryError后抛出内存溢出时什么问题都没有，采用jstat观察GC并不频繁且GC回收正常；最后在内存溢出后从系统日志发现如下异常堆栈：</li>
+</ul>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbuukkpvj20rs044jrf.jpg" alt="1.png"></p>
+<p>堆外内存溢出日志</p>
+<p>问题分析</p>
+<ul>
+<li>在第二章里曾经说过直接内存溢出的场景，垃圾收集时，虚拟机虽然会对直接内存进行回收，但它只能等老年代满了触发Full GC时顺便清理，否则只能等内存溢出时catch住然后调用System.gc()，如果虚拟机还是不听（比如打开了-XX:+DisableExplictGC）则只能看着堆中还有许多空闲内存而溢出；</li>
+<li>本案例中的CometD框架正好有大量的NIO操作需要使用直接内存；</li>
+</ul>
+<h4 id="2-4-外部命令导致系统缓慢"><a href="#2-4-外部命令导致系统缓慢" class="headerlink" title="2.4 外部命令导致系统缓慢"></a>2.4 外部命令导致系统缓慢</h4><p>问题描述</p>
+<ul>
+<li>一个数字校园应用系统，运行在一个4个CPU的Solaris 10操作系统上，中间件为GlassFish服务器；</li>
+<li>系统在做大并发压力测试时，发现请求响应时间比较慢，通过监控工具发现CPU使用率很高，并且系统占用绝大多数的CPU资源的程序并不是应用系统本身；</li>
+<li>通过Dtrace脚本发现最消耗CPU的竟然是fork系统调用（Linux用来产生新进程的）；</li>
+</ul>
+<p>问题分析</p>
+<ul>
+<li>最终发现是每个用户请求需要执行一个外部的shell脚本来获取一些系统信息，是通过Runtime.getRuntime().exec()方法调用的；</li>
+<li>Java虚拟机在执行这个命令时先克隆一个和当前虚拟机拥有一样环境变量的进程，再用这个新进程去执行外部命令，如果频繁地执行这个操作，系统消耗会很大；</li>
+<li>最终修改时改用Java的API去获取这些信息，系统恢复了正常；</li>
+</ul>
+<h4 id="2-5-服务器JVM进程奔溃"><a href="#2-5-服务器JVM进程奔溃" class="headerlink" title="2.5 服务器JVM进程奔溃"></a>2.5 服务器JVM进程奔溃</h4><p>问题描述</p>
+<ul>
+<li>一个基于B/S的MIS系统，硬件为两台2个CPU、8GB内存的HP系统，服务器是WebLogic 9.2（和案例”集群间同步导致的内存溢出”相同的系统）；</li>
+<li>正常运行一段时间后发现运行期间频繁出现集群节点的虚拟机进程自动关闭的现象，留下一个hs_err_pid###.log，奔溃前不久都发生大量相同的异常，日志如下所示：</li>
+</ul>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbvpi3q8j20rs04w74g.jpg" alt="2.png"></p>
+<p>JVM进程奔溃日志</p>
+<p>问题分析</p>
+<ul>
+<li>这是一个远端断开连接的异常，得知在MIS系统工作流的待办事项变化时需要通过Web服务通知OA门户系统；</li>
+<li>通过SoapUI测试发现调用后竟然需要长达3分钟才能返回，并且返回结果都是连接中断；</li>
+<li>由于MIS使用异步方式调用，两边处理速度不对等，导致在等待的线程和Socket连接越来越多，最终在超过虚拟机承受能力后进场奔溃；</li>
+<li>解决方法：将异步调用修改为生产者/消费者模型的消息队列处理，系统恢复正常；</li>
+</ul>
+<h4 id="2-6-不恰当数据结构导致内存占用过大"><a href="#2-6-不恰当数据结构导致内存占用过大" class="headerlink" title="2.6 不恰当数据结构导致内存占用过大"></a>2.6 不恰当数据结构导致内存占用过大</h4><p>问题描述</p>
+<ul>
+<li>有一个后台RPC服务器，使用64位虚拟机，内存配置为-Xms4g -Xmx8g -Xmn1g，使用ParNew + CMS的收集器组合；</li>
+<li>平时Minor GC时间约在20毫秒内，但业务需要每10分钟加载一个约80MB的数据文件到内存进行数据分析，这些数据会在内存中形成超过100万个HashMap&lt;Long, Long&gt; Entry，在这段时间里Minor GC会超过500毫秒，这个时间过长，GC日志如下：</li>
+</ul>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbw7go2pj20rs0an758.jpg" alt="3.png"></p>
+<p>不恰当数据结构GC日志1</p>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbyo11ezj20rs03it8q.jpg" alt="img"></p>
+<p>不恰当数据结构GC日志2</p>
+<p>问题分析</p>
+<ul>
+<li>在分析数据文件期间，800M的Eden空间在Minor GC后对象还是存活的，而ParNew垃圾收集器使用的是复制算法，把这些对象复制到Survivor并维持这些对象引用成为沉重的负担，导致GC时间变长；</li>
+<li>从GC可以将Survivor空间去掉（加入参数-XX:SurvivorRatio=65536、-XX:MaxTenuringThreshold=0或者-XX:AlwaysTenure），让新生代存活的对象第一次Minor GC后立即进入老年代，等到Major GC再清理。这种方式可以治标，但也有很大的副作用。</li>
+<li>另外一种是从程序设计的角度看，HashMap&lt;Long, Long&gt;结构中，只有key和value所存放的两个长整形数据是有效数据，共16B（2 * 8B），而实际耗费的内存位88B（长整形包装为Long对象需要多8B的MarkWord、8B的Klass指针，Map.Entry多了16B的对象头、8B的next字段和4B的int型hash字段、为对齐添加的4B空白填充，另外还有8B的Entry引用），内存空间效率（18%）太低。</li>
+</ul>
+<h4 id="2-7-由Windows虚拟内存导致的长时间停顿"><a href="#2-7-由Windows虚拟内存导致的长时间停顿" class="headerlink" title="2.7 由Windows虚拟内存导致的长时间停顿"></a>2.7 由Windows虚拟内存导致的长时间停顿</h4><p>问题描述</p>
+<ul>
+<li>有一个带心跳检测功能的GUI桌面程序，每15秒发送一次心跳检查信号，如果对方30秒内都没有信信号返回，则认为和对方已断开连接；</li>
+<li>程序上线后发现有误报，查询日志发现误报是因为程序会偶尔出现间隔约1分钟左右的时间完全无日志输出，处于停顿状态；</li>
+<li>另外观察到GUI程序最小化时，资源管理中显示的占用内存大幅减小，但虚拟内存没变化；</li>
+<li>因为是桌面程序，所需内存不大（-Xmx256m），加入参数-XX:+PrintGCApplicationStoppedTime -XX：PrintGCDateStamps -Xloggc:gclog.log后，从日志文件确认是GC导致的，大部分的GC时间在100ms以内，但偶尔会出现一次接近1min的GC；</li>
+<li>加入参数-XX：PrintReferenceGC参数查看GC的具体日志信息，发现执行GC动作的时间并不长，但从准备开始GC到真正GC直接却消耗了大部分时间，如下所示：</li>
+</ul>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sbzxhjonj20rs02haa1.jpg" alt="5.png"></p>
+<p>虚拟内存案例日志</p>
+<p>问题分析</p>
+<ul>
+<li>初步怀疑是最小化时工作内存被自动交换到磁盘的页面文件中，这样发生GC时就有可能因为恢复页面文件的操作而导致不正常的GC停顿；</li>
+<li>在MSDN查证确认了这种猜想，加入参数-Dsun.awt.keepWorkingSetOnMinimize=true来解决；这个参数在很多AWT程序如VisualVM都有应用。</li>
+</ul>
+<h3 id="3-实战：Eclipse运行速度调优"><a href="#3-实战：Eclipse运行速度调优" class="headerlink" title="3.实战：Eclipse运行速度调优"></a>3.实战：Eclipse运行速度调优</h3><ul>
+<li>升级JDK；</li>
+<li>设置-XX:MaxPermSize=256M解决Eclipse判断虚拟机版本的bug；</li>
+<li>加入参数-Xverfify:none禁止字节码验证；</li>
+<li>虚拟机运行在client模式，采用C1轻量级编译器；</li>
+<li>把-Xms和-XX：PermSize参数设置为-Xmx和-XX:MaxPermSize一样，这样强制虚拟机启动时把老年代和永久代的容量固定下来，避免运行时自动扩展；</li>
+<li>增加参数-XX：DisableExplicitGC屏蔽掉显式GC触发；</li>
+<li>采用ParNew+CMS的垃圾收集器组合；</li>
+<li>最终从Eclipse启动耗时15秒到7秒左右， eclipse.ini配置如下：</li>
+</ul>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1g6sc0mo263j20ql0fk74w.jpg" alt="6.png"></p>
+<p>Eclipse调优</p>
+<h3 id="4-本章小结-1"><a href="#4-本章小结-1" class="headerlink" title="4.本章小结"></a>4.本章小结</h3><p>　　Java虚拟机的内存管理和垃圾收集是虚拟机结构体系最重要的组成部分，对程序的性能和稳定性有非常大的影响。通过案例和实战部分，加深了对前面理论知识和工具的理解。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>谢谢你请我吃糖果！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Li Wen WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Li Wen Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/dd2ca416.html" rel="next" title="【LeetCode】10. Regular Expression Matching">
+                <i class="fa fa-chevron-left"></i> 【LeetCode】10. Regular Expression Matching
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/b9a61fbe.html" rel="prev" title="《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记2">
+                《深入理解Java虚拟机 JVM高级特性与最佳实践 第2版》读书笔记2 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Li Wen">
+          <p class="site-author-name" itemprop="name">Li Wen</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/">
+                <span class="site-state-item-count">160</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第一部分-走近Java"><span class="nav-text">第一部分 走近Java</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第1章-走进Java"><span class="nav-text">第1章 走进Java</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Java优点"><span class="nav-text">1.Java优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Java技术体系"><span class="nav-text">2.Java技术体系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Java发展史"><span class="nav-text">3.Java发展史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Java虚拟机发展史"><span class="nav-text">4.Java虚拟机发展史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-展望Java技术的未来"><span class="nav-text">5.展望Java技术的未来</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第二部分-自动内存管理机制"><span class="nav-text">第二部分 自动内存管理机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第2章-Java内存区域与内存溢出异常"><span class="nav-text">第2章 Java内存区域与内存溢出异常</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-概述"><span class="nav-text">1.概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-运行时数据区域"><span class="nav-text">2.运行时数据区域</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-程序计数器（Program-Counter-Register）"><span class="nav-text">2.1 程序计数器（Program Counter Register）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-Java虚拟机栈（Java-Virtual-Machine-Stacks）"><span class="nav-text">2.2 Java虚拟机栈（Java Virtual Machine Stacks）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-本地方法栈（Native-Method-Stack）"><span class="nav-text">2.3 本地方法栈（Native Method Stack）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-Java堆（Java-Heap）"><span class="nav-text">2.4 Java堆（Java Heap）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-方法区（Method-Area）"><span class="nav-text">2.5 方法区（Method Area）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-运行时常量池（Runtime-Constant-Pool）"><span class="nav-text">2.6 运行时常量池（Runtime Constant Pool）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-7-直接内存（Direct-Memory）"><span class="nav-text">2.7 直接内存（Direct Memory）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-HotSpot虚拟机对象探秘"><span class="nav-text">3.HotSpot虚拟机对象探秘</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-对象的创建"><span class="nav-text">3.1 对象的创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-对象的内存布局"><span class="nav-text">3.2 对象的内存布局</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-对象的访问定位"><span class="nav-text">3.3 对象的访问定位</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-本章小结"><span class="nav-text">4.本章小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第3章-垃圾收集器与内存分配策略"><span class="nav-text">第3章 垃圾收集器与内存分配策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-概述-1"><span class="nav-text">1.概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-对象已死吗"><span class="nav-text">2.对象已死吗</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-引用计数法"><span class="nav-text">2.1 引用计数法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-可达性分析算法"><span class="nav-text">2.2 可达性分析算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-再谈引用"><span class="nav-text">2.3 再谈引用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-生存还是死亡"><span class="nav-text">2.4 生存还是死亡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-回收方法区"><span class="nav-text">2.5 回收方法区</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-垃圾收集算法"><span class="nav-text">3.垃圾收集算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-HotSpot的算法实现"><span class="nav-text">4.HotSpot的算法实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-枚举根节点"><span class="nav-text">4.1 枚举根节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-安全点（Safepoint）"><span class="nav-text">4.2 安全点（Safepoint）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-安全区域"><span class="nav-text">4.3 安全区域</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-垃圾收集器"><span class="nav-text">5.垃圾收集器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-Serial收集器"><span class="nav-text">5.1 Serial收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-ParNew收集器"><span class="nav-text">5.2 ParNew收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-Parallel-Scavenge收集器"><span class="nav-text">5.3 Parallel Scavenge收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4-Serial-Old收集器"><span class="nav-text">5.4 Serial Old收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-5-Parallel-Old收集器"><span class="nav-text">5.5 Parallel Old收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-6-CMS收集器"><span class="nav-text">5.6 CMS收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-7-G1收集器"><span class="nav-text">5.7 G1收集器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-内存分配与回收策略"><span class="nav-text">6.内存分配与回收策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-本章小结"><span class="nav-text">7.本章小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第4章-虚拟机性能监控与故障处理工具"><span class="nav-text">第4章 虚拟机性能监控与故障处理工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-概述-2"><span class="nav-text">1.概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-jps-虚拟机进程状况工具"><span class="nav-text">2.jps: 虚拟机进程状况工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-jstat：虚拟机统计信息监视工具"><span class="nav-text">3.jstat：虚拟机统计信息监视工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-jinfo：Java配置信息工具"><span class="nav-text">4.jinfo：Java配置信息工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-jmap：Java内存映像工具"><span class="nav-text">5.jmap：Java内存映像工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-jhat：虚拟机堆转储快照分析工具"><span class="nav-text">6.jhat：虚拟机堆转储快照分析工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-jstack：Java堆栈跟踪工具"><span class="nav-text">7.jstack：Java堆栈跟踪工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-HSDIS：JIT生成代码反编译"><span class="nav-text">8.HSDIS：JIT生成代码反编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-JDK的可视化工具"><span class="nav-text">9.JDK的可视化工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#9-1-JConsole：Java监视与管理控制台"><span class="nav-text">9.1 JConsole：Java监视与管理控制台</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-2-VisualVM：多合一故障处理工具"><span class="nav-text">9.2 VisualVM：多合一故障处理工具</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-本章小结"><span class="nav-text">10.本章小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第5章-调优案例分析与实践"><span class="nav-text">第5章 调优案例分析与实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-概述-3"><span class="nav-text">1.概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-案例分析"><span class="nav-text">2.案例分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-高性能硬件上的程序部署策略"><span class="nav-text">2.1 高性能硬件上的程序部署策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-集群间同步导致的内存溢出"><span class="nav-text">2.2 集群间同步导致的内存溢出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-堆外内存导致的溢出错误"><span class="nav-text">2.3 堆外内存导致的溢出错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-外部命令导致系统缓慢"><span class="nav-text">2.4 外部命令导致系统缓慢</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-服务器JVM进程奔溃"><span class="nav-text">2.5 服务器JVM进程奔溃</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-不恰当数据结构导致内存占用过大"><span class="nav-text">2.6 不恰当数据结构导致内存占用过大</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-7-由Windows虚拟内存导致的长时间停顿"><span class="nav-text">2.7 由Windows虚拟内存导致的长时间停顿</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-实战：Eclipse运行速度调优"><span class="nav-text">3.实战：Eclipse运行速度调优</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-本章小结-1"><span class="nav-text">4.本章小结</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2018 - 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Wen</span>
+</div>
+
+
+
+<!--
+<div style="text-align: center;">
+	 <a href='http://www.miitbeian.gov.cn/' target="_blank" rel="external nofollow">湘ICP备18019139号</a> 
+</div>
+-->
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
     // Popup Window;
     var isfetched = false;
     var isXml = true;
@@ -313,4 +1581,41 @@
         onPopupClose();
       }
     });
-  </script><script>!function(){var t=document.createElement("script"),e=window.location.protocol.split(":")[0];t.src="https"===e?"https://zz.bdstatic.com/linksubmit/push.js":"http://push.zhanzhang.baidu.com/push.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}()</script><script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.2"></script></body></html>
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.2"></script>
+
+
+  
+
+</body>
+</html>

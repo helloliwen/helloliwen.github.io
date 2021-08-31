@@ -1,4 +1,860 @@
-<!DOCTYPE html><html class="theme-next gemini use-motion" lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><meta name="google-site-verification" content="3_IU8QYN7ZX8ohZtDd7g_6zN3154jWW7GDJMLJ8TzSQ"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="google-site-verification" content="3_IU8QYN7ZX8ohZtDd7g_6zN3154jWW7GDJMLJ8TzSQ"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css"><meta name="keywords" content="Ubuntu,OpenCV，编译，Java"><link rel="shortcut icon" type="image/x-icon" href="/images/favicon32.ico?v=5.1.2"><meta name="description" content="Ubuntu16.04安装编译OpenCV for Java"><meta name="keywords" content="Ubuntu,OpenCV，编译，Java"><meta property="og:type" content="article"><meta property="og:title" content="Ubuntu16.04安装编译OpenCV for Java"><meta property="og:url" content="https://helloliwen.github.io/58e44ad3.html"><meta property="og:site_name" content="日拱一卒 不期速成"><meta property="og:description" content="Ubuntu16.04安装编译OpenCV for Java"><meta property="og:locale" content="zh-Hans"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1gci35zh511j21gl07f74o.jpg"><meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1gci36la42ij21gh06vq32.jpg"><meta property="og:updated_time" content="2020-04-26T14:51:35.353Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Ubuntu16.04安装编译OpenCV for Java"><meta name="twitter:description" content="Ubuntu16.04安装编译OpenCV for Java"><meta name="twitter:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1gci35zh511j21gl07f74o.jpg"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Gemini",sidebar:{position:"left",display:"post",offset:12,offset_float:12,b2t:!1,scrollpercent:!0,onmobile:!1},fancybox:!0,tabs:!0,motion:!0,duoshuo:{userId:"0",author:"博主"},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><link rel="canonical" href="https://helloliwen.github.io/58e44ad3.html"><title>Ubuntu16.04安装编译OpenCV for Java | 日拱一卒 不期速成</title></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">日拱一卒 不期速成</span><span class="logo-line-after"><i></i></span></a></div><h1 class="site-subtitle" itemprop="description">循序渐进 一击中的</h1></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br> 首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br> 分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br> 标签</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br> 搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="https://helloliwen.github.io/58e44ad3.html"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="Li Wen"><meta itemprop="description" content=""><meta itemprop="image" content="/images/avatar.jpg"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="日拱一卒 不期速成"></span><header class="post-header"><h2 class="post-title" itemprop="name headline">Ubuntu16.04安装编译OpenCV for Java</h2><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-04T14:52:30+08:00">2020-04-04</time> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">更新于</span> <time title="更新于" itemprop="dateModified" datetime="2020-04-26T22:51:35+08:00">2020-04-26</time></span> <span class="post-meta-divider">|</span><span class="page-pv"><i class="fa fa-file-o"></i><span class="busuanzi-value" id="busuanzi_value_page_pv"></span> 次阅读</span><div class="post-description"> Ubuntu16.04安装编译OpenCV for Java</div></div></header><div class="post-body" itemprop="articleBody"><h2 id="一、安装cmake"><a href="#一、安装cmake" class="headerlink" title="一、安装cmake"></a>一、安装cmake</h2><p>下载安装包： <a href="https://github.com/Kitware/CMake/releases?after=v3.10.0-rc2" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/Kitware/CMake/releases?after=v3.10.0-rc2</a> 用的版本是3.9.2</p><p>解压缩</p><p>配置环境变量</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$PATH:/home/master/install/cmake-3.9.2-Linux-x86_64/bin</span><br><span class="line">export CMAKE_ROOT=/home/master/install/cmake-3.9.2-Linux-x86_64</span><br></pre></td></tr></table></figure><p>安装完毕进行测试：</p><p><code>cmake --version</code></p><p>参考：<a href="https://askubuntu.com/questions/1014670/cmake-error-could-not-find-cmake-root" rel="external nofollow noopener noreferrer" target="_blank">CMake Error: Could not find CMAKE_ROOT?</a></p><h2 id="二、Ubuntu16-04-LTS安装OpenCV3-4-9及OpenCV-Contrib-for-Java"><a href="#二、Ubuntu16-04-LTS安装OpenCV3-4-9及OpenCV-Contrib-for-Java" class="headerlink" title="二、Ubuntu16.04 LTS安装OpenCV3.4.9及OpenCV Contrib for Java"></a>二、Ubuntu16.04 LTS安装OpenCV3.4.9及OpenCV Contrib for Java</h2><h3 id="1-国内服务器更换阿里云源"><a href="#1-国内服务器更换阿里云源" class="headerlink" title="1.国内服务器更换阿里云源"></a>1.国内服务器更换阿里云源</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /etc/apt/sources.list /etc/apt/sources.list.old</span><br><span class="line">sudo vim /etc/apt/sources.list</span><br></pre></td></tr></table></figure><p>阿里云源地址：<a href="https://developer.aliyun.com/mirror/ubuntu?spm=a2c6h.13651102.0.0.3e221b11d3eimD" rel="external nofollow noopener noreferrer" target="_blank">Ubuntu 镜像</a></p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get upgrade</span><br></pre></td></tr></table></figure><p>添加github相关hosts</p><p>CMakeDownloadLog.txt</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>try 1</span><br><span class="line"><span class="meta">#</span>   Trying 151.101.228.133...</span><br><span class="line"><span class="meta">#</span> TCP_NODELAY set</span><br><span class="line"><span class="meta">#</span> connect to 151.101.228.133 port 443 failed: Connection reset by peer</span><br><span class="line"><span class="meta">#</span> Failed to connect to raw.githubusercontent.com port 443: Connection reset by peer</span><br><span class="line"><span class="meta">#</span> Closing connection 0</span><br></pre></td></tr></table></figure><p>去<a href="https://www.ipaddress.com/" rel="external nofollow noopener noreferrer" target="_blank">ipaddress</a>上面查询<code>github.com</code>和<code>raw.githubusercontent.com</code>相关的ip，然后添加到/etc/hosts文件中：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> GitHub Start</span><br><span class="line">140.82.113.3 	github.com</span><br><span class="line">199.232.28.133 	raw.githubusercontent.com</span><br><span class="line">185.199.108.153 assets-cdn.github.com</span><br><span class="line">199.232.5.194 	github.global.ssl.fastly.net</span><br><span class="line">140.82.112.10 	codeload.github.com</span><br><span class="line">199.232.68.133 	gist.githubusercontent.com</span><br><span class="line">199.232.28.133 	cloud.githubusercontent.com</span><br><span class="line">199.232.28.133 	camo.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars0.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars1.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars2.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars3.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars4.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars5.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars6.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars7.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars8.githubusercontent.com</span><br><span class="line">140.82.113.6  	api.github.com</span><br><span class="line"><span class="meta">#</span> GitHub End</span><br></pre></td></tr></table></figure><p>同时安装证书：<a href="https://blog.csdn.net/weixin_43201726/article/details/82967342" rel="external nofollow noopener noreferrer" target="_blank">解决“正在连接 raw.githubusercontent.com|151.101.228.133|:443… 失败：拒绝连接”的方法</a></p><p><a href="http://rovo98.coding.me/posts/7e3029b3/" rel="external nofollow noopener noreferrer" target="_blank">解决Github国内访问出现的问题</a></p><h3 id="2-安装软件相关的依赖"><a href="#2-安装软件相关的依赖" class="headerlink" title="2.安装软件相关的依赖"></a>2.安装软件相关的依赖</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[compiler] sudo apt-get install build-essential</span><br><span class="line">[required] sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev</span><br><span class="line">[optional] sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev</span><br><span class="line">sudo apt-get install ant #Java环境</span><br><span class="line"></span><br><span class="line">sudo apt-get install build-essential libgtk2.0-dev libjpeg-dev libtiff5-dev libjasper-dev libopenexr-dev python-dev python-numpy libtbb-dev libeigen3-dev yasm libfaac-dev libopencore-amrnb-dev libopencore-amrwb-dev libtheora-dev libvorbis-dev libxvidcore-dev libx264-dev sphinx-common texlive-latex-extra libv4l-dev libdc1394-22-dev libavcodec-dev libavformat-dev libswscale-dev  #ant cmake和openjdk以单独安装，所以不用在这里面再重新安装一次。</span><br><span class="line">python-tk libvtk5-dev libvtk5-qt4-dev libqt4-dev libqt4-opengl-dev 未安装</span><br></pre></td></tr></table></figure><p>注意：<font color="red" style="font-weight:700">依赖谨慎安装，不是安装越多越好！按照自己需要的安装就行。</font></p><p>安装OpenCV源文档：<a href="https://docs.opencv.org/3.4.9/d7/d9f/tutorial_linux_install.html" rel="external nofollow noopener noreferrer" target="_blank">Installation in Linux</a></p><p>“在生成OpenCV的Makefile之前，cmake工具会检查当前系统中是否已经配置好了Java环境，以决定是否会生成Java开发相应的包。因此，我们首先要确认当前系统已经配置好了Java的开发环境，这一部分内容不属于本文的重点，请参看其他文章。”</p><p><strong>问题：</strong></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">liblzma-dev : 依赖: liblzma5 (= 5.1.1alpha+20120614-2ubuntu2) 但是 5.2.2-1.3 正要被安装</span><br></pre></td></tr></table></figure><p>解决：<a href="https://blog.csdn.net/qq_36396104/article/details/79748458" rel="external nofollow noopener noreferrer" target="_blank">ubuntu安装软件时:有未能满足的依赖关系</a>，使用aptitude，解决问题。</p><p><strong>使用知识：</strong></p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 查看软件是否安装</span><br><span class="line">dpkg -l |grep -i "软件名"</span><br><span class="line"><span class="meta">#</span> 安装某软件包</span><br><span class="line">sudo dpkg -i package.deb</span><br><span class="line"><span class="meta">#</span> 卸载软件</span><br><span class="line">sudo dpkg -r 软件名</span><br><span class="line">sudo apt-get autoremove 软件名</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 软件降级：</span><br><span class="line">sudo apt-get install &lt;package-name&gt;=&lt;package-version-number&gt; OR</span><br><span class="line">sudo apt-get -t=&lt;target release&gt; install &lt;package-name&gt;</span><br><span class="line"><span class="meta">#</span> 或者</span><br><span class="line">sudo apt-get install aptitude</span><br><span class="line">sudo aptitude install 包名=包的版本号</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-- The imported target &quot;vtkInfovisJava&quot; references the file</span><br><span class="line">   &quot;/usr/lib/jni/libvtkInfovisJava.so.5.10.1&quot;</span><br><span class="line">but this file does not exist.  Possible reasons include:</span><br><span class="line">* The file was deleted, renamed, or moved to another location.</span><br><span class="line">* An install or uninstall procedure did not complete successfully.</span><br><span class="line">* The installation package was faulty and contained</span><br><span class="line">   &quot;/usr/lib/vtk-5.10/VTKTargets.cmake&quot;</span><br><span class="line">but not all the files it references.</span><br><span class="line">...</span><br></pre></td></tr></table></figure><h3 id="3-下载源码并创建编译文件夹"><a href="#3-下载源码并创建编译文件夹" class="headerlink" title="3.下载源码并创建编译文件夹"></a>3.下载源码并创建编译文件夹</h3><p>创建一个文件夹用来存储编译产生的文件</p><p>下载地址：<a href="https://github.com/opencv/opencv/releases" rel="external nofollow noopener noreferrer" target="_blank">opencv源码</a>、<a href="https://github.com/opencv/opencv_contrib/releases" rel="external nofollow noopener noreferrer" target="_blank">opencv contrib源码</a></p><p><strong>注意：</strong>请确保opencv和opencv contrib的版本是一致的。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~/opencv</span><br><span class="line">mkdir build</span><br><span class="line">cd build</span><br></pre></td></tr></table></figure><h3 id="4-使用CMake编译OpenCV"><a href="#4-使用CMake编译OpenCV" class="headerlink" title="4.使用CMake编译OpenCV"></a>4.使用CMake编译OpenCV</h3><p><code>cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_TESTS=OFF ..</code></p><p>如果报错，去掉-D后面的空格，即：</p><p><code>cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_TESTS=OFF ..</code></p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">cmake -DOPENCV_ENABLE_NONFREE=ON -DCMAKE_BUILD_TYPE=Release -DOPENCV_GENERATE_PKGCONFIG=ON -DENABLE_PRECOMPILED_HEADERS=OFF -DBUILD_TIFF=ON -DOPENCV_EXTRA_MODULES_PATH=&lt;path/to/opencv_contrib/modules/&gt; -DCMAKE_INSTALL_PREFIX=/usr/local ..</span><br><span class="line"></span><br><span class="line">cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_SHARED_LIBS=OFF -D BUILD_EXAMPLES=OFF -D BUILD_TESTS=OFF -D BUILD_PERF_TESTS=OFF -D OPENCV_EXTRA_MODULES_PATH=/home/edward/Downloads/opencv_contrib-master/modules/ -D BUILD_opencv_text=OFF ..</span><br><span class="line"></span><br><span class="line">cmake \</span><br><span class="line">-DOPENCV_ENABLE_NONFREE=ON \</span><br><span class="line">-DCMAKE_BUILD_TYPE=Release \</span><br><span class="line">-DOPENCV_GENERATE_PKGCONFIG=ON \</span><br><span class="line">-DENABLE_PRECOMPILED_HEADERS=OFF \</span><br><span class="line">-DBUILD_TIFF=ON \</span><br><span class="line">-DBUILD_EXAMPLES=OFF \</span><br><span class="line">-DBUILD_TESTS=OFF \</span><br><span class="line">-DOPENCV_EXTRA_MODULES_PATH=/home/liwen/install/opencv_contrib-3.4.9/modules \</span><br><span class="line">-DCMAKE_INSTALL_PREFIX=/usr/local \</span><br><span class="line">..</span><br></pre></td></tr></table></figure><p><a href="https://raw.githubusercontent.com%2Fopencv%2Fopencv_3rdparty%2F32e315a5b106a7b89dbed51c28f8120a48b368b4%2Fippicv%2Fippicv_2019_lnx_intel64_general_20180723.tgz" rel="external nofollow noopener noreferrer" target="_blank">https://raw.githubusercontent.com%2Fopencv%2Fopencv_3rdparty%2F32e315a5b106a7b89dbed51c28f8120a48b368b4%2Fippicv%2Fippicv_2019_lnx_intel64_general_20180723.tgz</a></p><p>opencv-3.4.9/3rdparty/ippicv/ippicv.cmake</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;$&#123;OPENCV_IPPICV_URL&#125;&quot;</span><br><span class="line">                 &quot;$ENV&#123;OPENCV_IPPICV_URL&#125;&quot;</span><br><span class="line">                 &quot;https://raw.githubusercontent.com/opencv/opencv_3rdparty/$&#123;IPPICV_COMMIT&#125;/ippicv/&quot;</span><br></pre></td></tr></table></figure><p>修改为本地路径：<code>file:///home/liwen/package/opencvDownLoads/</code></p><p>opencv_contrib-3.4.9/modules/face/CMakeLists.txt</p><p><a href="https://blog.csdn.net/qq_34806812/article/details/82501999" rel="external nofollow noopener noreferrer" target="_blank">https://blog.csdn.net/qq_34806812/article/details/82501999</a></p><p><strong>注意：确保To be built有java</strong></p><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1gci35zh511j21gl07f74o.jpg" alt="微信截图_20200304165015.png"></p><p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1gci36la42ij21gh06vq32.jpg" alt="微信截图_20200304165034.png"></p><h3 id="5-编译"><a href="#5-编译" class="headerlink" title="5.编译"></a>5.编译</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo make -j7  #使用7个线程编译</span><br></pre></td></tr></table></figure><p>但是使用自己的机器编译时，使用多线程常出错，错误信息：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[ 42%] Building CXX object modules/core/CMakeFiles/opencv_core.dir/mathfuncs_core.avx.cpp.o</span><br><span class="line">[ 42%] Linking CXX shared library ../../lib/libopencv_core.so</span><br><span class="line">/usr/bin/ld: CMakeFiles/opencv_core.dir/src/matmul.dispatch.cpp.o: relocation R_X86_64_PC32 against undefined symbol `void cv::cpu_baseline::MulTransposedR&lt;unsigned char, float&gt;(cv::Mat const&amp;, cv::Mat const&amp;, cv::Mat const&amp;, double)' can not be used when making a shared object; recompile with -fPIC</span><br><span class="line">/usr/bin/ld: final link failed: Bad value</span><br><span class="line">collect2: ld returned 1 exit status</span><br><span class="line">make[2]: *** [lib/libopencv_core.so.3.4.9] Error 1</span><br><span class="line">make[1]: *** [modules/core/CMakeFiles/opencv_core.dir/all] Error 2</span><br><span class="line">make: *** [all] Error 2</span><br></pre></td></tr></table></figure><p>所以，选择单线程编译：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo make</span><br></pre></td></tr></table></figure><p><strong>问题</strong></p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[ 97%] Generating opencv-349.jar</span><br><span class="line">Unable to locate tools.jar. Expected to find it in /usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar</span><br><span class="line">Buildfile: /home/hadoop/install/opencv-3.4.9/build/modules/java/jar/opencv/build.xml</span><br><span class="line"></span><br><span class="line">jar:</span><br><span class="line">Target 'jar' failed with message 'Unable to find a javac compiler;</span><br><span class="line">com.sun.tools.javac.Main is not on the classpath.</span><br><span class="line">Perhaps JAVA_HOME does not point to the JDK.</span><br><span class="line">It is currently set to "/usr/lib/jvm/java-8-openjdk-amd64/jre"'.</span><br><span class="line"></span><br><span class="line">BUILD FAILED</span><br><span class="line">/home/hadoop/install/opencv-3.4.9/build/modules/java/jar/opencv/build.xml:14: Unable to find a javac compiler;</span><br><span class="line">com.sun.tools.javac.Main is not on the classpath.</span><br><span class="line">Perhaps JAVA_HOME does not point to the JDK.</span><br><span class="line">It is currently set to "/usr/lib/jvm/java-8-openjdk-amd64/jre"</span><br><span class="line"></span><br><span class="line">Total time: 0 seconds</span><br><span class="line">modules/java/jar/CMakeFiles/opencv_java_jar.dir/build.make:61: recipe for target 'CMakeFiles/dephelper/opencv_java_jar' failed</span><br><span class="line">make[2]: *** [CMakeFiles/dephelper/opencv_java_jar] Error 1</span><br><span class="line">CMakeFiles/Makefile2:3258: recipe for target 'modules/java/jar/CMakeFiles/opencv_java_jar.dir/all' failed</span><br><span class="line">make[1]: *** [modules/java/jar/CMakeFiles/opencv_java_jar.dir/all] Error 2</span><br><span class="line">Makefile:162: recipe for target 'all' failed</span><br><span class="line">make: *** [all] Error 2</span><br></pre></td></tr></table></figure><p>原因：自己安装了jdk，另外系统里面又安装了open-jdk，导致环境冲突。</p><p>解决：卸载open-jdk，同时添加CLASSPATH</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get remove openjdk*</span><br></pre></td></tr></table></figure><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar</span><br></pre></td></tr></table></figure><p>或者安装openjdk和ant</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install openjdk-8-jdk</span><br><span class="line">sudo apt-get install ant</span><br><span class="line"><span class="meta">#</span> 卸载</span><br><span class="line">sudo apt-get remove openjdk*</span><br></pre></td></tr></table></figure><p>如果有： <strong>ImportError: /usr/local/lib/libopencv_freetype.so.3.2: undefined symbol: hb_shape</strong></p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i 's/$&#123;freetype2_LIBRARIES&#125; $&#123;harfbuzz_LIBRARIES&#125;/$&#123;FREETYPE_LIBRARIES&#125; $&#123;HARFBUZZ_LIBRARIES&#125;/g' ../opencv_contrib-3.2.0/modules/freetype/CMakeLists.txt</span><br></pre></td></tr></table></figure><h3 id="6-安装库，从构建目录执行以下命令"><a href="#6-安装库，从构建目录执行以下命令" class="headerlink" title="6.安装库，从构建目录执行以下命令"></a>6.安装库，从构建目录执行以下命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo make install</span><br></pre></td></tr></table></figure><p>Java开发相关的动态链接库文件和jar包位于目录：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/share/OpenCV/java/</span><br></pre></td></tr></table></figure><p>参考：</p><p><a href="https://docs.opencv.org/3.4.9/d7/d9f/tutorial_linux_install.html" rel="external nofollow noopener noreferrer" target="_blank">1.<strong>Installation in Linux</strong></a></p><p><a href="https://advancedweb.hu/getting-started-with-opencv-for-java-on-ubuntu/" rel="external nofollow noopener noreferrer" target="_blank">2.Getting started with OpenCV for Java on Ubuntu</a></p><p><a href="https://www.cnblogs.com/xiaomanon/p/5490281.html" rel="external nofollow noopener noreferrer" target="_blank">3.Ubuntu 16.04配置OpenCV 3.1.0 for Java</a></p><p><a href="https://blog.csdn.net/cocoaqin/article/details/78163171" rel="external nofollow noopener noreferrer" target="_blank">4.ubuntu16.04安装opencv3.4.1教程</a></p><p><a href="https://www.voorp.com/a/在Ubuntu系统下安装OpenCV全过程潇洒过路客的博客CSDN博客" rel="external nofollow noopener noreferrer" target="_blank">5.在 Ubuntu系统下安装 OpenCV 全过程</a></p><p><a href="http://x-wei.github.io/linux下安装并使用java开发opencv的配置.html" rel="external nofollow noopener noreferrer" target="_blank">6.linux下安装并使用java开发opencv的配置</a></p><p><a href="">7.linux下安装opencv并生成opencv-java，即linux下用java调用opencv</a></p><p><a href="https://oldpan.me/archives/ubuntu-install-opencv-from-source" rel="external nofollow noopener noreferrer" target="_blank">8.Ubuntu下源码安装Opencv完全指南</a></p><p><a href="https://www.linuxprobe.com/linux-install-opencv.html" rel="external nofollow noopener noreferrer" target="_blank">9.如何在Linux下编译安装OpenCV</a></p><h2 id="三、卸载OpenCV"><a href="#三、卸载OpenCV" class="headerlink" title="三、卸载OpenCV"></a>三、卸载OpenCV</h2><p>1.查看已安装的opencv版本</p><p><code>pkg-config --modversion opencv</code></p><p>2.卸载</p><p>首先要找到当初安装opencv的build目录，进入该build目录执行卸载操作</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo make uninstall</span><br><span class="line">cd  ..</span><br><span class="line">rm -r build</span><br></pre></td></tr></table></figure><p>如果找不见该build目录，可以重新建立build目录安装对应版本，然后再执行上边卸载步骤。然后清理/usr中所有opencv相关项</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo rm -r /usr/local/include/opencv2 /usr/local/include/opencv /usr/include/opencv /usr/include/opencv2 /usr/local/share/opencv /usr/local/share/OpenCV /usr/share/opencv /usr/share/OpenCV /usr/local/bin/opencv* /usr/local/lib/libopencv*</span><br><span class="line">cd /usr</span><br><span class="line">find . -name &quot;*opencv*&quot; | xargs sudo rm -rf</span><br></pre></td></tr></table></figure><p>eclipse安装</p><ul><li>首先输入指令： <strong>cd /usr/share/applications</strong></li><li>然后输入指令： <strong>sudo vim eclipse.desktop</strong></li></ul><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[Desktop Entry]</span><br><span class="line">Encoding=UTF-8</span><br><span class="line">Name=Eclipse</span><br><span class="line">Comment=Eclipse</span><br><span class="line">Exec=/home/liwen/install/eclipse/eclipse</span><br><span class="line">Icon=/home/liwen/install/eclipse/icon.xpm</span><br><span class="line">Terminal=false</span><br><span class="line">StartupNotify=true</span><br><span class="line">Type=Application</span><br><span class="line">Categories=Application;Development;</span><br></pre></td></tr></table></figure><p><strong>其中“Exec=”后面为eclipse安装目录下的eclipse程序的位置路径，“Icon=”后面为eclipse安装目录下的图标图片的路径</strong></p><p>将eclipse变为可执行文件</p><p><strong>sudo chmod u+x eclipse.desktop</strong></p></div><div><div style="padding:10px 0;margin:20px auto;width:90%;text-align:center"><div>谢谢你请我吃糖果！</div> <button id="rewardButton" disable="enable" onclick='var qr=document.getElementById("QR");"none"===qr.style.display?qr.style.display="block":qr.style.display="none"'> <span>打赏</span></button><div id="QR" style="display:none"><div id="wechat" style="display:inline-block"> <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Li Wen WeChat Pay"><p>WeChat Pay</p></div><div id="alipay" style="display:inline-block"> <img id="alipay_qr" src="/images/alipay.jpg" alt="Li Wen Alipay"><p>Alipay</p></div></div></div></div><footer class="post-footer"><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/3b9a2608.html" rel="next" title="【读书笔记】《大数据》读书笔记"><i class="fa fa-chevron-left"></i> 【读书笔记】《大数据》读书笔记</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/7de3978f.html" rel="prev" title="CDH安装">CDH安装<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div><div class="comments" id="comments"></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview"> 站点概览</li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Li Wen"><p class="site-author-name" itemprop="name">Li Wen</p><p class="site-description motion-element" itemprop="description"></p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/"><span class="site-state-item-count">160</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">19</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">1</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、安装cmake"><span class="nav-text">一、安装cmake</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Ubuntu16-04-LTS安装OpenCV3-4-9及OpenCV-Contrib-for-Java"><span class="nav-text">二、Ubuntu16.04 LTS安装OpenCV3.4.9及OpenCV Contrib for Java</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-国内服务器更换阿里云源"><span class="nav-text">1.国内服务器更换阿里云源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-安装软件相关的依赖"><span class="nav-text">2.安装软件相关的依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-下载源码并创建编译文件夹"><span class="nav-text">3.下载源码并创建编译文件夹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-使用CMake编译OpenCV"><span class="nav-text">4.使用CMake编译OpenCV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-编译"><span class="nav-text">5.编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-安装库，从构建目录执行以下命令"><span class="nav-text">6.安装库，从构建目录执行以下命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、卸载OpenCV"><span class="nav-text">三、卸载OpenCV</span></a></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright"> &copy; 2018 - <span itemprop="copyrightYear">2021</span><span class="with-love"><i class="fa fa-heart"></i></span> <span class="author" itemprop="copyrightHolder">Li Wen</span></div><div class="busuanzi-count"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span class="site-uv"><i class="fa fa-user"></i> 访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span> 人</span><span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span> 次</span></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i> <span id="scrollpercent"><span>0</span>%</span></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script><script type="text/javascript">
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="3_IU8QYN7ZX8ohZtDd7g_6zN3154jWW7GDJMLJ8TzSQ">
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+  <meta name="google-site-verification" content="3_IU8QYN7ZX8ohZtDd7g_6zN3154jWW7GDJMLJ8TzSQ">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Ubuntu,OpenCV，编译，Java">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon32.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="Ubuntu16.04安装编译OpenCV for Java">
+<meta name="keywords" content="Ubuntu,OpenCV，编译，Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu16.04安装编译OpenCV for Java">
+<meta property="og:url" content="https://helloliwen.github.io/58e44ad3.html">
+<meta property="og:site_name" content="日拱一卒 不期速成">
+<meta property="og:description" content="Ubuntu16.04安装编译OpenCV for Java">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1gci35zh511j21gl07f74o.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1gci36la42ij21gh06vq32.jpg">
+<meta property="og:updated_time" content="2020-04-26T14:51:35.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ubuntu16.04安装编译OpenCV for Java">
+<meta name="twitter:description" content="Ubuntu16.04安装编译OpenCV for Java">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/75a4a8eegy1gci35zh511j21gl07f74o.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://helloliwen.github.io/58e44ad3.html">
+
+
+
+
+
+  <title>Ubuntu16.04安装编译OpenCV for Java | 日拱一卒 不期速成</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- 页面点击小红心 
+  <script type="text/javascript" src="/js/src/love.js"></script> -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">日拱一卒 不期速成</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">循序渐进 一击中的</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://helloliwen.github.io/58e44ad3.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Li Wen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="日拱一卒 不期速成">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Ubuntu16.04安装编译OpenCV for Java</h2>
+        
+
+        <div class="post-meta">
+		  
+		
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-04T14:52:30+08:00">
+                2020-04-04
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-04-26T22:51:35+08:00">
+                2020-04-26
+              </time>
+            
+          </span>
+		  
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次阅读
+            </span>
+          
+			
+		  		  
+          
+
+          
+              <div class="post-description">
+                  Ubuntu16.04安装编译OpenCV for Java
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、安装cmake"><a href="#一、安装cmake" class="headerlink" title="一、安装cmake"></a>一、安装cmake</h2><p>下载安装包：  <a href="https://github.com/Kitware/CMake/releases?after=v3.10.0-rc2" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/Kitware/CMake/releases?after=v3.10.0-rc2</a>  用的版本是3.9.2</p>
+<p>解压缩</p>
+<p>配置环境变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$PATH:/home/master/install/cmake-3.9.2-Linux-x86_64/bin</span><br><span class="line">export CMAKE_ROOT=/home/master/install/cmake-3.9.2-Linux-x86_64</span><br></pre></td></tr></table></figure>
+<p>安装完毕进行测试：</p>
+<p><code>cmake --version</code></p>
+<p>参考：<a href="https://askubuntu.com/questions/1014670/cmake-error-could-not-find-cmake-root" rel="external nofollow noopener noreferrer" target="_blank">CMake Error: Could not find CMAKE_ROOT?</a></p>
+<h2 id="二、Ubuntu16-04-LTS安装OpenCV3-4-9及OpenCV-Contrib-for-Java"><a href="#二、Ubuntu16-04-LTS安装OpenCV3-4-9及OpenCV-Contrib-for-Java" class="headerlink" title="二、Ubuntu16.04 LTS安装OpenCV3.4.9及OpenCV Contrib for Java"></a>二、Ubuntu16.04 LTS安装OpenCV3.4.9及OpenCV Contrib for Java</h2><h3 id="1-国内服务器更换阿里云源"><a href="#1-国内服务器更换阿里云源" class="headerlink" title="1.国内服务器更换阿里云源"></a>1.国内服务器更换阿里云源</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /etc/apt/sources.list /etc/apt/sources.list.old</span><br><span class="line">sudo vim /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
+<p>阿里云源地址：<a href="https://developer.aliyun.com/mirror/ubuntu?spm=a2c6h.13651102.0.0.3e221b11d3eimD" rel="external nofollow noopener noreferrer" target="_blank">Ubuntu 镜像</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get upgrade</span><br></pre></td></tr></table></figure>
+<p>添加github相关hosts</p>
+<p>CMakeDownloadLog.txt</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>try 1</span><br><span class="line"><span class="meta">#</span>   Trying 151.101.228.133...</span><br><span class="line"><span class="meta">#</span> TCP_NODELAY set</span><br><span class="line"><span class="meta">#</span> connect to 151.101.228.133 port 443 failed: Connection reset by peer</span><br><span class="line"><span class="meta">#</span> Failed to connect to raw.githubusercontent.com port 443: Connection reset by peer</span><br><span class="line"><span class="meta">#</span> Closing connection 0</span><br></pre></td></tr></table></figure>
+<p>去<a href="https://www.ipaddress.com/" rel="external nofollow noopener noreferrer" target="_blank">ipaddress</a>上面查询<code>github.com</code>和<code>raw.githubusercontent.com</code>相关的ip，然后添加到/etc/hosts文件中：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> GitHub Start</span><br><span class="line">140.82.113.3 	github.com</span><br><span class="line">199.232.28.133 	raw.githubusercontent.com</span><br><span class="line">185.199.108.153 assets-cdn.github.com</span><br><span class="line">199.232.5.194 	github.global.ssl.fastly.net</span><br><span class="line">140.82.112.10 	codeload.github.com</span><br><span class="line">199.232.68.133 	gist.githubusercontent.com</span><br><span class="line">199.232.28.133 	cloud.githubusercontent.com</span><br><span class="line">199.232.28.133 	camo.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars0.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars1.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars2.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars3.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars4.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars5.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars6.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars7.githubusercontent.com</span><br><span class="line">199.232.68.133 	avatars8.githubusercontent.com</span><br><span class="line">140.82.113.6  	api.github.com</span><br><span class="line"><span class="meta">#</span> GitHub End</span><br></pre></td></tr></table></figure>
+<p>同时安装证书：<a href="https://blog.csdn.net/weixin_43201726/article/details/82967342" rel="external nofollow noopener noreferrer" target="_blank">解决“正在连接 raw.githubusercontent.com|151.101.228.133|:443… 失败：拒绝连接”的方法</a></p>
+<p><a href="http://rovo98.coding.me/posts/7e3029b3/" rel="external nofollow noopener noreferrer" target="_blank">解决Github国内访问出现的问题</a></p>
+<h3 id="2-安装软件相关的依赖"><a href="#2-安装软件相关的依赖" class="headerlink" title="2.安装软件相关的依赖"></a>2.安装软件相关的依赖</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[compiler] sudo apt-get install build-essential</span><br><span class="line">[required] sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev</span><br><span class="line">[optional] sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev</span><br><span class="line">sudo apt-get install ant #Java环境</span><br><span class="line"></span><br><span class="line">sudo apt-get install build-essential libgtk2.0-dev libjpeg-dev libtiff5-dev libjasper-dev libopenexr-dev python-dev python-numpy libtbb-dev libeigen3-dev yasm libfaac-dev libopencore-amrnb-dev libopencore-amrwb-dev libtheora-dev libvorbis-dev libxvidcore-dev libx264-dev sphinx-common texlive-latex-extra libv4l-dev libdc1394-22-dev libavcodec-dev libavformat-dev libswscale-dev  #ant cmake和openjdk以单独安装，所以不用在这里面再重新安装一次。</span><br><span class="line">python-tk libvtk5-dev libvtk5-qt4-dev libqt4-dev libqt4-opengl-dev 未安装</span><br></pre></td></tr></table></figure>
+<p>注意：<font color="red" style="font-weight:bold">依赖谨慎安装，不是安装越多越好！按照自己需要的安装就行。</font></p>
+<p>安装OpenCV源文档：<a href="https://docs.opencv.org/3.4.9/d7/d9f/tutorial_linux_install.html" rel="external nofollow noopener noreferrer" target="_blank">Installation in Linux</a></p>
+<p>“在生成OpenCV的Makefile之前，cmake工具会检查当前系统中是否已经配置好了Java环境，以决定是否会生成Java开发相应的包。因此，我们首先要确认当前系统已经配置好了Java的开发环境，这一部分内容不属于本文的重点，请参看其他文章。”</p>
+<p><strong>问题：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">liblzma-dev : 依赖: liblzma5 (= 5.1.1alpha+20120614-2ubuntu2) 但是 5.2.2-1.3 正要被安装</span><br></pre></td></tr></table></figure>
+<p>解决：<a href="https://blog.csdn.net/qq_36396104/article/details/79748458" rel="external nofollow noopener noreferrer" target="_blank">ubuntu安装软件时:有未能满足的依赖关系</a>，使用aptitude，解决问题。</p>
+<p><strong>使用知识：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 查看软件是否安装</span><br><span class="line">dpkg -l |grep -i "软件名"</span><br><span class="line"><span class="meta">#</span> 安装某软件包</span><br><span class="line">sudo dpkg -i package.deb</span><br><span class="line"><span class="meta">#</span> 卸载软件</span><br><span class="line">sudo dpkg -r 软件名</span><br><span class="line">sudo apt-get autoremove 软件名</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 软件降级：</span><br><span class="line">sudo apt-get install &lt;package-name&gt;=&lt;package-version-number&gt; OR</span><br><span class="line">sudo apt-get -t=&lt;target release&gt; install &lt;package-name&gt;</span><br><span class="line"><span class="meta">#</span> 或者</span><br><span class="line">sudo apt-get install aptitude</span><br><span class="line">sudo aptitude install 包名=包的版本号</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-- The imported target &quot;vtkInfovisJava&quot; references the file</span><br><span class="line">   &quot;/usr/lib/jni/libvtkInfovisJava.so.5.10.1&quot;</span><br><span class="line">but this file does not exist.  Possible reasons include:</span><br><span class="line">* The file was deleted, renamed, or moved to another location.</span><br><span class="line">* An install or uninstall procedure did not complete successfully.</span><br><span class="line">* The installation package was faulty and contained</span><br><span class="line">   &quot;/usr/lib/vtk-5.10/VTKTargets.cmake&quot;</span><br><span class="line">but not all the files it references.</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="3-下载源码并创建编译文件夹"><a href="#3-下载源码并创建编译文件夹" class="headerlink" title="3.下载源码并创建编译文件夹"></a>3.下载源码并创建编译文件夹</h3><p>创建一个文件夹用来存储编译产生的文件</p>
+<p>下载地址：<a href="https://github.com/opencv/opencv/releases" rel="external nofollow noopener noreferrer" target="_blank">opencv源码</a>、<a href="https://github.com/opencv/opencv_contrib/releases" rel="external nofollow noopener noreferrer" target="_blank">opencv contrib源码</a></p>
+<p><strong>注意：</strong>请确保opencv和opencv contrib的版本是一致的。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~/opencv</span><br><span class="line">mkdir build</span><br><span class="line">cd build</span><br></pre></td></tr></table></figure>
+<h3 id="4-使用CMake编译OpenCV"><a href="#4-使用CMake编译OpenCV" class="headerlink" title="4.使用CMake编译OpenCV"></a>4.使用CMake编译OpenCV</h3><p><code>cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_TESTS=OFF ..</code></p>
+<p>如果报错，去掉-D后面的空格，即：</p>
+<p><code>cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_TESTS=OFF ..</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">cmake -DOPENCV_ENABLE_NONFREE=ON -DCMAKE_BUILD_TYPE=Release -DOPENCV_GENERATE_PKGCONFIG=ON -DENABLE_PRECOMPILED_HEADERS=OFF -DBUILD_TIFF=ON -DOPENCV_EXTRA_MODULES_PATH=&lt;path/to/opencv_contrib/modules/&gt; -DCMAKE_INSTALL_PREFIX=/usr/local ..</span><br><span class="line"></span><br><span class="line">cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_SHARED_LIBS=OFF -D BUILD_EXAMPLES=OFF -D BUILD_TESTS=OFF -D BUILD_PERF_TESTS=OFF -D OPENCV_EXTRA_MODULES_PATH=/home/edward/Downloads/opencv_contrib-master/modules/ -D BUILD_opencv_text=OFF ..</span><br><span class="line"></span><br><span class="line">cmake \</span><br><span class="line">-DOPENCV_ENABLE_NONFREE=ON \</span><br><span class="line">-DCMAKE_BUILD_TYPE=Release \</span><br><span class="line">-DOPENCV_GENERATE_PKGCONFIG=ON \</span><br><span class="line">-DENABLE_PRECOMPILED_HEADERS=OFF \</span><br><span class="line">-DBUILD_TIFF=ON \</span><br><span class="line">-DBUILD_EXAMPLES=OFF \</span><br><span class="line">-DBUILD_TESTS=OFF \</span><br><span class="line">-DOPENCV_EXTRA_MODULES_PATH=/home/liwen/install/opencv_contrib-3.4.9/modules \</span><br><span class="line">-DCMAKE_INSTALL_PREFIX=/usr/local \</span><br><span class="line">..</span><br></pre></td></tr></table></figure>
+<p><a href="https://raw.githubusercontent.com%2Fopencv%2Fopencv_3rdparty%2F32e315a5b106a7b89dbed51c28f8120a48b368b4%2Fippicv%2Fippicv_2019_lnx_intel64_general_20180723.tgz" rel="external nofollow noopener noreferrer" target="_blank">https://raw.githubusercontent.com%2Fopencv%2Fopencv_3rdparty%2F32e315a5b106a7b89dbed51c28f8120a48b368b4%2Fippicv%2Fippicv_2019_lnx_intel64_general_20180723.tgz</a></p>
+<p>opencv-3.4.9/3rdparty/ippicv/ippicv.cmake</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;$&#123;OPENCV_IPPICV_URL&#125;&quot;</span><br><span class="line">                 &quot;$ENV&#123;OPENCV_IPPICV_URL&#125;&quot;</span><br><span class="line">                 &quot;https://raw.githubusercontent.com/opencv/opencv_3rdparty/$&#123;IPPICV_COMMIT&#125;/ippicv/&quot;</span><br></pre></td></tr></table></figure>
+<p>修改为本地路径：<code>file:///home/liwen/package/opencvDownLoads/</code></p>
+<p>opencv_contrib-3.4.9/modules/face/CMakeLists.txt</p>
+<p><a href="https://blog.csdn.net/qq_34806812/article/details/82501999" rel="external nofollow noopener noreferrer" target="_blank">https://blog.csdn.net/qq_34806812/article/details/82501999</a></p>
+<p><strong>注意：确保To be built有java</strong></p>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1gci35zh511j21gl07f74o.jpg" alt="微信截图_20200304165015.png"></p>
+<p><img src="http://ww1.sinaimg.cn/large/75a4a8eegy1gci36la42ij21gh06vq32.jpg" alt="微信截图_20200304165034.png"></p>
+<h3 id="5-编译"><a href="#5-编译" class="headerlink" title="5.编译"></a>5.编译</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo make -j7  #使用7个线程编译</span><br></pre></td></tr></table></figure>
+<p>但是使用自己的机器编译时，使用多线程常出错，错误信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[ 42%] Building CXX object modules/core/CMakeFiles/opencv_core.dir/mathfuncs_core.avx.cpp.o</span><br><span class="line">[ 42%] Linking CXX shared library ../../lib/libopencv_core.so</span><br><span class="line">/usr/bin/ld: CMakeFiles/opencv_core.dir/src/matmul.dispatch.cpp.o: relocation R_X86_64_PC32 against undefined symbol `void cv::cpu_baseline::MulTransposedR&lt;unsigned char, float&gt;(cv::Mat const&amp;, cv::Mat const&amp;, cv::Mat const&amp;, double)' can not be used when making a shared object; recompile with -fPIC</span><br><span class="line">/usr/bin/ld: final link failed: Bad value</span><br><span class="line">collect2: ld returned 1 exit status</span><br><span class="line">make[2]: *** [lib/libopencv_core.so.3.4.9] Error 1</span><br><span class="line">make[1]: *** [modules/core/CMakeFiles/opencv_core.dir/all] Error 2</span><br><span class="line">make: *** [all] Error 2</span><br></pre></td></tr></table></figure>
+<p>所以，选择单线程编译：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo make</span><br></pre></td></tr></table></figure>
+<p><strong>问题</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[ 97%] Generating opencv-349.jar</span><br><span class="line">Unable to locate tools.jar. Expected to find it in /usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar</span><br><span class="line">Buildfile: /home/hadoop/install/opencv-3.4.9/build/modules/java/jar/opencv/build.xml</span><br><span class="line"></span><br><span class="line">jar:</span><br><span class="line">Target 'jar' failed with message 'Unable to find a javac compiler;</span><br><span class="line">com.sun.tools.javac.Main is not on the classpath.</span><br><span class="line">Perhaps JAVA_HOME does not point to the JDK.</span><br><span class="line">It is currently set to "/usr/lib/jvm/java-8-openjdk-amd64/jre"'.</span><br><span class="line"></span><br><span class="line">BUILD FAILED</span><br><span class="line">/home/hadoop/install/opencv-3.4.9/build/modules/java/jar/opencv/build.xml:14: Unable to find a javac compiler;</span><br><span class="line">com.sun.tools.javac.Main is not on the classpath.</span><br><span class="line">Perhaps JAVA_HOME does not point to the JDK.</span><br><span class="line">It is currently set to "/usr/lib/jvm/java-8-openjdk-amd64/jre"</span><br><span class="line"></span><br><span class="line">Total time: 0 seconds</span><br><span class="line">modules/java/jar/CMakeFiles/opencv_java_jar.dir/build.make:61: recipe for target 'CMakeFiles/dephelper/opencv_java_jar' failed</span><br><span class="line">make[2]: *** [CMakeFiles/dephelper/opencv_java_jar] Error 1</span><br><span class="line">CMakeFiles/Makefile2:3258: recipe for target 'modules/java/jar/CMakeFiles/opencv_java_jar.dir/all' failed</span><br><span class="line">make[1]: *** [modules/java/jar/CMakeFiles/opencv_java_jar.dir/all] Error 2</span><br><span class="line">Makefile:162: recipe for target 'all' failed</span><br><span class="line">make: *** [all] Error 2</span><br></pre></td></tr></table></figure>
+<p>原因：自己安装了jdk，另外系统里面又安装了open-jdk，导致环境冲突。</p>
+<p>解决：卸载open-jdk，同时添加CLASSPATH</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get remove openjdk*</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar</span><br></pre></td></tr></table></figure>
+<p>或者安装openjdk和ant</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install openjdk-8-jdk</span><br><span class="line">sudo apt-get install ant</span><br><span class="line"><span class="meta">#</span> 卸载</span><br><span class="line">sudo apt-get remove openjdk*</span><br></pre></td></tr></table></figure>
+<p>如果有： <strong>ImportError: /usr/local/lib/libopencv_freetype.so.3.2: undefined symbol: hb_shape</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i 's/$&#123;freetype2_LIBRARIES&#125; $&#123;harfbuzz_LIBRARIES&#125;/$&#123;FREETYPE_LIBRARIES&#125; $&#123;HARFBUZZ_LIBRARIES&#125;/g' ../opencv_contrib-3.2.0/modules/freetype/CMakeLists.txt</span><br></pre></td></tr></table></figure>
+<h3 id="6-安装库，从构建目录执行以下命令"><a href="#6-安装库，从构建目录执行以下命令" class="headerlink" title="6.安装库，从构建目录执行以下命令"></a>6.安装库，从构建目录执行以下命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<p>Java开发相关的动态链接库文件和jar包位于目录：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/share/OpenCV/java/</span><br></pre></td></tr></table></figure>
+<p>参考：</p>
+<p><a href="https://docs.opencv.org/3.4.9/d7/d9f/tutorial_linux_install.html" rel="external nofollow noopener noreferrer" target="_blank">1.<strong>Installation in Linux</strong></a></p>
+<p><a href="https://advancedweb.hu/getting-started-with-opencv-for-java-on-ubuntu/" rel="external nofollow noopener noreferrer" target="_blank">2.Getting started with OpenCV for Java on Ubuntu</a></p>
+<p><a href="https://www.cnblogs.com/xiaomanon/p/5490281.html" rel="external nofollow noopener noreferrer" target="_blank">3.Ubuntu 16.04配置OpenCV 3.1.0 for Java</a></p>
+<p><a href="https://blog.csdn.net/cocoaqin/article/details/78163171" rel="external nofollow noopener noreferrer" target="_blank">4.ubuntu16.04安装opencv3.4.1教程</a></p>
+<p><a href="https://www.voorp.com/a/在Ubuntu系统下安装OpenCV全过程潇洒过路客的博客CSDN博客" rel="external nofollow noopener noreferrer" target="_blank">5.在 Ubuntu系统下安装 OpenCV 全过程</a></p>
+<p><a href="http://x-wei.github.io/linux下安装并使用java开发opencv的配置.html" rel="external nofollow noopener noreferrer" target="_blank">6.linux下安装并使用java开发opencv的配置</a></p>
+<p><a href="">7.linux下安装opencv并生成opencv-java，即linux下用java调用opencv</a></p>
+<p><a href="https://oldpan.me/archives/ubuntu-install-opencv-from-source" rel="external nofollow noopener noreferrer" target="_blank">8.Ubuntu下源码安装Opencv完全指南</a></p>
+<p><a href="https://www.linuxprobe.com/linux-install-opencv.html" rel="external nofollow noopener noreferrer" target="_blank">9.如何在Linux下编译安装OpenCV</a></p>
+<h2 id="三、卸载OpenCV"><a href="#三、卸载OpenCV" class="headerlink" title="三、卸载OpenCV"></a>三、卸载OpenCV</h2><p>1.查看已安装的opencv版本</p>
+<p><code>pkg-config --modversion opencv</code></p>
+<p>2.卸载</p>
+<p>首先要找到当初安装opencv的build目录，进入该build目录执行卸载操作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo make uninstall</span><br><span class="line">cd  ..</span><br><span class="line">rm -r build</span><br></pre></td></tr></table></figure>
+<p>如果找不见该build目录，可以重新建立build目录安装对应版本，然后再执行上边卸载步骤。然后清理/usr中所有opencv相关项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo rm -r /usr/local/include/opencv2 /usr/local/include/opencv /usr/include/opencv /usr/include/opencv2 /usr/local/share/opencv /usr/local/share/OpenCV /usr/share/opencv /usr/share/OpenCV /usr/local/bin/opencv* /usr/local/lib/libopencv*</span><br><span class="line">cd /usr</span><br><span class="line">find . -name &quot;*opencv*&quot; | xargs sudo rm -rf</span><br></pre></td></tr></table></figure>
+<p>eclipse安装</p>
+<ul>
+<li>首先输入指令： <strong>cd /usr/share/applications</strong></li>
+<li>然后输入指令： <strong>sudo vim eclipse.desktop</strong></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[Desktop Entry]</span><br><span class="line">Encoding=UTF-8</span><br><span class="line">Name=Eclipse</span><br><span class="line">Comment=Eclipse</span><br><span class="line">Exec=/home/liwen/install/eclipse/eclipse</span><br><span class="line">Icon=/home/liwen/install/eclipse/icon.xpm</span><br><span class="line">Terminal=false</span><br><span class="line">StartupNotify=true</span><br><span class="line">Type=Application</span><br><span class="line">Categories=Application;Development;</span><br></pre></td></tr></table></figure>
+<p><strong>其中“Exec=”后面为eclipse安装目录下的eclipse程序的位置路径，“Icon=”后面为eclipse安装目录下的图标图片的路径</strong></p>
+<p>将eclipse变为可执行文件</p>
+<p><strong>sudo chmod u+x eclipse.desktop</strong></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>谢谢你请我吃糖果！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Li Wen WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Li Wen Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/3b9a2608.html" rel="next" title="【读书笔记】《大数据》读书笔记">
+                <i class="fa fa-chevron-left"></i> 【读书笔记】《大数据》读书笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/7de3978f.html" rel="prev" title="CDH安装">
+                CDH安装 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Li Wen">
+          <p class="site-author-name" itemprop="name">Li Wen</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/">
+                <span class="site-state-item-count">160</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、安装cmake"><span class="nav-text">一、安装cmake</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Ubuntu16-04-LTS安装OpenCV3-4-9及OpenCV-Contrib-for-Java"><span class="nav-text">二、Ubuntu16.04 LTS安装OpenCV3.4.9及OpenCV Contrib for Java</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-国内服务器更换阿里云源"><span class="nav-text">1.国内服务器更换阿里云源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-安装软件相关的依赖"><span class="nav-text">2.安装软件相关的依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-下载源码并创建编译文件夹"><span class="nav-text">3.下载源码并创建编译文件夹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-使用CMake编译OpenCV"><span class="nav-text">4.使用CMake编译OpenCV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-编译"><span class="nav-text">5.编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-安装库，从构建目录执行以下命令"><span class="nav-text">6.安装库，从构建目录执行以下命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、卸载OpenCV"><span class="nav-text">三、卸载OpenCV</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2018 - 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Wen</span>
+</div>
+
+
+
+<!--
+<div style="text-align: center;">
+	 <a href='http://www.miitbeian.gov.cn/' target="_blank" rel="external nofollow">湘ICP备18019139号</a> 
+</div>
+-->
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
     // Popup Window;
     var isfetched = false;
     var isXml = true;
@@ -313,4 +1169,41 @@
         onPopupClose();
       }
     });
-  </script><script>!function(){var t=document.createElement("script"),e=window.location.protocol.split(":")[0];t.src="https"===e?"https://zz.bdstatic.com/linksubmit/push.js":"http://push.zhanzhang.baidu.com/push.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}()</script><script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.2"></script></body></html>
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.2"></script>
+
+
+  
+
+</body>
+</html>
