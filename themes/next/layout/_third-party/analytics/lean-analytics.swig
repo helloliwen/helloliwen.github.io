@@ -1,4 +1,4 @@
-{% if theme.leancloud_visitors.enable %}
+{% if theme.leancloud_visitors.enable and !theme.valine.visitor %}
 
   {# custom analytics part create by xiamo #}
   <script src="js/av-core-mini-0.6.4.js"></script>

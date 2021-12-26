@@ -1333,6 +1333,12 @@ abbrlink:
 
 推荐LeanCloud+Valine
 
+[在 NexT 中使用 Valine 评论系统](https://cloud.tencent.com/developer/article/1578662)
+
+[Hexo-NexT 配置 Valine](https://tding.top/archives/ed8b904f.html)
+
+[Hexo 集成 Valine 评论系统](https://www.jianshu.com/p/b9e73c881729)
+
 [Hexo博客(14)添加来必力评论系统](<http://masikkk.com/article/hexo-14-livere-comment/>)
 
 #### 28.开启打赏功能
