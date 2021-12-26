@@ -1,4 +1,834 @@
-<!DOCTYPE html><html class="theme-next gemini use-motion" lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><meta name="google-site-verification" content="3_IU8QYN7ZX8ohZtDd7g_6zN3154jWW7GDJMLJ8TzSQ"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="google-site-verification" content="3_IU8QYN7ZX8ohZtDd7g_6zN3154jWW7GDJMLJ8TzSQ"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css"><meta name="keywords" content="日拱一卒,不期速成;循序渐进,一击中的"><link rel="shortcut icon" type="image/x-icon" href="/images/favicon32.ico?v=5.1.2"><meta name="description" content="Spark源码阅读之一——SparkContext初始化"><meta property="og:type" content="article"><meta property="og:title" content="Spark源码阅读之一——SparkContext初始化"><meta property="og:url" content="https://helloliwen.github.io/36cd8492.html"><meta property="og:site_name" content="日拱一卒 不期速成"><meta property="og:description" content="Spark源码阅读之一——SparkContext初始化"><meta property="og:locale" content="zh-Hans"><meta property="og:updated_time" content="2020-01-07T13:00:46.130Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Spark源码阅读之一——SparkContext初始化"><meta name="twitter:description" content="Spark源码阅读之一——SparkContext初始化"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Gemini",sidebar:{position:"left",display:"post",offset:12,offset_float:12,b2t:!1,scrollpercent:!0,onmobile:!1},fancybox:!0,tabs:!0,motion:!0,duoshuo:{userId:"0",author:"博主"},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><link rel="canonical" href="https://helloliwen.github.io/36cd8492.html"><title>Spark源码阅读之一——SparkContext初始化 | 日拱一卒 不期速成</title></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">日拱一卒 不期速成</span><span class="logo-line-after"><i></i></span></a></div><h1 class="site-subtitle" itemprop="description">循序渐进 一击中的</h1></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br> 首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br> 分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br> 标签</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br> 搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="https://helloliwen.github.io/36cd8492.html"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="Li Wen"><meta itemprop="description" content=""><meta itemprop="image" content="/images/avatar.jpg"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="日拱一卒 不期速成"></span><header class="post-header"><h2 class="post-title" itemprop="name headline">Spark源码阅读之一——SparkContext初始化</h2><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-29T16:40:27+08:00">2019-12-29</time> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">更新于</span> <time title="更新于" itemprop="dateModified" datetime="2020-01-07T21:00:46+08:00">2020-01-07</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/大数据/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a></span> > <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/大数据/Spark/" itemprop="url" rel="index"><span itemprop="name">Spark</span></a></span></span> <span class="post-meta-divider">|</span><span class="page-pv"><i class="fa fa-file-o"></i><span class="busuanzi-value" id="busuanzi_value_page_pv"></span> 次阅读</span><div class="post-description"> Spark源码阅读之一——SparkContext初始化</div></div></header><div class="post-body" itemprop="articleBody"><h2 id="一、SparkContext概述"><a href="#一、SparkContext概述" class="headerlink" title="一、SparkContext概述"></a>一、SparkContext概述</h2><p>　　SparkDriver用于提交用户应用程序，实际可以看作Spark的客户端。Spark Driver的初始化始终围绕着SparkContext的初始化。而SparkContext的配置参数则是由SparkConf负责，SparkConf就是你的操作面板。</p><p>　　SparkConf的构造很简单，主要通过<font color="red">ConcurrentHashMap</font>来维护各种Spark的配置属性。</p><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Spark应用程序的配置。用于将各种Spark参数设置为键值对。</span></span><br><span class="line"><span class="comment">* 大多数情况下，您将使用“new SparkConf()”创建一个SparkConf对象，该对象还将从您的应用程序中设置的任何“ spark.*”Java系统属性中加载值。在这种情况下，直接在`SparkConf`对象上设置的参数优先于系统属性。</span></span><br><span class="line"><span class="comment">* 对于单元测试，无论系统属性是什么，您也可以调用`new SparkConf（false）`跳过加载外部设置并获得相同的配置。</span></span><br><span class="line"><span class="comment">* 此类中的所有setter方法都支持chaining编程。比如你可以写`new SparkConf().setMaster("local").setAppName("My app")`.</span></span><br><span class="line"><span class="comment">* @param loadDefaults 是否还从Java系统属性中加载值</span></span><br><span class="line"><span class="comment">* @note 一旦将SparkConf对象传递给Spark，它就会被克隆，并且用户无法再对其进行修改。 Spark不支持在运行时修改配置。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SparkConf</span>(<span class="params">loadDefaults: <span class="type">Boolean</span></span>) <span class="keyword">extends</span> <span class="title">Cloneable</span> <span class="keyword">with</span> <span class="title">Logging</span> <span class="keyword">with</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">import</span> <span class="type">SparkConf</span>._</span><br><span class="line">  <span class="comment">/** Create a SparkConf that loads defaults from system properties and the classpath */</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">this</span></span>() = <span class="keyword">this</span>(<span class="literal">true</span>)</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> settings = <span class="keyword">new</span> <span class="type">ConcurrentHashMap</span>[<span class="type">String</span>, <span class="type">String</span>]()</span><br><span class="line">    </span><br><span class="line">  <span class="keyword">if</span> (loadDefaults) &#123;</span><br><span class="line">    loadFromSystemProperties(<span class="literal">false</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span>[spark] <span class="function"><span class="keyword">def</span> <span class="title">loadFromSystemProperties</span></span>(silent: <span class="type">Boolean</span>): <span class="type">SparkConf</span> = &#123;</span><br><span class="line">    <span class="comment">// Load any spark.* system properties 加载任何以spark开头的系统属性</span></span><br><span class="line">    <span class="keyword">for</span> ((key, value) &lt;- <span class="type">Utils</span>.getSystemProperties <span class="keyword">if</span> key.startsWith(<span class="string">"spark."</span>)) &#123;</span><br><span class="line">      set(key, value, silent)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure><p>SparkContext的主构造器参数为SparkConf，其实现如下：</p><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Spark功能的主要入口点。 SparkContext表示与Spark集群的连接，可用于在该集群上创建RDD，累加器和广播变量。</span></span><br><span class="line"><span class="comment">* @note 每个JVM应该只有一个SparkContext是活动的。在创建一个新的SparkContext之前，您必须stop之前的。</span></span><br><span class="line"><span class="comment">* @param 指定一个描述应用程序配置的Spark Config对象，此配置中的任何设置都将覆盖默认配置以及系统属性。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SparkContext</span>(<span class="params">config: <span class="type">SparkConf</span></span>) <span class="keyword">extends</span> <span class="title">Logging</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 构造此SparkContext的呼叫站点。保存着线程栈中最靠近栈顶的用户定义的类和最靠近栈底的Scala或者Spark核心类的信息，其中ShortForm属性保存着上述信息的间断描述，LongForm属性保存着上述信息的完整描述</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> creationSite: <span class="type">CallSite</span> = <span class="type">Utils</span>.getCallSite()</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 为了防止同时激活多个SparkContext，请将此上下文标记为已开始构建。</span></span><br><span class="line">  <span class="comment">// <span class="doctag">NOTE:</span> this must be placed at the beginning of the SparkContext constructor.</span></span><br><span class="line">  <span class="type">SparkContext</span>.markPartiallyConstructed(<span class="keyword">this</span>)</span><br></pre></td></tr></table></figure><p>markPartiallyConstructed用来确保实例的唯一性。必须指定<code>spark.master</code>和<code>spark.app.name</code>，否则抛出异常。</p><p>SparkContext内部组件：</p><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//SparkContext的配置，会先调用config的clone方法，在进行验证配置，是否设置了spark.master和spark.app.name</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _conf: <span class="type">SparkConf</span> = _</span><br><span class="line"><span class="comment">//事件日志的路径,当spark.enabled属性为true时启用，默认为/tmp/spark-events,也可以通过spark.eventLog.dir来指定目录</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _eventLogDir: <span class="type">Option</span>[<span class="type">URI</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//事件日志的压缩算法，当spark.eventLog.enabled属性与spark.eventLog.compress属性为true时，压缩算法默认为lz4。也可以通过spark.io.compression.codec属性指定，目前支持lzf,snappy和lz4</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _eventLogCodec: <span class="type">Option</span>[<span class="type">String</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//SparkContext中的事件总线，可以接收各个使用者的事件，异步将SparkListenerevent传递给注册的SparkListener</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _listenerBus: <span class="type">LiveListenerBus</span> = _</span><br><span class="line"><span class="comment">//Spark运行时环境，Spark 中任务执行是通过Executor，所有的Executor都有自己的执行环境SparkEnv，在Driver中也包含了SparkEnv，为了保证`Local模式的运行，SparkEnv内部还提供了不同的组件，来实现不同的功能</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _env: <span class="type">SparkEnv</span> = _</span><br><span class="line"><span class="comment">//用于监控作业和Stage进度状态的低级API</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _statusTracker: <span class="type">SparkStatusTracker</span> = _</span><br><span class="line"><span class="comment">//定期从sc.statusTracker获得active stage的状态信息，展示到进度条［在SparkUI上面可以看到进度条］，会有一定的延时。内部有一个timer，500ms refresh一遍</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _progressBar: <span class="type">Option</span>[<span class="type">ConsoleProgressBar</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//Spark的用户界面，SparkUI间接依赖于计算引擎，调度引擎，存储引擎，Job，Stage，Executor等组件的监控都会以SparkListenerEvent的形式传递给LiveListenerBus，SparkUI将从各个SparkListener中读取数据并显示在web界面</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _ui: <span class="type">Option</span>[<span class="type">SparkUI</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//Hadoop配置信息，如果系统属性SPARK_YARN_MODE为true或者环境变量SPARK_YARN_MODEL为true，那么将会是YARN的配置，否则为Hadoop的配置</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _hadoopConfiguration: <span class="type">Configuration</span> = _</span><br><span class="line"><span class="comment">//Executor内存大小，默认为1024MB，可以通过设置环境变量（SPARK_MEM或者SPARK_EXECUTOR_MEMORY）或者Spark.executor.memory属性指定其中Spark.executor.memory优先级最高</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _executorMemory: <span class="type">Int</span> = _</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _schedulerBackend: <span class="type">SchedulerBackend</span> = _</span><br><span class="line"><span class="comment">//Task调度器，是Spark调度系统中重要的组件之一，负责将任务发送到集群，运行。如果有失败的任务则重新执行，之后返回给DAGScheduler。TaskScheduler调度的Task是由DAGScheduler创建的，所以DAGScheduler是TaskScheduler前置调度。</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _taskScheduler: <span class="type">TaskScheduler</span> = _</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _heartbeatReceiver: <span class="type">RpcEndpointRef</span> = _</span><br><span class="line"><span class="comment">//DAG调度器，是Spark调度系统中重要的组件之一，负责创建Job，将DAG的RDD划分到不同的Stage，提交stage等，SparkUI中有关Job和Stage监控数据都来自DAGScheduer</span></span><br><span class="line"><span class="meta">@volatile</span> <span class="keyword">private</span> <span class="keyword">var</span> _dagScheduler: <span class="type">DAGScheduler</span> = _</span><br><span class="line"><span class="comment">//当前应用的标识，TaskScheduler启动后会创建应用标识，通过调取TaskScheduler的ApplicationId获取的</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _applicationId: <span class="type">String</span> = _</span><br><span class="line"><span class="comment">//当前应用尝试执行的标识，Spark Driver在执行时会多次尝试，每次尝试都会生成一个标识来代表应用尝试执行的身份</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _applicationAttemptId: <span class="type">Option</span>[<span class="type">String</span>] = <span class="type">None</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _eventLogger: <span class="type">Option</span>[<span class="type">EventLoggingListener</span>] = <span class="type">None</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _driverLogger: <span class="type">Option</span>[<span class="type">DriverLogger</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//Executor动态分配管理器，根据工作负载动态调整Executor数量，当在配置spark.dynamicAlloction.enabled属性为true的情况下，在非local模式下或者spark.dynamicAllcation.testing属性为true时启用</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _executorAllocationManager: <span class="type">Option</span>[<span class="type">ExecutorAllocationManager</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//异步清理RDD、shuffle和广播状态信息</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _cleaner: <span class="type">Option</span>[<span class="type">ContextCleaner</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//LiveListenerBus是否已经启动的标记</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _listenerBusStarted: <span class="type">Boolean</span> = <span class="literal">false</span></span><br><span class="line"><span class="comment">//用户提交的jar文件，当选择部署模式为yarn时，_jars是由spark.jars属性指定的jar文件和spark.yarn.dist.jars属性指定的并集</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _jars: <span class="type">Seq</span>[<span class="type">String</span>] = _</span><br><span class="line"><span class="comment">//用户设置的文件，可以根据Spark.file属性指定</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _files: <span class="type">Seq</span>[<span class="type">String</span>] = _</span><br><span class="line"><span class="comment">//设置关闭钩子的管理器，可以给应用设置钩子，这样当JVM退出的时候就会执行清理工作</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _shutdownHookRef: <span class="type">AnyRef</span> = _</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _statusStore: <span class="type">AppStatusStore</span> = _</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _heartbeater: <span class="type">Heartbeater</span> = _</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _resources: scala.collection.immutable.<span class="type">Map</span>[<span class="type">String</span>, <span class="type">ResourceInformation</span>] = _</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _shuffleDriverComponents: <span class="type">ShuffleDriverComponents</span> = _</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="function"><span class="keyword">def</span> <span class="title">env</span></span>: <span class="type">SparkEnv</span> = _env</span><br><span class="line"><span class="comment">// 用于每个本地文件的URL与添加此文件到addedFiles时的时间戳之间的映射缓存</span></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="keyword">val</span> addedFiles = <span class="keyword">new</span> <span class="type">ConcurrentHashMap</span>[<span class="type">String</span>, <span class="type">Long</span>]().asScala</span><br><span class="line"><span class="comment">//用于每个本地Jar文件的URL与添加此文件到addedJars时的时间戳之间的映射缓存</span></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="keyword">val</span> addedJars = <span class="keyword">new</span> <span class="type">ConcurrentHashMap</span>[<span class="type">String</span>, <span class="type">Long</span>]().asScala</span><br><span class="line"><span class="comment">// Keeps track of all persisted RDDs 用于对所有持久化的RDD保持跟踪</span></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="keyword">val</span> persistentRdds = &#123;</span><br><span class="line">    <span class="keyword">val</span> map: <span class="type">ConcurrentMap</span>[<span class="type">Int</span>, <span class="type">RDD</span>[_]] = <span class="keyword">new</span> <span class="type">MapMaker</span>().weakValues().makeMap[<span class="type">Int</span>, <span class="type">RDD</span>[_]]()</span><br><span class="line">    map.asScala</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 用于对所有持久化的RDD保持跟踪</span></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="keyword">val</span> executorEnvs = <span class="type">HashMap</span>[<span class="type">String</span>, <span class="type">String</span>]()</span><br><span class="line"><span class="comment">//当前系统的登录用户，可以通过环境变量SPARK_USER来设置 通过</span></span><br><span class="line"><span class="keyword">val</span> sparkUser = <span class="type">Utils</span>.getCurrentUserName()</span><br><span class="line"><span class="comment">//RDD计算过程中用于记录RDD检查点的目录</span></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="keyword">var</span> checkpointDir: <span class="type">Option</span>[<span class="type">String</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//类型为AtomicInteger，用于生成下一个shuffle标识</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> nextShuffleId = <span class="keyword">new</span> <span class="type">AtomicInteger</span>(<span class="number">0</span>)</span><br><span class="line"><span class="comment">//类型为atomicInteger，用于生成下一个rdd标识</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> nextRddId = <span class="keyword">new</span> <span class="type">AtomicInteger</span>(<span class="number">0</span>)</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">allowMulitipleContext : 是否允许多个SparkContext实例，默认为False，可以通过设置Spark.Driver.allowMulitipleContexts来控制</span><br><span class="line"></span><br><span class="line">startTime：标记sparkContext的启动时间戳</span><br><span class="line"></span><br><span class="line">stopped：标记sparkContext是否处于停止状态，采用原子类型AtomicBoolean</span><br><span class="line"></span><br><span class="line">HeatbeatReceiver：心跳接收器，所有的Executor都会向HeatbeatReceiver发送心跳信息，HeatbeatReceiver接收到心跳之后，先更新Executor最后可见时间，然后将此信息交给TaskScheduler。</span><br><span class="line"></span><br><span class="line">localProperties：InheritableThreadLocal保护的线程，其中的属性值可以沿着线程栈一直传递下去。线程局部变量，用户可用于将信息向下传递到堆栈</span><br></pre></td></tr></table></figure><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 1.初始化configuration</span></span><br><span class="line">    _conf = config.clone()</span><br><span class="line">    _conf.validateSettings()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!_conf.contains(<span class="string">"spark.master"</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">SparkException</span>(<span class="string">"A master URL must be set in your configuration"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!_conf.contains(<span class="string">"spark.app.name"</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">SparkException</span>(<span class="string">"An application name must be set in your configuration"</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _driverLogger = <span class="type">DriverLogger</span>(_conf)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> resourcesFileOpt = conf.get(<span class="type">DRIVER_RESOURCES_FILE</span>)</span><br><span class="line">    <span class="keyword">val</span> allResources = getOrDiscoverAllResources(_conf, <span class="type">SPARK_DRIVER_PREFIX</span>, resourcesFileOpt)</span><br><span class="line">    _resources = &#123;</span><br><span class="line">        <span class="comment">// driver submitted in client mode under Standalone may have conflicting resources with</span></span><br><span class="line">        <span class="comment">// other drivers/workers on this host. We should sync driver's resources info into</span></span><br><span class="line">        <span class="comment">// SPARK_RESOURCES/SPARK_RESOURCES_COORDINATE_DIR/ to avoid collision.</span></span><br><span class="line">        <span class="keyword">if</span> (isClientStandalone) &#123;</span><br><span class="line">            acquireResources(_conf, <span class="type">SPARK_DRIVER_PREFIX</span>, allResources, <span class="type">Utils</span>.getProcessId)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            allResources</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    logResourceInfo(<span class="type">SPARK_DRIVER_PREFIX</span>, _resources)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// log out spark.app.name in the Spark driver logs</span></span><br><span class="line">    logInfo(<span class="string">s"Submitted application: <span class="subst">$appName</span>"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// System property spark.yarn.app.id must be set if user code ran by AM on a YARN cluster</span></span><br><span class="line">    <span class="keyword">if</span> (master == <span class="string">"yarn"</span> &amp;&amp; deployMode == <span class="string">"cluster"</span> &amp;&amp; !_conf.contains(<span class="string">"spark.yarn.app.id"</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">SparkException</span>(<span class="string">"Detected yarn cluster mode, but isn't running on a cluster. "</span> +</span><br><span class="line">                                 <span class="string">"Deployment to YARN is not supported directly by SparkContext. Please use spark-submit."</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_conf.getBoolean(<span class="string">"spark.logConf"</span>, <span class="literal">false</span>)) &#123;</span><br><span class="line">        logInfo(<span class="string">"Spark configuration:\n"</span> + _conf.toDebugString)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set Spark driver host and port system properties. This explicitly sets the configuration</span></span><br><span class="line">    <span class="comment">// instead of relying on the default value of the config constant.</span></span><br><span class="line">    _conf.set(<span class="type">DRIVER_HOST_ADDRESS</span>, _conf.get(<span class="type">DRIVER_HOST_ADDRESS</span>))</span><br><span class="line">    _conf.setIfMissing(<span class="type">DRIVER_PORT</span>, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    _conf.set(<span class="type">EXECUTOR_ID</span>, <span class="type">SparkContext</span>.<span class="type">DRIVER_IDENTIFIER</span>)</span><br><span class="line"></span><br><span class="line">    _jars = <span class="type">Utils</span>.getUserJars(_conf)</span><br><span class="line">    _files = _conf.getOption(<span class="type">FILES</span>.key).map(_.split(<span class="string">","</span>)).map(_.filter(_.nonEmpty))</span><br><span class="line">    .toSeq.flatten</span><br><span class="line">	<span class="comment">// 2.初始化日志目录并设置压缩类</span></span><br><span class="line">    _eventLogDir =</span><br><span class="line">    <span class="keyword">if</span> (isEventLogEnabled) &#123;</span><br><span class="line">        <span class="keyword">val</span> unresolvedDir = conf.get(<span class="type">EVENT_LOG_DIR</span>).stripSuffix(<span class="string">"/"</span>)</span><br><span class="line">        <span class="type">Some</span>(<span class="type">Utils</span>.resolveURI(unresolvedDir))</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _eventLogCodec = &#123;</span><br><span class="line">        <span class="keyword">val</span> compress = _conf.get(<span class="type">EVENT_LOG_COMPRESS</span>)</span><br><span class="line">        <span class="keyword">if</span> (compress &amp;&amp; isEventLogEnabled) &#123;</span><br><span class="line">            <span class="type">Some</span>(<span class="type">CompressionCodec</span>.getCodecName(_conf)).map(<span class="type">CompressionCodec</span>.getShortName)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">None</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 3.LiveListenerBus负责将SparkListenerEvent异步地传递给对应注册的SparkListener.</span></span><br><span class="line">    _listenerBus = <span class="keyword">new</span> <span class="type">LiveListenerBus</span>(_conf)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Initialize the app status store and listener before SparkEnv is created so that it gets</span></span><br><span class="line">    <span class="comment">// all events.</span></span><br><span class="line">    <span class="keyword">val</span> appStatusSource = <span class="type">AppStatusSource</span>.createSource(conf)</span><br><span class="line">    <span class="comment">// 4. 给 app 提供一个 kv store（in-memory）</span></span><br><span class="line">    _statusStore = <span class="type">AppStatusStore</span>.createLiveStore(conf, appStatusSource)</span><br><span class="line">    <span class="comment">// 5. 注册 AppStatusListener 到 LiveListenerBus 中</span></span><br><span class="line">    listenerBus.addToStatusQueue(_statusStore.listener.get)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create the Spark execution environment (cache, map output tracker, etc)</span></span><br><span class="line">    <span class="comment">// 6. 创建 driver端的 env</span></span><br><span class="line">    <span class="comment">// 包含所有的spark 实例运行时对象（master 或 worker），包含了序列化器，RPCEnv，block manager， map out tracker等等。</span></span><br><span class="line">    <span class="comment">// 当前的spark 通过一个全局的变量代码找到 SparkEnv，所有的线程可以访问同一个SparkEnv，</span></span><br><span class="line">    <span class="comment">// 创建SparkContext之后，可以通过 SparkEnv.get方法来访问它</span></span><br><span class="line">    _env = createSparkEnv(_conf, isLocal, listenerBus)</span><br><span class="line">    <span class="type">SparkEnv</span>.set(_env)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// If running the REPL, register the repl's output dir with the file server.</span></span><br><span class="line">    _conf.getOption(<span class="string">"spark.repl.class.outputDir"</span>).foreach &#123; path =&gt;</span><br><span class="line">        <span class="keyword">val</span> replUri = _env.rpcEnv.fileServer.addDirectory(<span class="string">"/classes"</span>, <span class="keyword">new</span> <span class="type">File</span>(path))</span><br><span class="line">        _conf.set(<span class="string">"spark.repl.class.uri"</span>, replUri)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 7. 从底层监控 spark job 和 stage 的状态并汇报的 API</span></span><br><span class="line">    _statusTracker = <span class="keyword">new</span> <span class="type">SparkStatusTracker</span>(<span class="keyword">this</span>, _statusStore)</span><br><span class="line">	<span class="comment">// 8. console 进度条</span></span><br><span class="line">    _progressBar =</span><br><span class="line">    <span class="keyword">if</span> (_conf.get(<span class="type">UI_SHOW_CONSOLE_PROGRESS</span>)) &#123;</span><br><span class="line">        <span class="type">Some</span>(<span class="keyword">new</span> <span class="type">ConsoleProgressBar</span>(<span class="keyword">this</span>))</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 9. spark ui, 使用jetty 实现</span></span><br><span class="line">    _ui =</span><br><span class="line">    <span class="keyword">if</span> (conf.get(<span class="type">UI_ENABLED</span>)) &#123;</span><br><span class="line">        <span class="type">Some</span>(<span class="type">SparkUI</span>.create(<span class="type">Some</span>(<span class="keyword">this</span>), _statusStore, _conf, _env.securityManager, appName, <span class="string">""</span>,</span><br><span class="line">                            startTime))</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// For tests, do not enable the UI</span></span><br><span class="line">        <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Bind the UI before starting the task scheduler to communicate</span></span><br><span class="line">    <span class="comment">// the bound port to the cluster manager properly</span></span><br><span class="line">    _ui.foreach(_.bind())</span><br><span class="line">    </span><br><span class="line">	<span class="comment">// 10. 创建 hadoop configuration</span></span><br><span class="line">    _hadoopConfiguration = <span class="type">SparkHadoopUtil</span>.get.newConfiguration(_conf)</span><br><span class="line">    <span class="comment">// Performance optimization: this dummy call to .size() triggers eager evaluation of</span></span><br><span class="line">    <span class="comment">// Configuration's internal  `properties` field, guaranteeing that it will be computed and</span></span><br><span class="line">    <span class="comment">// cached before SessionState.newHadoopConf() uses `sc.hadoopConfiguration` to create</span></span><br><span class="line">    <span class="comment">// a new per-session Configuration. If `properties` has not been computed by that time</span></span><br><span class="line">    <span class="comment">// then each newly-created Configuration will perform its own expensive IO and XML</span></span><br><span class="line">    <span class="comment">// parsing to load configuration defaults and populate its own properties. By ensuring</span></span><br><span class="line">    <span class="comment">// that we've pre-computed the parent's properties, the child Configuration will simply</span></span><br><span class="line">    <span class="comment">// clone the parent's properties.</span></span><br><span class="line">    _hadoopConfiguration.size()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 11. Add each JAR given through the constructor</span></span><br><span class="line">    <span class="keyword">if</span> (jars != <span class="literal">null</span>) &#123;</span><br><span class="line">        jars.foreach(addJar)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (files != <span class="literal">null</span>) &#123;</span><br><span class="line">        files.foreach(addFile)</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 12.计算executor的内存</span></span><br><span class="line">    _executorMemory = _conf.getOption(<span class="type">EXECUTOR_MEMORY</span>.key)</span><br><span class="line">    .orElse(<span class="type">Option</span>(<span class="type">System</span>.getenv(<span class="string">"SPARK_EXECUTOR_MEMORY"</span>)))</span><br><span class="line">    .orElse(<span class="type">Option</span>(<span class="type">System</span>.getenv(<span class="string">"SPARK_MEM"</span>))</span><br><span class="line">            .map(warnSparkMem))</span><br><span class="line">    .map(<span class="type">Utils</span>.memoryStringToMb)</span><br><span class="line">    .getOrElse(<span class="number">1024</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Convert java options to env vars as a work around</span></span><br><span class="line">    <span class="comment">// since we can't set env vars directly in sbt.</span></span><br><span class="line">    <span class="keyword">for</span> &#123; (envKey, propKey) &lt;- <span class="type">Seq</span>((<span class="string">"SPARK_TESTING"</span>, <span class="type">IS_TESTING</span>.key))</span><br><span class="line">         value &lt;- <span class="type">Option</span>(<span class="type">System</span>.getenv(envKey)).orElse(<span class="type">Option</span>(<span class="type">System</span>.getProperty(propKey)))&#125; &#123;</span><br><span class="line">        executorEnvs(envKey) = value</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">Option</span>(<span class="type">System</span>.getenv(<span class="string">"SPARK_PREPEND_CLASSES"</span>)).foreach &#123; v =&gt;</span><br><span class="line">        executorEnvs(<span class="string">"SPARK_PREPEND_CLASSES"</span>) = v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// The Mesos scheduler backend relies on this environment variable to set executor memory.</span></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> Set this only in the Mesos scheduler.</span></span><br><span class="line">    executorEnvs(<span class="string">"SPARK_EXECUTOR_MEMORY"</span>) = executorMemory + <span class="string">"m"</span></span><br><span class="line">    executorEnvs ++= _conf.getExecutorEnv</span><br><span class="line">    executorEnvs(<span class="string">"SPARK_USER"</span>) = sparkUser</span><br><span class="line"></span><br><span class="line">    _shuffleDriverComponents = <span class="type">ShuffleDataIOUtils</span>.loadShuffleDataIO(config).driver()</span><br><span class="line">    _shuffleDriverComponents.initializeApplication().asScala.foreach &#123; <span class="keyword">case</span> (k, v) =&gt;</span><br><span class="line">        _conf.set(<span class="type">ShuffleDataIOUtils</span>.<span class="type">SHUFFLE_SPARK_CONF_PREFIX</span> + k, v)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// We need to register "HeartbeatReceiver" before "createTaskScheduler" because Executor will</span></span><br><span class="line">    <span class="comment">// retrieve "HeartbeatReceiver" in the constructor. (SPARK-6640)</span></span><br><span class="line">    <span class="comment">// 13. 创建 HeartbeatReceiver endpoint</span></span><br><span class="line">    _heartbeatReceiver = env.rpcEnv.setupEndpoint(</span><br><span class="line">        <span class="type">HeartbeatReceiver</span>.<span class="type">ENDPOINT_NAME</span>, <span class="keyword">new</span> <span class="type">HeartbeatReceiver</span>(<span class="keyword">this</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create and start the scheduler</span></span><br><span class="line">    <span class="comment">// 14. 创建 task scheduler 和 scheduler backend</span></span><br><span class="line">    <span class="keyword">val</span> (sched, ts) = <span class="type">SparkContext</span>.createTaskScheduler(<span class="keyword">this</span>, master, deployMode)</span><br><span class="line">    _schedulerBackend = sched</span><br><span class="line">    _taskScheduler = ts</span><br><span class="line">    <span class="comment">// 15. 创建DAGScheduler实例</span></span><br><span class="line">    _dagScheduler = <span class="keyword">new</span> <span class="type">DAGScheduler</span>(<span class="keyword">this</span>)</span><br><span class="line">    _heartbeatReceiver.ask[<span class="type">Boolean</span>](<span class="type">TaskSchedulerIsSet</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// create and start the heartbeater for collecting memory metrics</span></span><br><span class="line">    _heartbeater = <span class="keyword">new</span> <span class="type">Heartbeater</span>(</span><br><span class="line">        () =&gt; <span class="type">SparkContext</span>.<span class="keyword">this</span>.reportHeartBeat(),</span><br><span class="line">        <span class="string">"driver-heartbeater"</span>,</span><br><span class="line">        conf.get(<span class="type">EXECUTOR_HEARTBEAT_INTERVAL</span>))</span><br><span class="line">    _heartbeater.start()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// start TaskScheduler after taskScheduler sets DAGScheduler reference in DAGScheduler's</span></span><br><span class="line">    <span class="comment">// constructor</span></span><br><span class="line">    <span class="comment">// 16. 启动Taskscheduler</span></span><br><span class="line">    _taskScheduler.start()</span><br><span class="line">	<span class="comment">// 17. 从Taskscheduler获取applicationId</span></span><br><span class="line">    _applicationId = _taskScheduler.applicationId()</span><br><span class="line">    <span class="comment">// 18. 从Taskscheduler获取 application attempt id</span></span><br><span class="line">    _applicationAttemptId = _taskScheduler.applicationAttemptId()</span><br><span class="line">    _conf.set(<span class="string">"spark.app.id"</span>, _applicationId)</span><br><span class="line">    <span class="keyword">if</span> (_conf.get(<span class="type">UI_REVERSE_PROXY</span>)) &#123;</span><br><span class="line">        <span class="type">System</span>.setProperty(<span class="string">"spark.ui.proxyBase"</span>, <span class="string">"/proxy/"</span> + _applicationId)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 19.为ui设置applicationId</span></span><br><span class="line">    _ui.foreach(_.setAppId(_applicationId))</span><br><span class="line">    <span class="comment">// 20.初始化block manager</span></span><br><span class="line">    _env.blockManager.initialize(_applicationId)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The metrics system for Driver need to be set spark.app.id to app ID.</span></span><br><span class="line">    <span class="comment">// So it should start after we get app ID from the task scheduler and set spark.app.id.</span></span><br><span class="line">    <span class="comment">// 21.启动测量系统metricsSystem</span></span><br><span class="line">    _env.metricsSystem.start()</span><br><span class="line">    <span class="comment">// 22.Attach the driver metrics servlet handler to the web ui after the metrics system is started.</span></span><br><span class="line">    _env.metricsSystem.getServletHandlers.foreach(handler =&gt; ui.foreach(_.attachHandler(handler)))</span><br><span class="line">	<span class="comment">// 23.初始化event logger listener</span></span><br><span class="line">    _eventLogger =</span><br><span class="line">    <span class="keyword">if</span> (isEventLogEnabled) &#123;</span><br><span class="line">        <span class="keyword">val</span> logger =</span><br><span class="line">        <span class="keyword">new</span> <span class="type">EventLoggingListener</span>(_applicationId, _applicationAttemptId, _eventLogDir.get,</span><br><span class="line">                                 _conf, _hadoopConfiguration)</span><br><span class="line">        logger.start()</span><br><span class="line">        listenerBus.addToEventLogQueue(logger)</span><br><span class="line">        <span class="type">Some</span>(logger)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _cleaner =</span><br><span class="line">    <span class="keyword">if</span> (_conf.get(<span class="type">CLEANER_REFERENCE_TRACKING</span>)) &#123;</span><br><span class="line">        <span class="type">Some</span>(<span class="keyword">new</span> <span class="type">ContextCleaner</span>(<span class="keyword">this</span>, _shuffleDriverComponents))</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line">    _cleaner.foreach(_.start())</span><br><span class="line">	<span class="comment">// 24.如果启用了动态分配 executor，需要实例化executorAllocationManager，并启动之</span></span><br><span class="line">    <span class="keyword">val</span> dynamicAllocationEnabled = <span class="type">Utils</span>.isDynamicAllocationEnabled(_conf)</span><br><span class="line">    _executorAllocationManager =</span><br><span class="line">    <span class="keyword">if</span> (dynamicAllocationEnabled) &#123;</span><br><span class="line">        schedulerBackend <span class="keyword">match</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> b: <span class="type">ExecutorAllocationClient</span> =&gt;</span><br><span class="line">            <span class="type">Some</span>(<span class="keyword">new</span> <span class="type">ExecutorAllocationManager</span>(</span><br><span class="line">                schedulerBackend.asInstanceOf[<span class="type">ExecutorAllocationClient</span>], listenerBus, _conf,</span><br><span class="line">                cleaner = cleaner))</span><br><span class="line">            <span class="keyword">case</span> _ =&gt;</span><br><span class="line">            <span class="type">None</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line">    _executorAllocationManager.foreach(_.start())</span><br><span class="line">	<span class="comment">// 25. 建立并启动ListenerBus</span></span><br><span class="line">    setupAndStartListenerBus()</span><br><span class="line">    <span class="comment">// 26. task scheduler 已就绪，发送环境已更新请求</span></span><br><span class="line">    postEnvironmentUpdate()</span><br><span class="line">    <span class="comment">// 27. 发送 application start 请求事件</span></span><br><span class="line">    postApplicationStart()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Post init</span></span><br><span class="line">    <span class="comment">// 28.等待,直至task scheduler backend 准备好了</span></span><br><span class="line">    _taskScheduler.postStartHook() </span><br><span class="line">    <span class="comment">// 29. 注册 dagScheduler metricsSource</span></span><br><span class="line">    _env.metricsSystem.registerSource(_dagScheduler.metricsSource)</span><br><span class="line">    _env.metricsSystem.registerSource(<span class="keyword">new</span> <span class="type">BlockManagerSource</span>(_env.blockManager))</span><br><span class="line">    _env.metricsSystem.registerSource(<span class="keyword">new</span> <span class="type">JVMCPUSource</span>())</span><br><span class="line">    _executorAllocationManager.foreach &#123; e =&gt;</span><br><span class="line">        _env.metricsSystem.registerSource(e.executorAllocationManagerSource)</span><br><span class="line">    &#125;</span><br><span class="line">    appStatusSource.foreach(_env.metricsSystem.registerSource(_))</span><br><span class="line">    <span class="comment">// Make sure the context is stopped if the user forgets about it. This avoids leaving</span></span><br><span class="line">    <span class="comment">// unfinished event logs around after the JVM exits cleanly. It doesn't help if the JVM</span></span><br><span class="line">    <span class="comment">// is killed, though.</span></span><br><span class="line">    logDebug(<span class="string">"Adding shutdown hook"</span>) <span class="comment">// force eager creation of logger</span></span><br><span class="line">    <span class="comment">// 30. 设置 shutdown hook， 在spark context 关闭时，要做的回调操作</span></span><br><span class="line">    _shutdownHookRef = <span class="type">ShutdownHookManager</span>.addShutdownHook(</span><br><span class="line">        <span class="type">ShutdownHookManager</span>.<span class="type">SPARK_CONTEXT_SHUTDOWN_PRIORITY</span>) &#123; () =&gt;</span><br><span class="line">        logInfo(<span class="string">"Invoking stop() from shutdown hook"</span>)</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            stop()</span><br><span class="line">        &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> e: <span class="type">Throwable</span> =&gt;</span><br><span class="line">            logWarning(<span class="string">"Ignoring Exception while stopping SparkContext from shutdown hook"</span>, e)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">NonFatal</span>(e) =&gt;</span><br><span class="line">    logError(<span class="string">"Error initializing SparkContext."</span>, e)</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        stop()</span><br><span class="line">    &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">NonFatal</span>(inner) =&gt;</span><br><span class="line">        logError(<span class="string">"Error stopping SparkContext after init error."</span>, inner)</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> e</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>SparkContext的初始化步骤如下：</p><ol><li><p>创建Spark执行环境SparkEnv</p></li><li><p><del>创建RDD清理器metadataCleaner</del></p></li><li><p>创建并初始化SparkUI</p></li><li><p>Hadoop相关配置及Executor环境变量的设置</p></li><li><p>创建TaskScheduler(SparkLauncher，LauncherServer，LauncherBackend的通信流程)</p></li><li>创建和启动DAGScheduler</li><li>TaskScheduler的启动</li><li>初始化BlockManager</li><li>启动测量系统MetricsSystem</li><li>创建和启动Executor分配管理器ExecutorAllocationManager</li><li>ContextCleaner的创建和启动</li><li>Spark环境更新</li><li>创建DAGSchedulerSource和BlockManagerSource</li><li>将SparkContext标记为激活</li></ol><h2 id="二、创建Spark执行环境SparkEnv"><a href="#二、创建Spark执行环境SparkEnv" class="headerlink" title="二、创建Spark执行环境SparkEnv"></a>二、创建Spark执行环境SparkEnv</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这个函数允许在单元测试中模拟（mock）由SparkEnv创建的组件：</span></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="function"><span class="keyword">def</span> <span class="title">createSparkEnv</span></span>(</span><br><span class="line">    conf: <span class="type">SparkConf</span>,</span><br><span class="line">    isLocal: <span class="type">Boolean</span>,</span><br><span class="line">    listenerBus: <span class="type">LiveListenerBus</span>): <span class="type">SparkEnv</span> = &#123;</span><br><span class="line">    <span class="type">SparkEnv</span>.createDriverEnv(conf, isLocal, listenerBus,<span class="type">SparkContext</span>.numDriverCores(master, conf))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div><div><div style="padding:10px 0;margin:20px auto;width:90%;text-align:center"><div>谢谢你请我吃糖果！</div> <button id="rewardButton" disable="enable" onclick='var qr=document.getElementById("QR");"none"===qr.style.display?qr.style.display="block":qr.style.display="none"'> <span>打赏</span></button><div id="QR" style="display:none"><div id="wechat" style="display:inline-block"> <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Li Wen WeChat Pay"><p>WeChat Pay</p></div><div id="alipay" style="display:inline-block"> <img id="alipay_qr" src="/images/alipay.jpg" alt="Li Wen Alipay"><p>Alipay</p></div></div></div></div><footer class="post-footer"><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/a05e24d7.html" rel="next" title="Spark源码阅读环境搭建"><i class="fa fa-chevron-left"></i> Spark源码阅读环境搭建</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/3b9a2608.html" rel="prev" title="【读书笔记】《大数据》读书笔记">【读书笔记】《大数据》读书笔记<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div><div class="comments" id="comments"></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview"> 站点概览</li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Li Wen"><p class="site-author-name" itemprop="name">Li Wen</p><p class="site-description motion-element" itemprop="description"></p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/"><span class="site-state-item-count">160</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">19</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">1</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、SparkContext概述"><span class="nav-text">一、SparkContext概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、创建Spark执行环境SparkEnv"><span class="nav-text">二、创建Spark执行环境SparkEnv</span></a></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright"> &copy; 2018 - <span itemprop="copyrightYear">2021</span><span class="with-love"><i class="fa fa-heart"></i></span> <span class="author" itemprop="copyrightHolder">Li Wen</span></div><div class="busuanzi-count"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span class="site-uv"><i class="fa fa-user"></i> 访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span> 人</span><span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span> 次</span></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i> <span id="scrollpercent"><span>0</span>%</span></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script><script type="text/javascript">
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="3_IU8QYN7ZX8ohZtDd7g_6zN3154jWW7GDJMLJ8TzSQ">
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+  <meta name="google-site-verification" content="3_IU8QYN7ZX8ohZtDd7g_6zN3154jWW7GDJMLJ8TzSQ">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="日拱一卒,不期速成;循序渐进,一击中的">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon32.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="Spark源码阅读之一——SparkContext初始化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark源码阅读之一——SparkContext初始化">
+<meta property="og:url" content="https://helloliwen.github.io/36cd8492.html">
+<meta property="og:site_name" content="日拱一卒 不期速成">
+<meta property="og:description" content="Spark源码阅读之一——SparkContext初始化">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-07T13:00:46.130Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spark源码阅读之一——SparkContext初始化">
+<meta name="twitter:description" content="Spark源码阅读之一——SparkContext初始化">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://helloliwen.github.io/36cd8492.html">
+
+
+
+
+
+  <title>Spark源码阅读之一——SparkContext初始化 | 日拱一卒 不期速成</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- 页面点击小红心 
+  <script type="text/javascript" src="/js/src/love.js"></script> -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">日拱一卒 不期速成</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">循序渐进 一击中的</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://helloliwen.github.io/36cd8492.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Li Wen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="日拱一卒 不期速成">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Spark源码阅读之一——SparkContext初始化</h2>
+        
+
+        <div class="post-meta">
+		  
+		
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-29T16:40:27+08:00">
+                2019-12-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-07T21:00:46+08:00">
+                2020-01-07
+              </time>
+            
+          </span>
+		  
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+                  > 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/Spark/" itemprop="url" rel="index">
+                    <span itemprop="name">Spark</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次阅读
+            </span>
+          
+			
+		  		  
+          
+
+          
+              <div class="post-description">
+                  Spark源码阅读之一——SparkContext初始化
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、SparkContext概述"><a href="#一、SparkContext概述" class="headerlink" title="一、SparkContext概述"></a>一、SparkContext概述</h2><p>　　SparkDriver用于提交用户应用程序，实际可以看作Spark的客户端。Spark Driver的初始化始终围绕着SparkContext的初始化。而SparkContext的配置参数则是由SparkConf负责，SparkConf就是你的操作面板。</p>
+<p>　　SparkConf的构造很简单，主要通过<font color="red">ConcurrentHashMap</font>来维护各种Spark的配置属性。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Spark应用程序的配置。用于将各种Spark参数设置为键值对。</span></span><br><span class="line"><span class="comment">* 大多数情况下，您将使用“new SparkConf()”创建一个SparkConf对象，该对象还将从您的应用程序中设置的任何“ spark.*”Java系统属性中加载值。在这种情况下，直接在`SparkConf`对象上设置的参数优先于系统属性。</span></span><br><span class="line"><span class="comment">* 对于单元测试，无论系统属性是什么，您也可以调用`new SparkConf（false）`跳过加载外部设置并获得相同的配置。</span></span><br><span class="line"><span class="comment">* 此类中的所有setter方法都支持chaining编程。比如你可以写`new SparkConf().setMaster("local").setAppName("My app")`.</span></span><br><span class="line"><span class="comment">* @param loadDefaults 是否还从Java系统属性中加载值</span></span><br><span class="line"><span class="comment">* @note 一旦将SparkConf对象传递给Spark，它就会被克隆，并且用户无法再对其进行修改。 Spark不支持在运行时修改配置。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SparkConf</span>(<span class="params">loadDefaults: <span class="type">Boolean</span></span>) <span class="keyword">extends</span> <span class="title">Cloneable</span> <span class="keyword">with</span> <span class="title">Logging</span> <span class="keyword">with</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">import</span> <span class="type">SparkConf</span>._</span><br><span class="line">  <span class="comment">/** Create a SparkConf that loads defaults from system properties and the classpath */</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">this</span></span>() = <span class="keyword">this</span>(<span class="literal">true</span>)</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> settings = <span class="keyword">new</span> <span class="type">ConcurrentHashMap</span>[<span class="type">String</span>, <span class="type">String</span>]()</span><br><span class="line">    </span><br><span class="line">  <span class="keyword">if</span> (loadDefaults) &#123;</span><br><span class="line">    loadFromSystemProperties(<span class="literal">false</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span>[spark] <span class="function"><span class="keyword">def</span> <span class="title">loadFromSystemProperties</span></span>(silent: <span class="type">Boolean</span>): <span class="type">SparkConf</span> = &#123;</span><br><span class="line">    <span class="comment">// Load any spark.* system properties 加载任何以spark开头的系统属性</span></span><br><span class="line">    <span class="keyword">for</span> ((key, value) &lt;- <span class="type">Utils</span>.getSystemProperties <span class="keyword">if</span> key.startsWith(<span class="string">"spark."</span>)) &#123;</span><br><span class="line">      set(key, value, silent)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>SparkContext的主构造器参数为SparkConf，其实现如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Spark功能的主要入口点。 SparkContext表示与Spark集群的连接，可用于在该集群上创建RDD，累加器和广播变量。</span></span><br><span class="line"><span class="comment">* @note 每个JVM应该只有一个SparkContext是活动的。在创建一个新的SparkContext之前，您必须stop之前的。</span></span><br><span class="line"><span class="comment">* @param 指定一个描述应用程序配置的Spark Config对象，此配置中的任何设置都将覆盖默认配置以及系统属性。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SparkContext</span>(<span class="params">config: <span class="type">SparkConf</span></span>) <span class="keyword">extends</span> <span class="title">Logging</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 构造此SparkContext的呼叫站点。保存着线程栈中最靠近栈顶的用户定义的类和最靠近栈底的Scala或者Spark核心类的信息，其中ShortForm属性保存着上述信息的间断描述，LongForm属性保存着上述信息的完整描述</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> creationSite: <span class="type">CallSite</span> = <span class="type">Utils</span>.getCallSite()</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 为了防止同时激活多个SparkContext，请将此上下文标记为已开始构建。</span></span><br><span class="line">  <span class="comment">// <span class="doctag">NOTE:</span> this must be placed at the beginning of the SparkContext constructor.</span></span><br><span class="line">  <span class="type">SparkContext</span>.markPartiallyConstructed(<span class="keyword">this</span>)</span><br></pre></td></tr></table></figure>
+<p>markPartiallyConstructed用来确保实例的唯一性。必须指定<code>spark.master</code>和<code>spark.app.name</code>，否则抛出异常。</p>
+<p>SparkContext内部组件：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//SparkContext的配置，会先调用config的clone方法，在进行验证配置，是否设置了spark.master和spark.app.name</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _conf: <span class="type">SparkConf</span> = _</span><br><span class="line"><span class="comment">//事件日志的路径,当spark.enabled属性为true时启用，默认为/tmp/spark-events,也可以通过spark.eventLog.dir来指定目录</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _eventLogDir: <span class="type">Option</span>[<span class="type">URI</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//事件日志的压缩算法，当spark.eventLog.enabled属性与spark.eventLog.compress属性为true时，压缩算法默认为lz4。也可以通过spark.io.compression.codec属性指定，目前支持lzf,snappy和lz4</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _eventLogCodec: <span class="type">Option</span>[<span class="type">String</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//SparkContext中的事件总线，可以接收各个使用者的事件，异步将SparkListenerevent传递给注册的SparkListener</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _listenerBus: <span class="type">LiveListenerBus</span> = _</span><br><span class="line"><span class="comment">//Spark运行时环境，Spark 中任务执行是通过Executor，所有的Executor都有自己的执行环境SparkEnv，在Driver中也包含了SparkEnv，为了保证`Local模式的运行，SparkEnv内部还提供了不同的组件，来实现不同的功能</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _env: <span class="type">SparkEnv</span> = _</span><br><span class="line"><span class="comment">//用于监控作业和Stage进度状态的低级API</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _statusTracker: <span class="type">SparkStatusTracker</span> = _</span><br><span class="line"><span class="comment">//定期从sc.statusTracker获得active stage的状态信息，展示到进度条［在SparkUI上面可以看到进度条］，会有一定的延时。内部有一个timer，500ms refresh一遍</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _progressBar: <span class="type">Option</span>[<span class="type">ConsoleProgressBar</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//Spark的用户界面，SparkUI间接依赖于计算引擎，调度引擎，存储引擎，Job，Stage，Executor等组件的监控都会以SparkListenerEvent的形式传递给LiveListenerBus，SparkUI将从各个SparkListener中读取数据并显示在web界面</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _ui: <span class="type">Option</span>[<span class="type">SparkUI</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//Hadoop配置信息，如果系统属性SPARK_YARN_MODE为true或者环境变量SPARK_YARN_MODEL为true，那么将会是YARN的配置，否则为Hadoop的配置</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _hadoopConfiguration: <span class="type">Configuration</span> = _</span><br><span class="line"><span class="comment">//Executor内存大小，默认为1024MB，可以通过设置环境变量（SPARK_MEM或者SPARK_EXECUTOR_MEMORY）或者Spark.executor.memory属性指定其中Spark.executor.memory优先级最高</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _executorMemory: <span class="type">Int</span> = _</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _schedulerBackend: <span class="type">SchedulerBackend</span> = _</span><br><span class="line"><span class="comment">//Task调度器，是Spark调度系统中重要的组件之一，负责将任务发送到集群，运行。如果有失败的任务则重新执行，之后返回给DAGScheduler。TaskScheduler调度的Task是由DAGScheduler创建的，所以DAGScheduler是TaskScheduler前置调度。</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _taskScheduler: <span class="type">TaskScheduler</span> = _</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _heartbeatReceiver: <span class="type">RpcEndpointRef</span> = _</span><br><span class="line"><span class="comment">//DAG调度器，是Spark调度系统中重要的组件之一，负责创建Job，将DAG的RDD划分到不同的Stage，提交stage等，SparkUI中有关Job和Stage监控数据都来自DAGScheduer</span></span><br><span class="line"><span class="meta">@volatile</span> <span class="keyword">private</span> <span class="keyword">var</span> _dagScheduler: <span class="type">DAGScheduler</span> = _</span><br><span class="line"><span class="comment">//当前应用的标识，TaskScheduler启动后会创建应用标识，通过调取TaskScheduler的ApplicationId获取的</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _applicationId: <span class="type">String</span> = _</span><br><span class="line"><span class="comment">//当前应用尝试执行的标识，Spark Driver在执行时会多次尝试，每次尝试都会生成一个标识来代表应用尝试执行的身份</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _applicationAttemptId: <span class="type">Option</span>[<span class="type">String</span>] = <span class="type">None</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _eventLogger: <span class="type">Option</span>[<span class="type">EventLoggingListener</span>] = <span class="type">None</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _driverLogger: <span class="type">Option</span>[<span class="type">DriverLogger</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//Executor动态分配管理器，根据工作负载动态调整Executor数量，当在配置spark.dynamicAlloction.enabled属性为true的情况下，在非local模式下或者spark.dynamicAllcation.testing属性为true时启用</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _executorAllocationManager: <span class="type">Option</span>[<span class="type">ExecutorAllocationManager</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//异步清理RDD、shuffle和广播状态信息</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _cleaner: <span class="type">Option</span>[<span class="type">ContextCleaner</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//LiveListenerBus是否已经启动的标记</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _listenerBusStarted: <span class="type">Boolean</span> = <span class="literal">false</span></span><br><span class="line"><span class="comment">//用户提交的jar文件，当选择部署模式为yarn时，_jars是由spark.jars属性指定的jar文件和spark.yarn.dist.jars属性指定的并集</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _jars: <span class="type">Seq</span>[<span class="type">String</span>] = _</span><br><span class="line"><span class="comment">//用户设置的文件，可以根据Spark.file属性指定</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _files: <span class="type">Seq</span>[<span class="type">String</span>] = _</span><br><span class="line"><span class="comment">//设置关闭钩子的管理器，可以给应用设置钩子，这样当JVM退出的时候就会执行清理工作</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _shutdownHookRef: <span class="type">AnyRef</span> = _</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _statusStore: <span class="type">AppStatusStore</span> = _</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _heartbeater: <span class="type">Heartbeater</span> = _</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _resources: scala.collection.immutable.<span class="type">Map</span>[<span class="type">String</span>, <span class="type">ResourceInformation</span>] = _</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> _shuffleDriverComponents: <span class="type">ShuffleDriverComponents</span> = _</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="function"><span class="keyword">def</span> <span class="title">env</span></span>: <span class="type">SparkEnv</span> = _env</span><br><span class="line"><span class="comment">// 用于每个本地文件的URL与添加此文件到addedFiles时的时间戳之间的映射缓存</span></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="keyword">val</span> addedFiles = <span class="keyword">new</span> <span class="type">ConcurrentHashMap</span>[<span class="type">String</span>, <span class="type">Long</span>]().asScala</span><br><span class="line"><span class="comment">//用于每个本地Jar文件的URL与添加此文件到addedJars时的时间戳之间的映射缓存</span></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="keyword">val</span> addedJars = <span class="keyword">new</span> <span class="type">ConcurrentHashMap</span>[<span class="type">String</span>, <span class="type">Long</span>]().asScala</span><br><span class="line"><span class="comment">// Keeps track of all persisted RDDs 用于对所有持久化的RDD保持跟踪</span></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="keyword">val</span> persistentRdds = &#123;</span><br><span class="line">    <span class="keyword">val</span> map: <span class="type">ConcurrentMap</span>[<span class="type">Int</span>, <span class="type">RDD</span>[_]] = <span class="keyword">new</span> <span class="type">MapMaker</span>().weakValues().makeMap[<span class="type">Int</span>, <span class="type">RDD</span>[_]]()</span><br><span class="line">    map.asScala</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 用于对所有持久化的RDD保持跟踪</span></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="keyword">val</span> executorEnvs = <span class="type">HashMap</span>[<span class="type">String</span>, <span class="type">String</span>]()</span><br><span class="line"><span class="comment">//当前系统的登录用户，可以通过环境变量SPARK_USER来设置 通过</span></span><br><span class="line"><span class="keyword">val</span> sparkUser = <span class="type">Utils</span>.getCurrentUserName()</span><br><span class="line"><span class="comment">//RDD计算过程中用于记录RDD检查点的目录</span></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="keyword">var</span> checkpointDir: <span class="type">Option</span>[<span class="type">String</span>] = <span class="type">None</span></span><br><span class="line"><span class="comment">//类型为AtomicInteger，用于生成下一个shuffle标识</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> nextShuffleId = <span class="keyword">new</span> <span class="type">AtomicInteger</span>(<span class="number">0</span>)</span><br><span class="line"><span class="comment">//类型为atomicInteger，用于生成下一个rdd标识</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> nextRddId = <span class="keyword">new</span> <span class="type">AtomicInteger</span>(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">allowMulitipleContext : 是否允许多个SparkContext实例，默认为False，可以通过设置Spark.Driver.allowMulitipleContexts来控制</span><br><span class="line"></span><br><span class="line">startTime：标记sparkContext的启动时间戳</span><br><span class="line"></span><br><span class="line">stopped：标记sparkContext是否处于停止状态，采用原子类型AtomicBoolean</span><br><span class="line"></span><br><span class="line">HeatbeatReceiver：心跳接收器，所有的Executor都会向HeatbeatReceiver发送心跳信息，HeatbeatReceiver接收到心跳之后，先更新Executor最后可见时间，然后将此信息交给TaskScheduler。</span><br><span class="line"></span><br><span class="line">localProperties：InheritableThreadLocal保护的线程，其中的属性值可以沿着线程栈一直传递下去。线程局部变量，用户可用于将信息向下传递到堆栈</span><br></pre></td></tr></table></figure>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 1.初始化configuration</span></span><br><span class="line">    _conf = config.clone()</span><br><span class="line">    _conf.validateSettings()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!_conf.contains(<span class="string">"spark.master"</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">SparkException</span>(<span class="string">"A master URL must be set in your configuration"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!_conf.contains(<span class="string">"spark.app.name"</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">SparkException</span>(<span class="string">"An application name must be set in your configuration"</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _driverLogger = <span class="type">DriverLogger</span>(_conf)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> resourcesFileOpt = conf.get(<span class="type">DRIVER_RESOURCES_FILE</span>)</span><br><span class="line">    <span class="keyword">val</span> allResources = getOrDiscoverAllResources(_conf, <span class="type">SPARK_DRIVER_PREFIX</span>, resourcesFileOpt)</span><br><span class="line">    _resources = &#123;</span><br><span class="line">        <span class="comment">// driver submitted in client mode under Standalone may have conflicting resources with</span></span><br><span class="line">        <span class="comment">// other drivers/workers on this host. We should sync driver's resources info into</span></span><br><span class="line">        <span class="comment">// SPARK_RESOURCES/SPARK_RESOURCES_COORDINATE_DIR/ to avoid collision.</span></span><br><span class="line">        <span class="keyword">if</span> (isClientStandalone) &#123;</span><br><span class="line">            acquireResources(_conf, <span class="type">SPARK_DRIVER_PREFIX</span>, allResources, <span class="type">Utils</span>.getProcessId)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            allResources</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    logResourceInfo(<span class="type">SPARK_DRIVER_PREFIX</span>, _resources)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// log out spark.app.name in the Spark driver logs</span></span><br><span class="line">    logInfo(<span class="string">s"Submitted application: <span class="subst">$appName</span>"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// System property spark.yarn.app.id must be set if user code ran by AM on a YARN cluster</span></span><br><span class="line">    <span class="keyword">if</span> (master == <span class="string">"yarn"</span> &amp;&amp; deployMode == <span class="string">"cluster"</span> &amp;&amp; !_conf.contains(<span class="string">"spark.yarn.app.id"</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">SparkException</span>(<span class="string">"Detected yarn cluster mode, but isn't running on a cluster. "</span> +</span><br><span class="line">                                 <span class="string">"Deployment to YARN is not supported directly by SparkContext. Please use spark-submit."</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_conf.getBoolean(<span class="string">"spark.logConf"</span>, <span class="literal">false</span>)) &#123;</span><br><span class="line">        logInfo(<span class="string">"Spark configuration:\n"</span> + _conf.toDebugString)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set Spark driver host and port system properties. This explicitly sets the configuration</span></span><br><span class="line">    <span class="comment">// instead of relying on the default value of the config constant.</span></span><br><span class="line">    _conf.set(<span class="type">DRIVER_HOST_ADDRESS</span>, _conf.get(<span class="type">DRIVER_HOST_ADDRESS</span>))</span><br><span class="line">    _conf.setIfMissing(<span class="type">DRIVER_PORT</span>, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    _conf.set(<span class="type">EXECUTOR_ID</span>, <span class="type">SparkContext</span>.<span class="type">DRIVER_IDENTIFIER</span>)</span><br><span class="line"></span><br><span class="line">    _jars = <span class="type">Utils</span>.getUserJars(_conf)</span><br><span class="line">    _files = _conf.getOption(<span class="type">FILES</span>.key).map(_.split(<span class="string">","</span>)).map(_.filter(_.nonEmpty))</span><br><span class="line">    .toSeq.flatten</span><br><span class="line">	<span class="comment">// 2.初始化日志目录并设置压缩类</span></span><br><span class="line">    _eventLogDir =</span><br><span class="line">    <span class="keyword">if</span> (isEventLogEnabled) &#123;</span><br><span class="line">        <span class="keyword">val</span> unresolvedDir = conf.get(<span class="type">EVENT_LOG_DIR</span>).stripSuffix(<span class="string">"/"</span>)</span><br><span class="line">        <span class="type">Some</span>(<span class="type">Utils</span>.resolveURI(unresolvedDir))</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _eventLogCodec = &#123;</span><br><span class="line">        <span class="keyword">val</span> compress = _conf.get(<span class="type">EVENT_LOG_COMPRESS</span>)</span><br><span class="line">        <span class="keyword">if</span> (compress &amp;&amp; isEventLogEnabled) &#123;</span><br><span class="line">            <span class="type">Some</span>(<span class="type">CompressionCodec</span>.getCodecName(_conf)).map(<span class="type">CompressionCodec</span>.getShortName)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">None</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 3.LiveListenerBus负责将SparkListenerEvent异步地传递给对应注册的SparkListener.</span></span><br><span class="line">    _listenerBus = <span class="keyword">new</span> <span class="type">LiveListenerBus</span>(_conf)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Initialize the app status store and listener before SparkEnv is created so that it gets</span></span><br><span class="line">    <span class="comment">// all events.</span></span><br><span class="line">    <span class="keyword">val</span> appStatusSource = <span class="type">AppStatusSource</span>.createSource(conf)</span><br><span class="line">    <span class="comment">// 4. 给 app 提供一个 kv store（in-memory）</span></span><br><span class="line">    _statusStore = <span class="type">AppStatusStore</span>.createLiveStore(conf, appStatusSource)</span><br><span class="line">    <span class="comment">// 5. 注册 AppStatusListener 到 LiveListenerBus 中</span></span><br><span class="line">    listenerBus.addToStatusQueue(_statusStore.listener.get)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create the Spark execution environment (cache, map output tracker, etc)</span></span><br><span class="line">    <span class="comment">// 6. 创建 driver端的 env</span></span><br><span class="line">    <span class="comment">// 包含所有的spark 实例运行时对象（master 或 worker），包含了序列化器，RPCEnv，block manager， map out tracker等等。</span></span><br><span class="line">    <span class="comment">// 当前的spark 通过一个全局的变量代码找到 SparkEnv，所有的线程可以访问同一个SparkEnv，</span></span><br><span class="line">    <span class="comment">// 创建SparkContext之后，可以通过 SparkEnv.get方法来访问它</span></span><br><span class="line">    _env = createSparkEnv(_conf, isLocal, listenerBus)</span><br><span class="line">    <span class="type">SparkEnv</span>.set(_env)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// If running the REPL, register the repl's output dir with the file server.</span></span><br><span class="line">    _conf.getOption(<span class="string">"spark.repl.class.outputDir"</span>).foreach &#123; path =&gt;</span><br><span class="line">        <span class="keyword">val</span> replUri = _env.rpcEnv.fileServer.addDirectory(<span class="string">"/classes"</span>, <span class="keyword">new</span> <span class="type">File</span>(path))</span><br><span class="line">        _conf.set(<span class="string">"spark.repl.class.uri"</span>, replUri)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 7. 从底层监控 spark job 和 stage 的状态并汇报的 API</span></span><br><span class="line">    _statusTracker = <span class="keyword">new</span> <span class="type">SparkStatusTracker</span>(<span class="keyword">this</span>, _statusStore)</span><br><span class="line">	<span class="comment">// 8. console 进度条</span></span><br><span class="line">    _progressBar =</span><br><span class="line">    <span class="keyword">if</span> (_conf.get(<span class="type">UI_SHOW_CONSOLE_PROGRESS</span>)) &#123;</span><br><span class="line">        <span class="type">Some</span>(<span class="keyword">new</span> <span class="type">ConsoleProgressBar</span>(<span class="keyword">this</span>))</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 9. spark ui, 使用jetty 实现</span></span><br><span class="line">    _ui =</span><br><span class="line">    <span class="keyword">if</span> (conf.get(<span class="type">UI_ENABLED</span>)) &#123;</span><br><span class="line">        <span class="type">Some</span>(<span class="type">SparkUI</span>.create(<span class="type">Some</span>(<span class="keyword">this</span>), _statusStore, _conf, _env.securityManager, appName, <span class="string">""</span>,</span><br><span class="line">                            startTime))</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// For tests, do not enable the UI</span></span><br><span class="line">        <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Bind the UI before starting the task scheduler to communicate</span></span><br><span class="line">    <span class="comment">// the bound port to the cluster manager properly</span></span><br><span class="line">    _ui.foreach(_.bind())</span><br><span class="line">    </span><br><span class="line">	<span class="comment">// 10. 创建 hadoop configuration</span></span><br><span class="line">    _hadoopConfiguration = <span class="type">SparkHadoopUtil</span>.get.newConfiguration(_conf)</span><br><span class="line">    <span class="comment">// Performance optimization: this dummy call to .size() triggers eager evaluation of</span></span><br><span class="line">    <span class="comment">// Configuration's internal  `properties` field, guaranteeing that it will be computed and</span></span><br><span class="line">    <span class="comment">// cached before SessionState.newHadoopConf() uses `sc.hadoopConfiguration` to create</span></span><br><span class="line">    <span class="comment">// a new per-session Configuration. If `properties` has not been computed by that time</span></span><br><span class="line">    <span class="comment">// then each newly-created Configuration will perform its own expensive IO and XML</span></span><br><span class="line">    <span class="comment">// parsing to load configuration defaults and populate its own properties. By ensuring</span></span><br><span class="line">    <span class="comment">// that we've pre-computed the parent's properties, the child Configuration will simply</span></span><br><span class="line">    <span class="comment">// clone the parent's properties.</span></span><br><span class="line">    _hadoopConfiguration.size()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 11. Add each JAR given through the constructor</span></span><br><span class="line">    <span class="keyword">if</span> (jars != <span class="literal">null</span>) &#123;</span><br><span class="line">        jars.foreach(addJar)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (files != <span class="literal">null</span>) &#123;</span><br><span class="line">        files.foreach(addFile)</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 12.计算executor的内存</span></span><br><span class="line">    _executorMemory = _conf.getOption(<span class="type">EXECUTOR_MEMORY</span>.key)</span><br><span class="line">    .orElse(<span class="type">Option</span>(<span class="type">System</span>.getenv(<span class="string">"SPARK_EXECUTOR_MEMORY"</span>)))</span><br><span class="line">    .orElse(<span class="type">Option</span>(<span class="type">System</span>.getenv(<span class="string">"SPARK_MEM"</span>))</span><br><span class="line">            .map(warnSparkMem))</span><br><span class="line">    .map(<span class="type">Utils</span>.memoryStringToMb)</span><br><span class="line">    .getOrElse(<span class="number">1024</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Convert java options to env vars as a work around</span></span><br><span class="line">    <span class="comment">// since we can't set env vars directly in sbt.</span></span><br><span class="line">    <span class="keyword">for</span> &#123; (envKey, propKey) &lt;- <span class="type">Seq</span>((<span class="string">"SPARK_TESTING"</span>, <span class="type">IS_TESTING</span>.key))</span><br><span class="line">         value &lt;- <span class="type">Option</span>(<span class="type">System</span>.getenv(envKey)).orElse(<span class="type">Option</span>(<span class="type">System</span>.getProperty(propKey)))&#125; &#123;</span><br><span class="line">        executorEnvs(envKey) = value</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">Option</span>(<span class="type">System</span>.getenv(<span class="string">"SPARK_PREPEND_CLASSES"</span>)).foreach &#123; v =&gt;</span><br><span class="line">        executorEnvs(<span class="string">"SPARK_PREPEND_CLASSES"</span>) = v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// The Mesos scheduler backend relies on this environment variable to set executor memory.</span></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> Set this only in the Mesos scheduler.</span></span><br><span class="line">    executorEnvs(<span class="string">"SPARK_EXECUTOR_MEMORY"</span>) = executorMemory + <span class="string">"m"</span></span><br><span class="line">    executorEnvs ++= _conf.getExecutorEnv</span><br><span class="line">    executorEnvs(<span class="string">"SPARK_USER"</span>) = sparkUser</span><br><span class="line"></span><br><span class="line">    _shuffleDriverComponents = <span class="type">ShuffleDataIOUtils</span>.loadShuffleDataIO(config).driver()</span><br><span class="line">    _shuffleDriverComponents.initializeApplication().asScala.foreach &#123; <span class="keyword">case</span> (k, v) =&gt;</span><br><span class="line">        _conf.set(<span class="type">ShuffleDataIOUtils</span>.<span class="type">SHUFFLE_SPARK_CONF_PREFIX</span> + k, v)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// We need to register "HeartbeatReceiver" before "createTaskScheduler" because Executor will</span></span><br><span class="line">    <span class="comment">// retrieve "HeartbeatReceiver" in the constructor. (SPARK-6640)</span></span><br><span class="line">    <span class="comment">// 13. 创建 HeartbeatReceiver endpoint</span></span><br><span class="line">    _heartbeatReceiver = env.rpcEnv.setupEndpoint(</span><br><span class="line">        <span class="type">HeartbeatReceiver</span>.<span class="type">ENDPOINT_NAME</span>, <span class="keyword">new</span> <span class="type">HeartbeatReceiver</span>(<span class="keyword">this</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create and start the scheduler</span></span><br><span class="line">    <span class="comment">// 14. 创建 task scheduler 和 scheduler backend</span></span><br><span class="line">    <span class="keyword">val</span> (sched, ts) = <span class="type">SparkContext</span>.createTaskScheduler(<span class="keyword">this</span>, master, deployMode)</span><br><span class="line">    _schedulerBackend = sched</span><br><span class="line">    _taskScheduler = ts</span><br><span class="line">    <span class="comment">// 15. 创建DAGScheduler实例</span></span><br><span class="line">    _dagScheduler = <span class="keyword">new</span> <span class="type">DAGScheduler</span>(<span class="keyword">this</span>)</span><br><span class="line">    _heartbeatReceiver.ask[<span class="type">Boolean</span>](<span class="type">TaskSchedulerIsSet</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// create and start the heartbeater for collecting memory metrics</span></span><br><span class="line">    _heartbeater = <span class="keyword">new</span> <span class="type">Heartbeater</span>(</span><br><span class="line">        () =&gt; <span class="type">SparkContext</span>.<span class="keyword">this</span>.reportHeartBeat(),</span><br><span class="line">        <span class="string">"driver-heartbeater"</span>,</span><br><span class="line">        conf.get(<span class="type">EXECUTOR_HEARTBEAT_INTERVAL</span>))</span><br><span class="line">    _heartbeater.start()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// start TaskScheduler after taskScheduler sets DAGScheduler reference in DAGScheduler's</span></span><br><span class="line">    <span class="comment">// constructor</span></span><br><span class="line">    <span class="comment">// 16. 启动Taskscheduler</span></span><br><span class="line">    _taskScheduler.start()</span><br><span class="line">	<span class="comment">// 17. 从Taskscheduler获取applicationId</span></span><br><span class="line">    _applicationId = _taskScheduler.applicationId()</span><br><span class="line">    <span class="comment">// 18. 从Taskscheduler获取 application attempt id</span></span><br><span class="line">    _applicationAttemptId = _taskScheduler.applicationAttemptId()</span><br><span class="line">    _conf.set(<span class="string">"spark.app.id"</span>, _applicationId)</span><br><span class="line">    <span class="keyword">if</span> (_conf.get(<span class="type">UI_REVERSE_PROXY</span>)) &#123;</span><br><span class="line">        <span class="type">System</span>.setProperty(<span class="string">"spark.ui.proxyBase"</span>, <span class="string">"/proxy/"</span> + _applicationId)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 19.为ui设置applicationId</span></span><br><span class="line">    _ui.foreach(_.setAppId(_applicationId))</span><br><span class="line">    <span class="comment">// 20.初始化block manager</span></span><br><span class="line">    _env.blockManager.initialize(_applicationId)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The metrics system for Driver need to be set spark.app.id to app ID.</span></span><br><span class="line">    <span class="comment">// So it should start after we get app ID from the task scheduler and set spark.app.id.</span></span><br><span class="line">    <span class="comment">// 21.启动测量系统metricsSystem</span></span><br><span class="line">    _env.metricsSystem.start()</span><br><span class="line">    <span class="comment">// 22.Attach the driver metrics servlet handler to the web ui after the metrics system is started.</span></span><br><span class="line">    _env.metricsSystem.getServletHandlers.foreach(handler =&gt; ui.foreach(_.attachHandler(handler)))</span><br><span class="line">	<span class="comment">// 23.初始化event logger listener</span></span><br><span class="line">    _eventLogger =</span><br><span class="line">    <span class="keyword">if</span> (isEventLogEnabled) &#123;</span><br><span class="line">        <span class="keyword">val</span> logger =</span><br><span class="line">        <span class="keyword">new</span> <span class="type">EventLoggingListener</span>(_applicationId, _applicationAttemptId, _eventLogDir.get,</span><br><span class="line">                                 _conf, _hadoopConfiguration)</span><br><span class="line">        logger.start()</span><br><span class="line">        listenerBus.addToEventLogQueue(logger)</span><br><span class="line">        <span class="type">Some</span>(logger)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _cleaner =</span><br><span class="line">    <span class="keyword">if</span> (_conf.get(<span class="type">CLEANER_REFERENCE_TRACKING</span>)) &#123;</span><br><span class="line">        <span class="type">Some</span>(<span class="keyword">new</span> <span class="type">ContextCleaner</span>(<span class="keyword">this</span>, _shuffleDriverComponents))</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line">    _cleaner.foreach(_.start())</span><br><span class="line">	<span class="comment">// 24.如果启用了动态分配 executor，需要实例化executorAllocationManager，并启动之</span></span><br><span class="line">    <span class="keyword">val</span> dynamicAllocationEnabled = <span class="type">Utils</span>.isDynamicAllocationEnabled(_conf)</span><br><span class="line">    _executorAllocationManager =</span><br><span class="line">    <span class="keyword">if</span> (dynamicAllocationEnabled) &#123;</span><br><span class="line">        schedulerBackend <span class="keyword">match</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> b: <span class="type">ExecutorAllocationClient</span> =&gt;</span><br><span class="line">            <span class="type">Some</span>(<span class="keyword">new</span> <span class="type">ExecutorAllocationManager</span>(</span><br><span class="line">                schedulerBackend.asInstanceOf[<span class="type">ExecutorAllocationClient</span>], listenerBus, _conf,</span><br><span class="line">                cleaner = cleaner))</span><br><span class="line">            <span class="keyword">case</span> _ =&gt;</span><br><span class="line">            <span class="type">None</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line">    _executorAllocationManager.foreach(_.start())</span><br><span class="line">	<span class="comment">// 25. 建立并启动ListenerBus</span></span><br><span class="line">    setupAndStartListenerBus()</span><br><span class="line">    <span class="comment">// 26. task scheduler 已就绪，发送环境已更新请求</span></span><br><span class="line">    postEnvironmentUpdate()</span><br><span class="line">    <span class="comment">// 27. 发送 application start 请求事件</span></span><br><span class="line">    postApplicationStart()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Post init</span></span><br><span class="line">    <span class="comment">// 28.等待,直至task scheduler backend 准备好了</span></span><br><span class="line">    _taskScheduler.postStartHook() </span><br><span class="line">    <span class="comment">// 29. 注册 dagScheduler metricsSource</span></span><br><span class="line">    _env.metricsSystem.registerSource(_dagScheduler.metricsSource)</span><br><span class="line">    _env.metricsSystem.registerSource(<span class="keyword">new</span> <span class="type">BlockManagerSource</span>(_env.blockManager))</span><br><span class="line">    _env.metricsSystem.registerSource(<span class="keyword">new</span> <span class="type">JVMCPUSource</span>())</span><br><span class="line">    _executorAllocationManager.foreach &#123; e =&gt;</span><br><span class="line">        _env.metricsSystem.registerSource(e.executorAllocationManagerSource)</span><br><span class="line">    &#125;</span><br><span class="line">    appStatusSource.foreach(_env.metricsSystem.registerSource(_))</span><br><span class="line">    <span class="comment">// Make sure the context is stopped if the user forgets about it. This avoids leaving</span></span><br><span class="line">    <span class="comment">// unfinished event logs around after the JVM exits cleanly. It doesn't help if the JVM</span></span><br><span class="line">    <span class="comment">// is killed, though.</span></span><br><span class="line">    logDebug(<span class="string">"Adding shutdown hook"</span>) <span class="comment">// force eager creation of logger</span></span><br><span class="line">    <span class="comment">// 30. 设置 shutdown hook， 在spark context 关闭时，要做的回调操作</span></span><br><span class="line">    _shutdownHookRef = <span class="type">ShutdownHookManager</span>.addShutdownHook(</span><br><span class="line">        <span class="type">ShutdownHookManager</span>.<span class="type">SPARK_CONTEXT_SHUTDOWN_PRIORITY</span>) &#123; () =&gt;</span><br><span class="line">        logInfo(<span class="string">"Invoking stop() from shutdown hook"</span>)</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            stop()</span><br><span class="line">        &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> e: <span class="type">Throwable</span> =&gt;</span><br><span class="line">            logWarning(<span class="string">"Ignoring Exception while stopping SparkContext from shutdown hook"</span>, e)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">NonFatal</span>(e) =&gt;</span><br><span class="line">    logError(<span class="string">"Error initializing SparkContext."</span>, e)</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        stop()</span><br><span class="line">    &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">NonFatal</span>(inner) =&gt;</span><br><span class="line">        logError(<span class="string">"Error stopping SparkContext after init error."</span>, inner)</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> e</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SparkContext的初始化步骤如下：</p>
+<ol>
+<li><p>创建Spark执行环境SparkEnv</p>
+</li>
+<li><p><del>创建RDD清理器metadataCleaner</del></p>
+</li>
+<li><p>创建并初始化SparkUI</p>
+</li>
+<li><p>Hadoop相关配置及Executor环境变量的设置</p>
+</li>
+<li><p>创建TaskScheduler(SparkLauncher，LauncherServer，LauncherBackend的通信流程)</p>
+</li>
+<li>创建和启动DAGScheduler</li>
+<li>TaskScheduler的启动</li>
+<li>初始化BlockManager</li>
+<li>启动测量系统MetricsSystem</li>
+<li>创建和启动Executor分配管理器ExecutorAllocationManager</li>
+<li>ContextCleaner的创建和启动</li>
+<li>Spark环境更新</li>
+<li>创建DAGSchedulerSource和BlockManagerSource</li>
+<li>将SparkContext标记为激活</li>
+</ol>
+<h2 id="二、创建Spark执行环境SparkEnv"><a href="#二、创建Spark执行环境SparkEnv" class="headerlink" title="二、创建Spark执行环境SparkEnv"></a>二、创建Spark执行环境SparkEnv</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这个函数允许在单元测试中模拟（mock）由SparkEnv创建的组件：</span></span><br><span class="line"><span class="keyword">private</span>[spark] <span class="function"><span class="keyword">def</span> <span class="title">createSparkEnv</span></span>(</span><br><span class="line">    conf: <span class="type">SparkConf</span>,</span><br><span class="line">    isLocal: <span class="type">Boolean</span>,</span><br><span class="line">    listenerBus: <span class="type">LiveListenerBus</span>): <span class="type">SparkEnv</span> = &#123;</span><br><span class="line">    <span class="type">SparkEnv</span>.createDriverEnv(conf, isLocal, listenerBus,<span class="type">SparkContext</span>.numDriverCores(master, conf))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>谢谢你请我吃糖果！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Li Wen WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Li Wen Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/a05e24d7.html" rel="next" title="Spark源码阅读环境搭建">
+                <i class="fa fa-chevron-left"></i> Spark源码阅读环境搭建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/3b9a2608.html" rel="prev" title="【读书笔记】《大数据》读书笔记">
+                【读书笔记】《大数据》读书笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Li Wen">
+          <p class="site-author-name" itemprop="name">Li Wen</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/">
+                <span class="site-state-item-count">160</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、SparkContext概述"><span class="nav-text">一、SparkContext概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、创建Spark执行环境SparkEnv"><span class="nav-text">二、创建Spark执行环境SparkEnv</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2018 - 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Wen</span>
+</div>
+
+
+
+<!--
+<div style="text-align: center;">
+	 <a href='http://www.miitbeian.gov.cn/' target="_blank" rel="external nofollow">湘ICP备18019139号</a> 
+</div>
+-->
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
     // Popup Window;
     var isfetched = false;
     var isXml = true;
@@ -313,4 +1143,41 @@
         onPopupClose();
       }
     });
-  </script><script>!function(){var t=document.createElement("script"),e=window.location.protocol.split(":")[0];t.src="https"===e?"https://zz.bdstatic.com/linksubmit/push.js":"http://push.zhanzhang.baidu.com/push.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}()</script><script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.2"></script><script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.2"></script></body></html>
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.2"></script>
+
+
+  
+
+</body>
+</html>
